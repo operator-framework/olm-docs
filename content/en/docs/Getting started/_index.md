@@ -1,6 +1,7 @@
 ---
 title: "Getting Started"
 linkTitle: "Getting Started"
+date: 2020-03-25
 weight: 2
 description: >
   Install OLM in a kubernetes cluster.

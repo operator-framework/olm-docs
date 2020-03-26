@@ -1,12 +1,13 @@
 ---
 title: "Subscription"
 linkTitle: "Subscription"
-weight: 8
+weight: 4
+date: 2020-03-25
 description: >
-  This guide introduces the concept of Subscription in OpenShift Lifecycle Manager.
+ A Subscription represents an intention to install an operator. It is the CustomResource that relate an operator to a CatalogSource. Subscriptions describe which [channel](/docs/concepts/glossary/#channel) of an operator package to subscribe to, and whether to perform updates automatically or manually. If set to automatic, the Subscription ensures OLM will manage and upgrade the operator to ensure the latest version is always running in the cluster.
 ---
 
-Subscriptions are Custom Resources that relate an operator to a CatalogSource. Subscriptions describe which channel of an operator package to subscribe to and whether to perform updates automatically or manually. If set to automatic, the Subscription ensures OLM will manage and upgrade the operator to ensure the latest version is always running in the cluster.
+
 
 Here's an example of a Subscription definition:
 

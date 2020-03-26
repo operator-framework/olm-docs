@@ -1,14 +1,14 @@
 ---
-title: "Additional Concepts"
-linkTitle: "Additional Concepts"
-weight: 5
+title: "Glossary of Jargaons"
+linkTitle: "Glossary of Jargons"
+date: 2020-03-25
+weight: 3
 description: >
-  This guide introduces the additional OLM concepts.
+  A list of jargons used in the context of OLM, along with their definitions.
 ---
 
 {{% alert title="Warning" color="warning" %}}
 These pages are under construction. 
-**ToDo: Complete this**
 {{% /alert %}}
 
 

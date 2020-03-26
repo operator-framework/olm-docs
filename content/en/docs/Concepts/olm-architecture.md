@@ -1,14 +1,15 @@
 ---
 title: "OLM Architecture"
 linkTitle: "OLM Architecture"
-weight: 3
+date: 2020-03-25
+weight: 4
 description: >
-  This guide outlines the concepts and architecture of the Operator Lifecycle Manager (OLM) in OpenShift Container Platform.
+  A discussion on the architecture of Operator Lifecycle Manager (OLM).
 ---
 
 {{% alert title="Warning" color="warning" %}}
 These pages are under construction. 
-**ToDo: Complete this (Inlude an image?) **
+**ToDo: Complete this (Inlude images/diagrams etc) **
 {{% /alert %}}
 
 

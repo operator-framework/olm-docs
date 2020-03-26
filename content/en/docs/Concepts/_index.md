@@ -1,14 +1,14 @@
 ---
 title: "Concepts"
 linkTitle: "Concepts"
-weight: 3
+date: 2020-03-25
+weight: 1
 description: >
-    This page contains a list of terms defined by OLM, along with their definitions and common Aliases. 
+    This section is the knowledge base for all concepts, glossary, etc that are associated with OLM  
 ---
 
 {{% alert title="Warning" color="warning" %}}
-These pages are under construction. 
-ToDo: *Complete this*
+This section is under construction. 
 {{% /alert %}}
 
 
