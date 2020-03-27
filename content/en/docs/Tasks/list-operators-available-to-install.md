@@ -3,7 +3,7 @@ title: "List operators available to install"
 date: 2017-01-05
 weight: 5
 description: >
-  Once you've packaged your operator and made it part of catalog, you can see it among the list of operators that are avialable to install in the cluster. There is an extension API in OLM named `PackageManifest` that contains information about existing [CatalogSources](/docs/concepts/#catalogsources), which is essentially a collection of bundles that each define an operator in the cluster. By querying that API, you can see the list of available operators.  
+  Once you've packaged your operator and made it part of catalog, you can see it among the list of operators that are available to install in the cluster. There is an extension API in OLM named `PackageManifest` that contains information about existing [CatalogSources](/docs/concepts/#catalogsources), which is essentially a collection of bundles that each define an operator in the cluster. By querying that API, you can see the list of available operators.  
 ---
 
 {{% pageinfo %}}

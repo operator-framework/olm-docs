@@ -7,6 +7,12 @@ description: >
   Install OLM in a kubernetes cluster.
 ---
 
+
+{{% alert title="Warning" color="warning" %}}
+These pages are under construction. TODO: Check Prerequisites and update 
+{{% /alert %}}
+
+
 ## Prerequisites
 
 - [git](https://git-scm.com/downloads)
@@ -52,7 +58,7 @@ operatorgroups.operators.coreos.com           2019-10-21T18:15:27Z
 subscriptions.operators.coreos.com            2019-10-21T18:15:27Z
 ```
 
-And then inspecting the deployments of OLM and it's related componenents:
+And then inspecting the deployments of OLM and it's related components:
 
 ```bash
 $ kubectl get deploy -n olm
@@ -61,4 +67,3 @@ catalog-operator   1/1     1            1           5m52s
 olm-operator       1/1     1            1           5m52s
 packageserver      2/2     2            2           5m43s
 ```
-
