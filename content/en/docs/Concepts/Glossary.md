@@ -14,11 +14,11 @@ These pages are under construction.
 
 ### Bundle
 
-**Definition**: A collection of Operator [CSV](/docs/concepts/customresourcedefinitions/clusterserviceversion/), manifests, and metadata which together form a unique version of an Operator that can be installed onto the cluster. 
+**Definition**: A collection of Operator [CSV](/docs/concepts/crds/clusterserviceversion), manifests, and metadata which together form a unique version of an Operator that can be installed onto the cluster. 
 
 ### Bundle Image
 
-**Definition**: An image of a bundle is built from operator manifests and contains exactly one [bundle](#bundle). The bundle images are stored and distributed by OCI spec container registries such as Quay.io or DockerHub.
+**Definition**: An image of a bundle is built from operator manifests and contains exactly one [bundle](#Bundle). The bundle images are stored and distributed by OCI spec container registries such as Quay.io or DockerHub.
 
 ### Channel
 
@@ -26,7 +26,7 @@ These pages are under construction.
 
 ### Channel Head
 
-**Definition**: Head refers to the latest known update in a particular [channel](#channel).
+**Definition**: Head refers to the latest known update in a particular [channel](#Channel).
 
 ### Catalog Image
 
@@ -53,8 +53,9 @@ These pages are under construction.
 
 ### Registry
 
-**Definition**: A database which stores [Bundle Images](#bundle-image) of Operators, each with all of its latest/historical versions in all [channels](#channel).
+**Definition**: A database which stores [Bundle Images](#Bundle-Image) of Operators, each with all of its latest/historical versions in all [channels](#Channel).
 
 ### Update Graph
 
-**Definition**: An upgrade graph links versions of [CSV](/docs/concepts/customresourcedefinitions/clusterserviceversion/) together, similar to the upgrade graph of any other packaged software. Operators can be installed sequentially, or certain versions can be skipped. The update graph is expected to grow only at the head with newer versions being added. This is automatically resolved as part 
+**Definition**: An upgrade graph links versions of [CSV](/docs/concepts/crds/clusterserviceversion) together, similar to the upgrade graph of any other packaged software. Operators can be installed sequentially, or certain versions can be skipped. The update graph is expected to grow only at the head with newer versions being added.
+

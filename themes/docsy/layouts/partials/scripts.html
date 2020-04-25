@@ -14,4 +14,10 @@
 {{ $js := $js | minify | fingerprint }}
 <script src="{{ $js.RelPermalink }}" integrity="{{ $js.Data.Integrity }}" crossorigin="anonymous"></script>
 {{ end }}
+<script type="text/javascript">
+    if (("undefined" !== typeof _satellite) && ("function" === typeof _satellite.pageBottom)) {
+        _satellite.pageBottom();
+    }
+</script>
 {{ partial "hooks/body-end.html" . }}
+
