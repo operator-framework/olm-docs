@@ -8,7 +8,7 @@ description: >
 ---
 
 {{% pageinfo %}}
-This section assumes that you have a working `CatalogSource`. Please see how to [troubleshoot a CatalogSource](/docs/tasks/troubleshooting/troubleshooting-catalogsource/) if you're having trouble configuring a CatalogSource. 
+This section assumes that you have a working `CatalogSource`. Please see how to [troubleshoot a CatalogSource](/docs/tasks/troubleshooting/catalogsource/) if you're having trouble configuring a CatalogSource. 
 {{% /pageinfo %}}
 
 ### How to debug a failing Subscription
