@@ -2,9 +2,9 @@
 title: "Concepts"
 linkTitle: "Concepts"
 date: 2020-03-25
-weight: 2
+weight: 3
 description: >
-    This section is the knowledge base for all concepts, glossary, etc that are associated with OLM  
+    This section is the knowledge base for all concepts, glossary, etc that are associated with Operator Registry  
 ---
 
 {{% alert title="Warning" color="warning" %}}
