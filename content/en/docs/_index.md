@@ -1,9 +1,9 @@
 ---
 title: Operator Lifecyle Manager Documentation
-linkTitle: OLM Documentation
+linkTitle: "Documentation"
 menu:
   main:
-    weight: 40
+    weight: 10
 weight: 20
 ---
 
