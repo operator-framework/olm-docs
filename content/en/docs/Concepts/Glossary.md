@@ -1,10 +1,10 @@
 ---
-title: "Glossary of Jargaons"
-linkTitle: "Glossary of Jargons"
+title: "Glossary of Jargon"
+linkTitle: "Glossary of Jargon"
 date: 2020-03-25
 weight: 3
 description: >
-  A list of jargons used in the context of OLM, along with their definitions.
+  A list of jargon used in the context of OLM, along with their definitions.
 ---
 
 {{% alert title="Warning" color="warning" %}}
@@ -55,7 +55,7 @@ These pages are under construction.
 
 **Definition**: A database which stores [Bundle Images](#Bundle-Image) of Operators, each with all of its latest/historical versions in all [channels](#Channel).
 
-### Upgrade Graph
+### Update Graph
 
-**Definition**: An upgrade graph links versions of [CSV](../custom-resource-definitions/cluster-service-version) together, similar to the upgrade graph of any other packaged software. Operators can be installed sequentially, or certain versions can be skipped. The update graph is expected to grow only at the head with newer versions being added. This is automatically resolved as part 
+**Definition**: An update graph links versions of [CSV](../custom-resource-definitions/cluster-service-version) together, similar to the update graph of any other packaged software. Operators can be installed sequentially, or certain versions can be skipped. The update graph is expected to grow only at the head with newer versions being added. This is automatically resolved as part 
 
