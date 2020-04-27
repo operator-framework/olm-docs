@@ -3,16 +3,13 @@
   <head>
     {{ partial "head.html" . }}
   </head>
-  <body class="td-{{ .Kind }}">
-    <header>
+  <body class="td-{{ .Kind }}">  
       {{ partial "navbar.html" . }}
-    </header>
-    <div class="container-fluid td-default td-outer">
-      <main role="main" class="td-main">
-        {{ block "main" . }}{{ end }}
-      </main>
+    {{block "masthead" . }}{{ end }}
+    {{ block "main" . }}{{ end }}
       {{ partial "footer.html" . }}
     </div>
     {{ partialCached "scripts.html" . }}
   </body>
 </html>
+

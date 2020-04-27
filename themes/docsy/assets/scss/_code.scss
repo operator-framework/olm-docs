@@ -8,6 +8,7 @@
         margin: 2rem 0;
         padding: 1rem;
         background-color: $gray-100;
+        overflow-y: auto;
 
         pre, div {
             background-color: inherit !important;

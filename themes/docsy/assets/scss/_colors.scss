@@ -11,7 +11,7 @@
     }
 
     // Make links in paragraphs stand out more.
-    @include link-variant(".-bg-#{$color-name} p > a", $link-color, $link-hover-color, false);
+    // @include link-variant(".-bg-#{$color-name} p > a", $link-color, $link-hover-color, false);
    
 
     .-text-#{$color-name} {

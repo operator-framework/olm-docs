@@ -2,10 +2,10 @@ baseURL = "/"
 languageCode = "en-us"
 title = "Operator Lifecycle Manager"
 
-# Hugo allows theme composition (and inheritance). The precedence is from left to right.
-theme = ["docsy"]
-
 enableRobotsTXT = true
+
+# Hugo allows theme composition (and inheritance). The precedence is from left to right.
+theme = "docsy"
 
 # Will give values to .Lastmod etc.
 enableGitInfo = false
@@ -16,6 +16,7 @@ defaultContentLanguage = "en"
 defaultContentLanguageInSubdir = false
 # Useful when translating.
 enableMissingTranslationPlaceholders = true
+
 
 disableKinds = ["taxonomy", "taxonomyTerm"]
 
@@ -29,19 +30,14 @@ pygmentsUseClassic = false
 pygmentsStyle = "tango"
 
 # Configure how URLs look like per section.
-[permalinks]
-blog = "/:section/:year/:month/:day/:slug/"
+# [permalinks]
+# blog = "/:section/:year/:month/:day/:slug/"
 
-## Configuration for BlackFriday markdown parser: https://github.com/russross/blackfriday
+## Configuration for Goldmark markdown parser: https://github.com/yuin/goldmark
 [markup]
   [markup.goldmark]
     [markup.goldmark.renderer]
       unsafe = true
-# [blackfriday]
-# plainIDAnchors = true
-# hrefTargetBlank = true
-# angledQuotes = false
-# latexDashes = true
 
 # Image processing configuration.
 [imaging]
@@ -55,9 +51,10 @@ anchor = "smart"
 # id = "UA-00000000-0"
 
 # Language configuration
+
 [languages]
 [languages.en]
-description = " Declarative way to install, manage, and upgrade Operators and their dependencies in a cluster"
+description = "Operator Lifecyle Manager"
 languageName ="English"
 # Weight used for sorting.
 weight = 1
@@ -66,20 +63,46 @@ weight = 1
 
 [params]
 copyright = "The Operator Lifecycle Manager Authors"
+# privacy_policy = "https://policies.google.com/privacy"
 
+# First one is picked as the Twitter card image if not set on page.
+# images = ["images/project-illustration.png"]
 
 # Menu title if your navbar has a versions selector to access old versions of your site.
 # This menu appears only if you have at least one [params.versions] set.
-version_menu = "Releases"
+# version_menu = "Releases"
+# [[params.versions]]
+#   version = "master"
+#   url = "/docs"
+
+# [[params.versions]]
+#   version = "v0.16"
+#   url = "https://github.com/operator-framework/operator-sdk/tree/v0.16.x/doc"
+
+# Flag used in the "version-banner" partial to decide whether to display a 
+# banner on every page indicating that this is an archived version of the docs.
+# Set this flag to "true" if you want to display the banner.
+# archived_version = false
+
+# The version number for the version of the docs represented in this doc set.
+# Used in the "version-banner" partial to display a version number for the 
+# current doc set.
+# version = "0.0"
+
+# A link to latest version of the docs. Used in the "version-banner" partial to
+# point people to the main doc site.
+# url_latest_version = "https://example.com"
 
 # Repository configuration (URLs for in-page links to opening issues and suggesting changes)
-# github_repo = "https://github.com/operator-framework/operator-lifecycle-manager"
+github_repo = "https://github.com/operator-framework/olm-docs"
+# An optional link to a related project repo. For example, the sibling repository where your product code lives.
+github_project_repo = "https://github.com/operator-framework/operator-lifecycle-manager"
 
 # Specify a value here if your content directory is not in your repo's root directory
-github_subdir = "website"
+# github_subdir = ""
 
 # Google Custom Search Engine ID. Remove or comment out to disable search.
-# gcs_engine_id = "011737558837375720776:fsdu1nryfng"
+gcs_engine_id = "011737558837375720776:fsdu1nryfng"
 
 # Enable Algolia DocSearch
 algolia_docsearch = false
@@ -89,15 +112,11 @@ algolia_docsearch = false
 # Enable to show the side bar menu in its compact state.
 sidebar_menu_compact = true
 #  Set to true to disable breadcrumb navigation.
-breadcrumb_disable = false
+breadcrumb_disable = true
 #  Set to true to hide the sidebar search box (the top nav search box will still be displayed if search is enabled)
-sidebar_search_disable = false
-
-# TODO(anbhatta)
+sidebar_search_disable = true
 #  Set to false if you don't want to display a logo (/assets/icons/logo.svg) in the top nav bar
 navbar_logo = true
-# Set to true to disable the About link in the site footer
-footer_about_disable = true
 
 # Adds a H2 section titled "Feedback" to the bottom of each doc. The responses are sent to Google Analytics as events.
 # This feature depends on [services.googleAnalytics] and will be disabled if "services.googleAnalytics.id" is not set.
@@ -106,33 +125,33 @@ footer_about_disable = true
 [params.ui.feedback]
 enable = true
 # The responses that the user sees after clicking "yes" (the page was helpful) or "no" (the page was not helpful).
-yes = 'Glad to hear it! Please <a href="https://github.com/operator-framework/operator-lifecycle-manager/issues/new">tell us how we can improve</a>.'
-no = 'Sorry to hear that. Please <a href="https://github.com/operator-framework/operator-lifecycle-manager/issues/new">tell us how we can improve</a>.'
+yes = 'Glad to hear it! Please <a href="https://github.com/operator-framework/olm-docs/issues/new">tell us how we can improve</a>.'
+no = 'Sorry to hear that. Please <a href="https://github.com/operator-framework/olm-docs/issues/new">tell us how we can improve</a>.'
 
 [params.links]
 # End user relevant links. These will show up on left side of footer and in the community page if you have one.
-[[params.links.user]]
-	name = "Mailing list"
+[[params.links.social]]
+	name = "Forum"
 	url = "https://groups.google.com/forum/#!forum/operator-framework"
-	icon = "fa fa-envelope"
-        desc = "Discussion and help"
+	icon = "fas fa-comment"
 
-# TODO(asmaco) file issue
-# [[params.links.user]]
-# 	name = "Stack Overflow"
-# 	url = "https://stackoverflow.com/questions/tagged/operator-sdk"
-# 	icon = "fab fa-stack-overflow"
-#       desc = "Practical questions and curated answers"
+# [[params.links.social]]
+# 	name = "twitter"
+# 	url = "https://example.org/mail"
+# 	icon = "fab fa-twitter"
 
-# Developer relevant links. These will show up on right side of footer and in the community page if you have one.
-[[params.links.developer]]
-	name = "GitHub"
+# [[params.links.social]]
+# 	name = "youtube"
+# 	url = "https://example.org/mail"
+# 	icon = "fab fa-youtube"
+
+[[params.links.social]]
+	name = "github"
 	url = "https://github.com/operator-framework/operator-lifecycle-manager"
 	icon = "fab fa-github"
-	desc = "Operator Lifecycle Manager development takes place here!"
+	
+# [[params.links.social]]
+# 	name = "slack"
+# 	url = "https://example.org/mail"
+# 	icon = "fab fa-slack"
 
-[[params.links.developer]]
-	name = "Community Repo"
-	url = "https://github.com/operator-framework/community/projects"
-	icon = "fa fa-star"
-	desc = "Operator Framework community process, charter, and SIGS."

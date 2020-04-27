@@ -1,13 +1,14 @@
-
 ---
-title: "OLM Documentation"
-linkTitle: "OLM Documentation"
-weight: 20
+title: Operator Lifecyle Manager Documentation
+linkTitle: OLM Documentation
 menu:
   main:
-    weight: 20
+    weight: 40
+weight: 20
 ---
 
 {{% alert title="Warning" color="warning" %}}
-These pages are under construction. 
+These pages are under construction. Please continue to use the [docs in
+tree](https://github.com/operator-framework/operator-sdk/tree/master/doc)
+for now.
 {{% /alert %}}

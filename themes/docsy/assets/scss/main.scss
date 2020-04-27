@@ -1,7 +1,21 @@
-@import "support/functions";
-@import "variables_project";
+@import "functions";
 @import "variables";
-@import "support/mixins";
+@import "reset";
+@import "type";
+
+//components
+@import "header";
+@import "footer";
+
+//layout
+@import "homepage";
+
+//global
+@import "global";
+
+
+@import "bs-variables";
+
 
 @import "../vendor/bootstrap/scss/bootstrap";
 
@@ -57,4 +71,4 @@ footer {
     }
 }
 
-@import "styles_project";
+// @import "styles_project";
