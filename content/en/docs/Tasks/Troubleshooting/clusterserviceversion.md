@@ -17,17 +17,17 @@ If the OLM operator encounters an unrecoverable error when attempting to install
 
 You should typically pay special attention to the information within the `status.reason` and `status.message` fields. Please look in the [failed CSV reasons](#failed-csv-reasons)
 
-If the `Status` block does not provide enough information, check the [OLM operator's logs](#how-to-view-the-olm-operator-logs).
+If the `Status` block does not provide enough information, check the [OLM operator's logs](/docs/tasks/troubleshooting/olm-and-catalog-operators/#how-to-view-the-olm-operator-logs).
 
 ### Failed CSV Reasons
 
 #### Reason: NoOperatorGroup
 
-The `CSV` failed to install because it has been deployed in a namespace that does not include an `OperatorGroup`. For more information about `OperatorGroups` see [operator-scoping.md](operator-scoping.md).
+The `CSV` failed to install because it has been deployed in a namespace that does not include an `OperatorGroup`. For more information about `OperatorGroups` see [operator-scoping.md](https://operator-framework.github.io/olm-book/docs/operator-scoping.html).
 
 #### Reason: UnsupportedOperatorGroup
 
-The `CSV` is failing to install because it does not support he `OperatorGroup` defined in the namespace. For more information about `OperatorGroups` see [operator-scoping.md](operator-scoping.md).
+The `CSV` is failing to install because it does not support he `OperatorGroup` defined in the namespace. For more information about `OperatorGroups` see [operator-scoping.md](https://operator-framework.github.io/olm-book/docs/operator-scoping.html).
 
 ### Failed CSV Messages
 

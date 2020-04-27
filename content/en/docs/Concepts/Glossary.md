@@ -14,11 +14,11 @@ These pages are under construction.
 
 ### Bundle
 
-**Definition**: A collection of Operator [CSV](../custom-resource-definitions/cluster-service-version), manifests, and metadata which together form a unique version of an Operator that can be installed onto the cluster. 
+**Definition**: A collection of Operator [CSV](/docs/concepts/customresourcedefinitions/clusterserviceversion/), manifests, and metadata which together form a unique version of an Operator that can be installed onto the cluster. 
 
 ### Bundle Image
 
-**Definition**: An image of a bundle is built from operator manifests and contains exactly one [bundle](#Bundle). The bundle images are stored and distributed by OCI spec container registries such as Quay.io or DockerHub.
+**Definition**: An image of a bundle is built from operator manifests and contains exactly one [bundle](#bundle). The bundle images are stored and distributed by OCI spec container registries such as Quay.io or DockerHub.
 
 ### Channel
 
@@ -26,7 +26,7 @@ These pages are under construction.
 
 ### Channel Head
 
-**Definition**: Head refers to the latest known update in a particular [channel](#Channel).
+**Definition**: Head refers to the latest known update in a particular [channel](#channel).
 
 ### Catalog Image
 
@@ -36,7 +36,7 @@ These pages are under construction.
 
 ### Dependency
 
-**Definition**: An Operator may have a dependency on another Operator being present in the cluster. For example, the Vault Operator has a dependency on the Etcd Operator for its data persistence layer. OLM resolves these dependencies by ensuring all specified versions of Operators and CRDs are installed on the cluster during the installation phase. This dependency is resolved by finding and installing an Operator in a Catalog that satisfies the required CRD API, and not related to [packages](#Packages)/[bundles](#Bundles).
+**Definition**: An Operator may have a dependency on another Operator being present in the cluster. For example, the Vault Operator has a dependency on the Etcd Operator for its data persistence layer. OLM resolves these dependencies by ensuring all specified versions of Operators and CRDs are installed on the cluster during the installation phase. This dependency is resolved by finding and installing an Operator in a Catalog that satisfies the required CRD API, and not related to [packages](#package)/[bundles](#bundle).
 
 **Aliases**: Operator Dependency, GVK Dependency, API Dependency, Required CRD
 
@@ -53,9 +53,8 @@ These pages are under construction.
 
 ### Registry
 
-**Definition**: A database which stores [Bundle Images](#Bundle-Image) of Operators, each with all of its latest/historical versions in all [channels](#Channel).
+**Definition**: A database which stores [Bundle Images](#bundle-image) of Operators, each with all of its latest/historical versions in all [channels](#channel).
 
 ### Update Graph
 
-**Definition**: An update graph links versions of [CSV](../custom-resource-definitions/cluster-service-version) together, similar to the update graph of any other packaged software. Operators can be installed sequentially, or certain versions can be skipped. The update graph is expected to grow only at the head with newer versions being added. This is automatically resolved as part 
-
+**Definition**: An upgrade graph links versions of [CSV](/docs/concepts/customresourcedefinitions/clusterserviceversion/) together, similar to the upgrade graph of any other packaged software. Operators can be installed sequentially, or certain versions can be skipped. The update graph is expected to grow only at the head with newer versions being added. This is automatically resolved as part 

@@ -3,7 +3,7 @@ title: "Install your operator with OLM"
 date: 2020-03-25
 weight: 6
 description: >
-  [Once you've made your operator available in a catalog](/docs/tasks/make-operator-part-of-catalog/), or you've chosen an operator from the [list of operators available to be installed in the cluster](/docs/tasks/list-operators-available-to-install/), you can install your operator by creating a [`Subscription`](/docs/concepts/#subscriptions) to a specific [channel](/docs/concepts/#channel). 
+  [Once you've made your operator available in a catalog](/docs/tasks/make-operator-part-of-catalog/), or you've chosen an operator from the [list of operators available to be installed in the cluster](/docs/tasks/list-operators-available-to-install/), you can install your operator by creating a [`Subscription`](/docs/concepts/customresourcedefinitions/subscription/) to a specific [channel](/docs/concepts/glossary/#channel). 
 ---
 
 ```yaml
@@ -51,4 +51,4 @@ NAME                         READY   UP-TO-DATE   AVAILABLE   AGE
 <name-of-your-operator>      1/1     1            1           9m48s
 ```
 
-If the ClusterServiceVersion fails to show up or does not reach the `Succeeded` phase, please check the [troubleshooting documentation](openshift/coming-soon.md)) to debug your installation. 
+If the ClusterServiceVersion fails to show up or does not reach the `Succeeded` phase, please check the [troubleshooting documentation](/docs/contribution-guidelines/coming-soon/) to debug your installation. 
