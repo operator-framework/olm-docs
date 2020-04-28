@@ -96,8 +96,12 @@
             margin-left: var(--of--spacer--sm);
         }
     }
+    &__badge {
+        margin-left: auto;
+    }
     .of-link-list {
         display: flex;
         flex-wrap: wrap;
     }
 }
+
