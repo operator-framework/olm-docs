@@ -12,7 +12,7 @@ If the image used to build the `Catalogsource` uses a versioned tag, update the 
 
 For example:
 
-```
+```bash
 $ oc get catsrc operatorhubio-catalog -n olm -o yaml | grep image:
     
     image: quay.io/operator-framework/upstream-community-operators:0.0.1
@@ -25,7 +25,7 @@ If the image used to build the `Catalogsource` uses the `latest` tag, simply del
 
 For example:
 
-```
+```bash
 $ kubectl delete pods -n olm -l olm.catalogSource=operatorhubio-catalog
 
 ```

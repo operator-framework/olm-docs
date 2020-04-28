@@ -11,7 +11,9 @@ description: >
 
 If the OLM operator encounters an unrecoverable error when attempting to install the operator, the `CSV` will be placed in the `failed` phase. The OLM operator will constantly update the `Status` with useful information regarding the state of the `CSV`. You can check the `Status` of your `CSV` with the following command:
 
-`$ kubectl -n my-catalogsource-namespace get csv prometheusoperator.0.32.0 -o yaml | yq r - status`
+```shell script
+$ kubectl -n my-catalogsource-namespace get csv prometheusoperator.0.32.0 -o yaml | yq r - status
+```
 
 >Note: It is possible that the Status is missing, which suggests that the OLM operator is encountering an issue when processing the `CSV` in a very early stage. You should respond by reviewing the logs of the OLM operator.
 

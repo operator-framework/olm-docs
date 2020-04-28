@@ -7,7 +7,7 @@ linkTitle: Local Docs
 
 Clone the repository:
 
-```
+```bash
 $ git clone https://github.com/operator-framework/olm-docs/
 ```
 
@@ -18,7 +18,7 @@ guide](https://www.docsy.dev/docs/getting-started/#prerequisites-and-installatio
 We use `git submodules` to install the docsy theme. From the
 root directory, update the submodules to install the theme.
 
-```
+```bash
 $ git submodule update --init --recursive
 ```
 
@@ -26,8 +26,8 @@ $ git submodule update --init --recursive
 
 You can build and serve your docs to localhost:1313 with:
 
-```
-hugo server
+```bash
+$ hugo server
 ```
 
 Any changes will be included in real time.

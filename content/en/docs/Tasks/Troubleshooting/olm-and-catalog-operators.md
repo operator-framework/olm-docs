@@ -2,7 +2,7 @@
 title: "Debugging OLM and Catalog Operator"
 linkTitle: "Debugging OLM/Catalog Operator"
 date: 2020-03-25
-weight: 4
+weight: 5
 description: >
   Tips and tricks related to debugging the OLM or Catalog Operator.
 ---

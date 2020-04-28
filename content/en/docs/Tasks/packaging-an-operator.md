@@ -235,17 +235,12 @@ TODO: example status
 
 ##### Extension apiservers and APIServices
 
-Please see the document on [extension apiservers]() if your operator does not rely on CRDs to provide its API.
+Please see the document on [extension apiservers](https://kubernetes.io/docs/tasks/access-kubernetes-api/setup-extension-api-server/) if your operator does not rely on CRDs to provide its API.
 
 #### Operator SDK
 
-TODO: link to SDK csv generation
+ClusterServiceVersion (CSV) can be generated using operator-sdk. See [Generating a CSV](https://sdk.operatorframework.io/docs/olm-integration/generating-a-csv/) for more details.
 
 #### Advanced and Optional features
 
 Please see the documentation for [advanced operator configuration]() which includes additional suggestions for further integration with OLM.
-
-
-```
-This is the final element on the page and there should be no margin below this.
-```
