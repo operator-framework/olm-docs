@@ -3,7 +3,7 @@ title: "Overview"
 linkTitle: "Overview"
 weight: 1
 description: >
-    This page introduces you to OLM and what you can achieve with it
+    What is OLM? why should I use it?
 ---
 
 ## What is OLM?
@@ -12,7 +12,7 @@ description: >
 
 Read more in the [introduction blog post](https://operatorhub.io/what-is-an-operator).
 
-## Why do I want OLM?
+## Why should I use OLM?
 
 ### Over-the-Air Updates and Catalogs
 Kubernetes clusters are being kept up to date using elaborate update mechanisms today, more often automatically and in the background. Operators, being cluster extensions, should follow that. OLM has a concept of catalogs from which Operators are available to install and being kept up to date. In this model OLM allows maintainers granular authoring of the update path and gives commercial vendors a flexible publishing mechanism using channels.
@@ -29,18 +29,6 @@ Operators must claim ownership of their APIs. OLM will prevent conflicting Opera
 ### Declarative UI controls
 Operators can behave like managed service providers. Their user interface on the command line are APIs. For graphical consoles OLM annotates those APIs with descriptors that drive the creation of rich interfaces and forms for users to interact with the Operator in a natural, cloud-like way. 
 
-## What is it good for?
- 
-What types of problems does your project solve? What are the benefits of using it?
-
-## What is it not good for?
- 
-For example, point out situations that might intuitively seem suited for your project, but aren't for some reason. Also mention known limitations, scaling issues, or anything else that might let your users know if the project is not for them.
-
-## What is it *not yet* good for?
-
-Highlight any useful features that are coming soon.
-
 ## Where should I go next?
 
-* [Getting Started](/docs/getting-started/): Get started with OLM
+* [Getting Started](/docs/getting-started/)
