@@ -1,14 +1,14 @@
 ---
-title: "Using catalog with OLM"
-linkTitle: "Using catalog with OLM"
+title: "Using the Catalog with OLM"
+linkTitle: "Using the Catalog with OLM"
 date: 2020-03-25
 weight: 3
 description: >
-  Make your operator available for OLM
+  Make your operator available for OLM in a cluster
 ---
 
 
-To add a catalog packaged with `operator-registry` to your cluster for use with [Operator Lifecycle Manager](https://github.com/operator-framework/operator-lifecycle-manager) (OLM) create a `CatalogSource` referencing the image you created and pushed above:
+To add a [catalog image](/operator-registry/tasks/building-catalog/#building-a-catalog-image-of-operators-using-operator-registry) to your cluster for use with [Operator Lifecycle Manager](https://github.com/operator-framework/operator-lifecycle-manager) (OLM), create a [CatalogSource](/docs/Concepts/crds/CatalogSource) referencing the image you created and pushed to your favourite container registry:
 
 ```yaml
 apiVersion: operators.coreos.com/v1alpha1
@@ -49,7 +49,7 @@ $ kubectl get packagemanifests etcd -o jsonpath='{.status.defaultChannel}'
 alpha
 ```
 
-With this information, the operators package name, the channel and the name and namespace of your catalog you can now [subscribe](https://github.com/operator-framework/operator-lifecycle-manager#discovery-catalogs-and-automated-upgrades) to Operators with Operator Lifecycle Manager. This represents an intent to install an Operator and get subsequent updates from the catalog:
+With this information, the operators package name, the channel and the name and namespace of your catalog you can now [subscribe](/docs/tasks/install-operator-with-olm/) to Operators with Operator Lifecycle Manager. This represents an intent to install an Operator and get subsequent updates from the catalog:
 
 ```yaml
 apiVersion: operators.coreos.com/v1alpha1

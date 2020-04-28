@@ -1,12 +1,23 @@
 ---
-title: "Using catalog locally"
-linkTitle: "Using catalog locally"
+title: "Using the Catalog locally"
+linkTitle: "Using the Catalog locally"
 date: 2020-03-25
 weight: 3
 description: >
-  To test your catalog locally
+  Test your Catalog locally
 ---
 
+Once you have your operator packaged in the bundle format, use the `initializer` to build a sqlite database of your operators locally.
+
+```bash
+./bin/initializer -m <relative path to directory of manifests> -o <relative path to a sqlite file to create or overwrite>
+```
+
+Once you have a database file, eg sqlite.db, you can serve the database locally using the `registry-server` binary. 
+
+```bash
+./bin/registry-server -d sqlite.db -p <port number to serve on (default "50051")> 
+```
 [grpcurl](https://github.com/fullstorydev/grpcurl) is a useful tool for interacting with the example catalog server.
 
 ```sh
