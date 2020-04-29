@@ -105,7 +105,7 @@ apiVersion: operators.coreos.com/v1alpha2
 kind: OperatorGroup
 metadata:
   annotations:
-    olm.providedAPIs: PackageManifest.v1alpha1.packages.apps.redhat.com
+    olm.providedAPIs: PackageManifest.v1.packages.operators.coreos.com
   name: olm-operators
   namespace: local
   ...

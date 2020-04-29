@@ -17,8 +17,8 @@ metadata:
 spec:
   channel: stable
   name: my-operator
-  source: redhat-operators
-  sourceNamespace: marketplace
+  source: my-catalog
+  sourceNamespace: operators
 ```
 
 This Subscription object defines the name and namespace of the operator, as well as the catalog from which the operator data can be found. The channel (such as alpha, beta, or stable) helps determine which stream of the operator should be installed from the CatalogSource.
@@ -36,8 +36,8 @@ metadata:
 spec:
   channel: stable
   name: my-operator
-  source: redhat-operators
-  sourceNamespace: marketplace
+  source: my-catalog
+  sourceNamespace: operators
   approval: Manual
 ```
 
@@ -48,7 +48,7 @@ kubectl -n operators get installplans
 NAME            CSV                                APPROVAL   APPROVED
 install-bfmxd   my-operator.v0.1.0                 Manual     false
 
-$ kubectl -n default patch installplan install-bfmxd -p '{"spec":{"approved":true}}' --type merge
+$ kubectl -n operators patch installplan install-bfmxd -p '{"spec":{"approved":true}}' --type merge
 installplan.operators.coreos.com/install-bfmxd patched
 
 $ kubectl -n operators get installplans
