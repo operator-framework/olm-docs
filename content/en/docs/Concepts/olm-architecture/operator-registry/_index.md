@@ -10,7 +10,7 @@ These pages are under construction.
 
 ## What is Operator-Registry?
   
-[Operator Registry](https://github.com/operator-framework/operator-registry) runs in a Kubernetes or OpenShift cluster to provide operator catalog data to [Operator Lifecycle Manager](https://github.com/operator-framework/operator-lifecycle-manager).
+[Operator Registry](https://github.com/operator-framework/operator-registry) runs in a Kubernetes cluster to provide operator catalog data to [Operator Lifecycle Manager](https://github.com/operator-framework/operator-lifecycle-manager).
 
 <pre></pre>
 Operator Registry provides the following binaries:

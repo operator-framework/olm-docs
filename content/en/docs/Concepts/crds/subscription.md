@@ -13,12 +13,12 @@ apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
 metadata:
   name: my-operator
-  namespace: openshift-operators
+  namespace: operators
 spec:
   channel: stable
   name: my-operator
   source: redhat-operators
-  sourceNamespace: openshift-marketplace
+  sourceNamespace: marketplace
 ```
 
 This Subscription object defines the name and namespace of the operator, as well as the catalog from which the operator data can be found. The channel (such as alpha, beta, or stable) helps determine which stream of the operator should be installed from the CatalogSource.
@@ -32,26 +32,26 @@ apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
 metadata:
   name: my-operator
-  namespace: openshift-operators
+  namespace: operators
 spec:
   channel: stable
   name: my-operator
   source: redhat-operators
-  sourceNamespace: openshift-marketplace
+  sourceNamespace: marketplace
   approval: Manual
 ```
 
 Setting the `approval` field to manual will prevent OLM from automatically installing the operator. As such, you will need to approve the installPlan which can be done with the following commands:
 
 ```bash
-kubectl -n openshift-operators get installplans
+kubectl -n operators get installplans
 NAME            CSV                                APPROVAL   APPROVED
 install-bfmxd   my-operator.v0.1.0                 Manual     false
 
 $ kubectl -n default patch installplan install-bfmxd -p '{"spec":{"approved":true}}' --type merge
 installplan.operators.coreos.com/install-bfmxd patched
 
-$ kubectl -n openshift-operators get installplans
+$ kubectl -n operators get installplans
 NAME            CSV                                APPROVAL   APPROVED
 install-bfmxd   my-operator.v0.1.0                 Manual     true
 ```
@@ -61,7 +61,7 @@ Now that the `install-bfmxd` installPlan is in the approved state, OLM will inst
 When the CatalogSource is updated with a newer version of that operator in the channel you selected, a new installPlan will be created in the namespace that you installed the operator to, as shown below:
 
 ```bash
-$ kubectl -n openshift-operators get installplans
+$ kubectl -n operators get installplans
 NAME            CSV                                APPROVAL   APPROVED
 install-bfmxd   my-operator.v0.1.0                 Manual     true
 install-svojy   my-operator.v0.2.0                 Manual     false
