@@ -7,12 +7,12 @@
     background-position:-35vw 50.5%;
     background-size: 100% auto;
     display: grid;
-    grid-template-columns: 2fr min-content min-content 1fr;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
     grid-column-gap: var(--of--spacer--md);
     grid-template-areas:
-    ". title title title"
+    ". title title title" 
     ". content content content"
-    ". action-1 action-2 ."
+    ". action-1 . ."
     }
     @media (min-width: $ov--breakpoint--lg) {
         padding: var(--of--spacer--2xl) calc(var(--of--spacer--3xl) + var(--of--spacer--md))  var(--of--spacer--2xl);
@@ -48,13 +48,7 @@
     .of-button {
         justify-self: start;
         white-space: nowrap;
-        &:first-of-type {
-            grid-area: action-1;
-            // margin-bottom: var(--of--spacer--md);
-        }
-        &:last-of-type {
-            grid-area: action-2;
-        }
+        grid-area: action-1;
     }
 }
 
