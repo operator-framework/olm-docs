@@ -86,7 +86,7 @@
 }
 
 .td-sidebar {
-    padding-top: 7rem;
+    padding-top: 4rem;
     margin-bottom: var(--of--spacer--md);
     display:flex;
     justify-content: center;
@@ -122,7 +122,7 @@
         @include media-breakpoint-up(md) {
             @supports (position: sticky) {
                 position: sticky;
-                top:72px;
+                top:71px;
                 z-index: 10;
                 height: calc(100vh - 6rem);
             }

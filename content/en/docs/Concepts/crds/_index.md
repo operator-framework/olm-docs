@@ -1,5 +1,5 @@
 ---
-title: "CustomResourceDefinitions"
+title: "CRDs"
 weight: 2
 ---
 
