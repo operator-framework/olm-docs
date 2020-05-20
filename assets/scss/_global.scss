@@ -1,7 +1,7 @@
 body {
     margin-top: 100px;
     @media (min-width: $ov--breakpoint--lg) {
-        margin-top: 72px;
+        margin-top: 71px;
     }
 }
 
@@ -682,4 +682,9 @@ ol {
 .td-search-result {
     padding: var(--of--spacer--xl);
     max-width: 100vw;
+}
+
+
+.td-sidebar {
+    padding-top: 1rem;
 }
