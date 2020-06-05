@@ -1,3 +1,9 @@
+.of-message {
+    background: var(--of--color-black--300);
+    display: flex;
+    justify-content: center; 
+}
+
 .of-masthead--home {   
     background: var(--of--color-black--100) url("/images/bg-masthead-red.svg") no-repeat;
     background-position: -22vw -30vw ;
