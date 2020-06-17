@@ -6,6 +6,23 @@ description: >
   [Once you've made your operator available in a catalog](/docs/tasks/make-operator-part-of-catalog/), or you've chosen an operator from the [list of operators available to be installed in the cluster](/docs/tasks/list-operators-available-to-install/), you can install your operator by creating a [`Subscription`](/docs/concepts/customresourcedefinitions/subscription/) to a specific [channel](/docs/concepts/glossary/#channel). 
 ---
 
+Before installing into a namespace, you will need to create an [operator group](/docs/concepts/crds/operatorgroup) in that namespace. The operator group must provide the namespaces that match the operator that you trying to install `installModes`.
+
+For example installing an operator into `foo` namespace that will be cluster scoped you would create a operator group like:
+
+
+```yaml
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: my-group
+  namespace: foo
+spec:
+  targetNamespaces:
+```
+
+After creating this resource you can create subscriptions to install cluster scoped operators.
+
 ```yaml
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
