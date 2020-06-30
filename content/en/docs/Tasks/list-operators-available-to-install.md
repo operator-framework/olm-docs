@@ -6,10 +6,6 @@ description: >
   Once you've packaged your operator and made it part of catalog, you can see it among the list of operators that are available to install in the cluster. There is an extension API in OLM named `PackageManifest` that contains information about existing [CatalogSources](/docs/concepts/#catalogsources), which is essentially a collection of bundles that each define an operator in the cluster. By querying that API, you can see the list of available operators.  
 ---
 
-{{% pageinfo %}}
-This is a placeholder page. Replace it with your own content.
-{{% /pageinfo %}}
-
 [CatalogSources](/docs/concepts/#catalogsources) in OLM are either global or namespaced. Global CatalogSources contain operators that will be available for installing in all namespaces, while namespaced CatalogSources only contains operators that are available to be installed in a specific namespace.
 
 ## Using the PackageManifest API

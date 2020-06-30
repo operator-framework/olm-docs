@@ -1,8 +1,8 @@
 ---
-title: "Glossary of Jargon"
-linkTitle: "Glossary of Jargon"
+title: "Glossary"
+linkTitle: "Glossary"
 date: 2020-03-25
-weight: 3
+weight: 8
 description: >
   A list of jargon used in the context of OLM, along with their definitions.
 ---
