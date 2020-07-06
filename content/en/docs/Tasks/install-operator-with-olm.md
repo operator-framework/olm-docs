@@ -6,6 +6,21 @@ description: >
   [Once you've made your operator available in a catalog](/docs/tasks/make-operator-part-of-catalog/), or you've chosen an operator from the [list of operators available to be installed in the cluster](/docs/tasks/list-operators-available-to-install/), you can install your operator by creating a [`Subscription`](/docs/concepts/customresourcedefinitions/subscription/) to a specific [channel](/docs/concepts/glossary/#channel). 
 ---
 
+Before installing an operator into a namespace, you will need to create an [OperatorGroup resource](/docs/concepts/crds/operatorgroup) in that namespace. The OperatorGroup must target namespaces such that it matches the operator's `installModes`.
+
+For example, to install a cluster scoped operator into the `foo` namespace create an OperatorGroup like:
+
+
+```yaml
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: my-group
+  namespace: foo
+```
+
+After creating this resource you can create Subscriptions to install cluster scoped operators.
+
 ```yaml
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
@@ -18,6 +33,7 @@ spec:
   source: <name-of-catalog-operator-is-part-of>
   sourceNamespace: <namespace-that-has-catalog>
  ``` 
+
 For example, if you want to install an operator named `my-operator`, from a catalog named `my-catalog` that is in the namespace `olm`, and you want to subscribe to the channel `stable`, your subscription yaml would look like this: 
 
 ```yaml
