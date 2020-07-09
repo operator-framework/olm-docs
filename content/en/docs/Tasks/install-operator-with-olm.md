@@ -6,20 +6,24 @@ description: >
   [Once you've made your operator available in a catalog](/docs/tasks/make-operator-part-of-catalog/), or you've chosen an operator from the [list of operators available to be installed in the cluster](/docs/tasks/list-operators-available-to-install/), you can install your operator by creating a [`Subscription`](/docs/concepts/customresourcedefinitions/subscription/) to a specific [channel](/docs/concepts/glossary/#channel). 
 ---
 
-Before installing an operator into a namespace, you will need to create an [OperatorGroup resource](/docs/concepts/crds/operatorgroup) in that namespace. The OperatorGroup must target namespaces such that it matches the operator's `installModes`.
+## Prerequisites
 
-For example, to install a cluster scoped operator into the `foo` namespace create an OperatorGroup like:
+Before installing an operator into a namespace, you will need to create an `OperatorGroup` that targets the namespaces your operator is planning to watch, to generate the required RBACs for your operator in those namespaces. You can read more about `OperatorGroup` [here](/docs/concepts/crds/operatorgroup). 
 
+NOTE: The namespaces targeted by the OperatorGroup must align with the `installModes` specified  in the `ClusterServiceVersion` of the operator's package.
 
-```yaml
-apiVersion: operators.coreos.com/v1
-kind: OperatorGroup
-metadata:
-  name: my-group
-  namespace: foo
+To know the `installModes` of an operator, inspect the packagemanifest: 
+
+```bash
+$ kubectl get packagemanifest <operator-name> -o jsonpath="{.status.channels[0].currentCSVDesc.installModes}"
+          
 ```
 
-After creating this resource you can create Subscriptions to install cluster scoped operators.
+You can read more about target namespace selection for your `OperatorGroup` [here](/docs/concepts/crds/operatorgroup#target-namespace-selection)
+
+## Subscribe to your operator
+
+To install an Operator, simply create a `Subscription` for your operator.
 
 ```yaml
 apiVersion: operators.coreos.com/v1alpha1
@@ -32,26 +36,67 @@ spec:
   name: <name-of-your-operator>
   source: <name-of-catalog-operator-is-part-of>
   sourceNamespace: <namespace-that-has-catalog>
- ``` 
+  approval: <Automatic/Manual>
+ ```  
 
-For example, if you want to install an operator named `my-operator`, from a catalog named `my-catalog` that is in the namespace `olm`, and you want to subscribe to the channel `stable`, your subscription yaml would look like this: 
+You can read more about the `Subscription` object and what the different fields mean [here](/docs/concepts/crds/subscription).
 
-```yaml
+The `Subscription` object creates an [InstallPlan](/docs/concepts/crds/installplan), which is either automatically approved (if `sub.spec.approval: Automatic`), or needs to be approved (if `sub.spec.approval: Manual`), following which the operator is installed in the namespace you want.
+
+## Example 
+
+If you want to install an operator named `my-operator` in the namespace `foo` that is cluster scoped (i.e `installModes:AllNamespaces`), from a catalog named `my-catalog` that is in the namespace `olm`, and you want to subscribe to the channel `stable`, 
+
+create a _global_ `OperatorGroup` (which selects all namespaces): 
+
+```bash
+$ cat og.yaml 
+
+  apiVersion: operators.coreos.com/v1
+  kind: OperatorGroup
+  metadata:
+    name: my-group
+    namespace: foo
+
+$ kubectl apply og.yaml 
+  operatorgroup.operators.coreos.com/my-group created 
+```
+
+Then, create a subscription for the operator: 
+
+```bash
+
+$ cat sub.yaml
+
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
 metadata:
-  name: subs-to-my-operator
-  namespace: olm
+  name: sub-to-my-operator
+  namespace: foo
 spec:
   channel: stable
   name: my-operator
   source: my-catalog
   sourceNamespace: olm
+  approval: Manual
+
+$ kubectl apply -f sub.yaml
+subscription.operators.coreos.com/sub-to-my-operator created
  ``` 
 
-Once you have the subscription yaml, `kubectl apply -f Subscription.yaml` to install your operator. 
+Since the `approval` is `Manual`, we need to manually go in and approve the `InstallPlan`
 
-You can inspect your Subscription with `kubectl get subs <name-of-your-subscription> -n <namespace>`.
+```bash 
+$ kubectl get ip -n foo
+
+NAME            CSV                   APPROVAL    APPROVED
+install-nlwcw   my-operator.v0.9.2   Automatic     false
+
+$ kubectl edit ip install-nlwcw -n foo
+```
+And then change the `spec.approved` from `false` to `true`
+
+This should spin up the `ClusterServiceVersion` of the operator in the `foo` namespace`, following which the operator pod will spin up.
 
 To ensure the operator installed successfully, check for the ClusterServiceVersion and the operator deployment in the namespace it was installed in. 
 
