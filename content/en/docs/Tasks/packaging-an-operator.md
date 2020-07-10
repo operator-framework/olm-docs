@@ -233,6 +233,39 @@ TODO: example status
 
 `nativeAPIs` is an optional field, but the more information you give OLM about the context in which your operator should be run, the more informed decisions OLM can make.
 
+## Packaging Additional Objects Alongside an Operator
+
+Operators can include additional objects alongisde their `CSV` in the `/manifests` directory. These objects should be YAML files and valid kuberenetes objects. The following objects are supported as of OLM 0.16.0:
+* ConfigMaps
+* Secrets
+* Services
+* [PodDisruptionBudgets](https://github.com/operator-framework/operator-lifecycle-manager/blob/master/doc/design/adding-pod-disruption-budgets.md)
+* [PriorityClasses](https://github.com/operator-framework/operator-lifecycle-manager/blob/master/doc/design/adding-priority-classes.md)
+* [VerticalPodAutoscalers](https://github.com/operator-framework/operator-lifecycle-manager/blob/master/doc/design/adding-vertical-pod-autoscaler.md)
+
+*Note: some of these objects can affect an upgrade of the cluster and potentially cause problems for workloads unrelated to your operator. Be sure to understand
+the safe use of these objects before packaging them with your operator. See the docs linked above for more information on these objects as they relate to OLM.* 
+
+### Limitations on Pod Disruption Budgets
+
+No limitations are placed on the contents of a PDB at this time when installing on-cluster.
+However, the following are suggested guidelines to follow when including PDB objects in a bundle.
+
+* maxUnavailable field cannot be set to 0 or 0%.
+    * This can make a node impossible to drain and block important lifecycle actions like operator upgrades or even cluster upgrades.
+* minAvailable field cannot be set to 100%.
+    * This can make a node impossible to drain and block important lifecycle actions like operator upgrades or even cluster upgrades.
+
+### Limitations on Priority Classes
+
+No limitations are placed on the contents of a PriorityClass manifest at this time when installing on-cluster.
+However, the following is a suggested guideline to follow when including PriorityClass objects in a bundle.
+
+* globalDefault should always be false on a PriorityClass included in a bundle.
+    * Setting globalDefault on a PriorityClass means that all pods in the cluster without an explicit priority class will use this default PriorityClass. This can unintentionally affect other pods running in the cluster.
+
+
+
 ##### Extension apiservers and APIServices
 
 Please see the document on [extension apiservers]() if your operator does not rely on CRDs to provide its API.
