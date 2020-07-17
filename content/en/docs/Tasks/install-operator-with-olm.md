@@ -21,9 +21,9 @@ $ kubectl get packagemanifest <operator-name> -o jsonpath="{.status.channels[0].
 
 You can read more about target namespace selection for your `OperatorGroup` [here](/docs/concepts/crds/operatorgroup#target-namespace-selection)
 
-## Subscribe to your operator
+## Install your operator
 
-To install an Operator, simply create a `Subscription` for your operator.
+To install an Operator, simply create a `Subscription` for your operator. This represents the intent to subscribe to a stream of available versions of this Operator from a `CatalogSource`:
 
 ```yaml
 apiVersion: operators.coreos.com/v1alpha1
@@ -43,7 +43,7 @@ You can read more about the `Subscription` object and what the different fields 
 
 The `Subscription` object creates an [InstallPlan](/docs/concepts/crds/installplan), which is either automatically approved (if `sub.spec.approval: Automatic`), or needs to be approved (if `sub.spec.approval: Manual`), following which the operator is installed in the namespace you want.
 
-## Example 
+## Example: Install the latest version of an Operator
 
 If you want to install an operator named `my-operator` in the namespace `foo` that is cluster scoped (i.e `installModes:AllNamespaces`), from a catalog named `my-catalog` that is in the namespace `olm`, and you want to subscribe to the channel `stable`, 
 
@@ -112,4 +112,27 @@ NAME                         READY   UP-TO-DATE   AVAILABLE   AGE
 <name-of-your-operator>      1/1     1            1           9m48s
 ```
 
-If the ClusterServiceVersion fails to show up or does not reach the `Succeeded` phase, please check the [troubleshooting documentation](/docs/tasks/troubleshooting/clusterserviceversion/) to debug your installation. 
+If the ClusterServiceVersion fails to show up or does not reach the `Succeeded` phase, please check the [troubleshooting documentation](/docs/tasks/troubleshooting/clusterserviceversion/) to debug your installation.
+
+## Example: Install a specific version of an Operator
+
+If you want to install a particular version of your Operator, specify the `startingCSV` property in your `Subscription` like so:
+
+```yaml
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: sub-to-my-operator
+  namespace: foo
+spec:
+  channel: stable
+  name: my-operator
+  source: my-catalog
+  sourceNamespace: olm
+  approval: Manual
+  startingCSV: 1.1.0
+```
+
+Notice that `approval` has been set to `Manual` as well in order to keep OLM from immediately updating your Operator, if `1.1.0` happens to be superseded by a newer version in `my-catalog`. Follow the instructions from the previous paragraph to approve the initial `InstallPlan` for this `Subscription`, so `1.1.0` is allowed to be installed.
+
+If your intent is to pin an installed Operator to the particular version `1.1.0` you don't need to do anything. After approving the initial `InstallPlan` OLM will install version `1.1.0` of your Operator and keep it at that version. When updates are discovered in the catalog, OLM will wait not proceed unless you manual approve the update.
