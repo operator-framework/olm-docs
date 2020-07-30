@@ -133,6 +133,6 @@ spec:
   startingCSV: 1.1.0
 ```
 
-Notice that `approval` has been set to `Manual` as well in order to keep OLM from immediately updating your Operator, if `1.1.0` happens to be superseded by a newer version in `my-catalog`. Follow the instructions from the [previous example](#example:-install-the-latest-version-of-an-operator) to approve the initial `InstallPlan` for this `Subscription`, so `1.1.0` is allowed to be installed.
+Notice that `approval` has been set to `Manual` as well in order to keep OLM from immediately updating your Operator, if `1.1.0` happens to be superseded by a newer version in `my-catalog`. Follow the instructions from the [previous example](#example-install-the-latest-version-of-an-operator) to approve the initial `InstallPlan` for this `Subscription`, so `1.1.0` is allowed to be installed.
 
 If your intent is to pin an installed Operator to the particular version `1.1.0` you don't need to do anything. After approving the initial `InstallPlan` OLM will install version `1.1.0` of your Operator and keep it at that version. When updates are discovered in the catalog, OLM will wait not proceed unless you manual approve the update.
