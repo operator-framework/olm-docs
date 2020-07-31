@@ -1,6 +1,6 @@
 ---
 title: "Updating an operator with OLM"
-weight: 2
+weight: 1
 ---
 
 When an operator is installed from a catalog such as [quay.io/operator-framework/upstream-community-operator](https://quay.io/repository/operator-framework/upstream-community-operators), updated versions of one of more operators are pushed to the container image by rebuilding the catalog. If you have an older image of the catalog in your cluster, it needs to be updated.
