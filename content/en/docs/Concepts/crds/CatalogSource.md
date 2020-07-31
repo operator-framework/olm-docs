@@ -23,7 +23,7 @@ metadata:
   namespace: olm
 spec:
   sourceType: grpc
-  image: quay.io/operator-framework/upstream-community-operators:latest
+  image: quay.io/operatorhubio/catalog:latest
   displayName: Community Operators
   publisher: OperatorHub.io
 ```
