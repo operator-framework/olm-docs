@@ -10,16 +10,13 @@ description: >
 
 Before installing an operator into a namespace, you will need to create an `OperatorGroup` that targets the namespaces your operator is planning to watch, to generate the required RBACs for your operator in those namespaces. You can read more about `OperatorGroup` [here](/docs/concepts/crds/operatorgroup). 
 
-NOTE: The namespaces targeted by the OperatorGroup must align with the `installModes` specified  in the `ClusterServiceVersion` of the operator's package.
-
-To know the `installModes` of an operator, inspect the packagemanifest: 
-
+> Note: The namespaces targeted by the OperatorGroup must align with the `installModes` specified  in the `ClusterServiceVersion` of the operator's package. To know the `installModes` of an operator, inspect the packagemanifest: 
 ```bash
 $ kubectl get packagemanifest <operator-name> -o jsonpath="{.status.channels[0].currentCSVDesc.installModes}"
           
 ```
 
-You can read more about target namespace selection for your `OperatorGroup` [here](/docs/concepts/crds/operatorgroup#target-namespace-selection)
+> Note: This document uses a global OperatorGroup in the examples to install operators. To learn more about installing namespaced scoped operators, check out [operator scoping with OperatorGroups](/docs/advanced-tasks/operator-scoping-with-operatorgroups).  
 
 ## Install your operator
 
