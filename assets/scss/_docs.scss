@@ -19,6 +19,10 @@
         font-weight: 800;
         letter-spacing: 2px;
         margin: var(--of--spacer--md) 0 var(--of--spacer--sm);
+
+        a:hover {
+            text-decoration: none;
+        }
     }
     
     h5, h6 {
