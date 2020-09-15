@@ -70,28 +70,7 @@ copyright = "The Operator Lifecycle Manager Authors"
 
 # Menu title if your navbar has a versions selector to access old versions of your site.
 # This menu appears only if you have at least one [params.versions] set.
-# version_menu = "Releases"
-# [[params.versions]]
-#   version = "master"
-#   url = "/docs"
-
-# [[params.versions]]
-#   version = "v0.16"
-#   url = "https://github.com/operator-framework/operator-sdk/tree/v0.16.x/doc"
-
-# Flag used in the "version-banner" partial to decide whether to display a 
-# banner on every page indicating that this is an archived version of the docs.
-# Set this flag to "true" if you want to display the banner.
-# archived_version = false
-
-# The version number for the version of the docs represented in this doc set.
-# Used in the "version-banner" partial to display a version number for the 
-# current doc set.
-# version = "0.0"
-
-# A link to latest version of the docs. Used in the "version-banner" partial to
-# point people to the main doc site.
-# url_latest_version = "https://example.com"
+version_menu = "Releases"
 
 # Repository configuration (URLs for in-page links to opening issues and suggesting changes)
 github_repo = "https://github.com/operator-framework/olm-docs"
@@ -106,6 +85,39 @@ gcs_engine_id = "011737558837375720776:fsdu1nryfng"
 
 # Enable Algolia DocSearch
 algolia_docsearch = false
+
+# version configuration
+
+[[params.versions]]
+  version = "master"
+  url = "https://olm.operatorframework.io"
+  primary = true
+
+[[params.versions]]
+  version = "v0.15.z"
+  url = "https://v0-15-x.olm.operatorframework.io/"
+
+[[params.versions]]
+  version = "v0.14.z"
+  url = "https://v0-14-x.olm.operatorframework.io/"
+
+[[params.versions]]
+  version = "v0.13.z"
+  url = "https://v0-13-x.olm.operatorframework.io/"
+
+# Flag used in the "version-banner" partial to decide whether to display a 
+# banner on every page indicating that this is an archived version of the docs.
+# Set this flag to "true" if you want to display the banner.
+# archived_version = false
+
+# The version number for the version of the docs represented in this doc set.
+# Used in the "version-banner" partial to display a version number for the 
+# current doc set.
+# version = "0.0"
+
+# A link to latest version of the docs. Used in the "version-banner" partial to
+# point people to the main doc site.
+# url_latest_version = "https://example.com"
 
 # User interface configuration
 [params.ui]
