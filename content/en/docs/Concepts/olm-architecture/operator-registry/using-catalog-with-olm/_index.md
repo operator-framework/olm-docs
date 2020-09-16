@@ -8,7 +8,7 @@ description: >
 ---
 
 
-To add a [catalog image](/operator-registry/tasks/building-catalog/#building-a-catalog-image-of-operators-using-operator-registry) to your cluster for use with [Operator Lifecycle Manager](https://github.com/operator-framework/operator-lifecycle-manager) (OLM), create a [CatalogSource](/docs/Concepts/crds/CatalogSource) referencing the image you created and pushed to your favourite container registry:
+To add a [catalog image](/docs/tasks/make-operator-part-of-catalog) to your cluster for use with [Operator Lifecycle Manager](https://github.com/operator-framework/operator-lifecycle-manager) (OLM), create a [CatalogSource](/docs/concepts/crds/catalogsource) referencing the image you created and pushed to your favourite container registry:
 
 ```yaml
 apiVersion: operators.coreos.com/v1alpha1
