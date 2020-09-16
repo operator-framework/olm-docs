@@ -9,7 +9,7 @@ An OperatorGroup is an OLM resource that provides rudimentary multitenant config
 
 * An `OperatorGroup` selects a set of target namespaces in which to generate required RBAC access for its member operators.
 * The set of target namespaces is provided via a comma-delimited string stored in the `olm.targetNamespaces` annotation. This annotation is applied to member operator's `ClusterServiceVersion` (CSV) instances and is projected into their deployments. It is accessible to operator containers using [The Downward API](https://kubernetes.io/docs/tasks/inject-data-application/downward-api-volume-expose-pod-information/#the-downward-api)
-* An operator is said to be a [member of an `OperatorGroup`](#operatorgroup-membership) if its CSV exists in the same namespace as the `OperatorGroup` and its CSV's [`InstallModes` support the set of namespaces targeted by the `OperatorGroup`](#installmodes-and-supported-operatorgroups)
+* An operator is said to be a [member of an `OperatorGroup`](#membership) if its CSV exists in the same namespace as the `OperatorGroup` and its CSV's [`InstallModes` support the set of namespaces targeted by the `OperatorGroup`](#installmodes-and-supported-operatorgroups)
 * In order to transition, a CSV must be an active member of an `OperatorGroup` that has no [provided API conflicts with intersecting `OperatorGroups`](#operatorgroup-intersection)
 
 ## Membership
@@ -157,7 +157,7 @@ OLM will create copies of all active member CSVs of an `OperatorGroup` in each o
 
 ## Static OperatorGroups
 
-An `OperatorGroup` is _static_ if it's `spec.staticProvidedAPIs` field is set to __true__. As a result, OLM does not modify the OperatorGroups's `olm.providedAPIs` annotation, which means that it can be set in advance. This is useful when a user wishes to use an `OperatorGroup` to prevent [resource contention](#what-can-go-wrong?) in a set of namespaces, but does not have active member CSVs that provide the APIs for those resources.
+An `OperatorGroup` is _static_ if it's `spec.staticProvidedAPIs` field is set to __true__. As a result, OLM does not modify the OperatorGroups's `olm.providedAPIs` annotation, which means that it can be set in advance. This is useful when a user wishes to use an `OperatorGroup` to prevent resource contention in a set of namespaces, but does not have active member CSVs that provide the APIs for those resources.
 
 Here's an example of an `OperatorGroup` that "protects" prometheus resources in all namespaces with the `something.cool.io/cluster-monitoring: "true"` annotation:
 
