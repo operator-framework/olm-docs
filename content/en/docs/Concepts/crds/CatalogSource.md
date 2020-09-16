@@ -5,7 +5,7 @@ weight: 3
 
 A CatalogSource represents a store of metadata that OLM can query to discover and install operators and their dependencies.
 
-The `.spec` of a CatalogSource indicates to how to construct a pod or how to talk to a service that serves the [operator-registry grpc api](/docs/operator-registry). 
+The `.spec` of a CatalogSource indicates to how to construct a pod or how to talk to a service that serves the [operator-registry grpc api](/docs/concepts/olm-architecture/operator-registry/using-catalog-locally). 
 
 There are three primary types:
 

@@ -8,7 +8,7 @@ description: >
     OLM introduces the concept of `OperatorGroups` to enable cluster admins complete control over the permissions that OLM grants operators that it deploys.
 ---
 
-An admin may create a single `OperatorGroup` in a given namespace. Any CSV created in that namespace is said to be a member operator of that `OperatorGroup`. With `OperatorGroups`, a cluster admin can:
+An admin may create a single [`OperatorGroup`](/docs/concepts/crds/operatorgroup) in a given namespace. Any CSV created in that namespace is said to be a member operator of that `OperatorGroup`. With `OperatorGroups`, a cluster admin can:
 
 * Define the set of permissions that OLM may grant to member operators
 * Define the set of namespaces that OLM may grant namespaced permissions in.
@@ -152,8 +152,6 @@ spec:
 ```
 
 Any operator tied to this `OperatorGroup` will now be confined to the permission(s) granted to the specified `ServiceAccount`. If the operator asks for permission(s) that are outside the scope of the `ServiceAccount` the install will fail with appropriate error(s).
-
-An example of scoping an operator can be found [here](openshift/coming-soon.md).
 
 ### Configuring the End User Experience
 

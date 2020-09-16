@@ -55,6 +55,6 @@ $ kubectl get packagemanifests -l operatorframework.io/os.windows=supported
 
 ## Caveats
 
-Only the labels on the [HEAD of the default channel](/docs/concepts/glossary/#channel-head) are considered for filtering PackageManifests by label.
+Only the labels on the [HEAD of the default channel](/docs/glossary/glossary/#channel-head) are considered for filtering PackageManifests by label.
 
 This means, for example, that providing an alternate architecture for an operator in the non-default channel is possible, but will not be available for filtering in the PackageManifest API.
