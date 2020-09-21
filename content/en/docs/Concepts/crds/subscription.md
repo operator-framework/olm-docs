@@ -74,3 +74,4 @@ With the new installPlan in the approve state, the `my-operator.v0.2.0` CSV will
 ## How do I know when an update is available for an operator
 
 It is possible to identify when there is a newer version of an operator available by inspecting the status of the operator's subscription. The value associated with the `currentCSV` field is the newest version that is known to OLM, and `installedCSV` is the version that is installed on the cluster.
+To receive newer versions of an operator in a Catalog that has been updated to include the new versions, please see [Receiving updates to your installed operator](/docs/advanced-tasks/updating-an-operator) 
