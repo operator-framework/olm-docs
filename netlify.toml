@@ -1,4 +1,3 @@
-  
 [build]
   command = "hugo --gc --minify -b $URL"
   publish = "public"

@@ -17,7 +17,8 @@
     h1,h2,h3,h4,h5,h6 {
         color: var(--of--Color--brand--200);
         font-weight: 800;
-        margin: var(--of--spacer--md) 0 var(--of--spacer--sm);
+        letter-spacing: 2px;
+        //margin: var(--of--spacer--md) 0 var(--of--spacer--sm);
 
         a:hover {
             text-decoration: none;
