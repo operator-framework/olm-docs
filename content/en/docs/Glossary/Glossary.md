@@ -18,7 +18,7 @@ These pages are under construction.
 
 ### Bundle Image
 
-**Definition**: An image of a bundle is built from operator manifests and contains exactly one [bundle](#Bundle). The bundle images are stored and distributed by OCI spec container registries such as Quay.io or DockerHub.
+**Definition**: An image of a bundle is built from operator manifests and contains exactly one [bundle](#bundle). The bundle images are stored and distributed by OCI spec container registries such as Quay.io or DockerHub.
 
 ### Channel
 
@@ -26,7 +26,7 @@ These pages are under construction.
 
 ### Channel Head
 
-**Definition**: Head refers to the latest known update in a particular [channel](#Channel).
+**Definition**: Head refers to the latest known update in a particular [channel](#channel).
 
 ### Catalog Image
 
@@ -53,7 +53,7 @@ These pages are under construction.
 
 ### Registry
 
-**Definition**: A database which stores [Bundle Images](#Bundle-Image) of Operators, each with all of its latest/historical versions in all [channels](#Channel).
+**Definition**: A database which stores [Bundle Images](#bundle-image) of Operators, each with all of its latest/historical versions in all [channels](#channel).
 
 ### Update Graph
 

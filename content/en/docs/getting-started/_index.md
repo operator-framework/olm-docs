@@ -137,4 +137,4 @@ NAME            READY   UP-TO-DATE   AVAILABLE   AGE
 etcd-operator   1/1     1            1           3m29s
 ```
 
-To learn more about packaging your operator for OLM, installing/uninstalling an operator etc, visit the [Core Tasks](/docs/Tasks/) and the [Advanced Tasks](/docs/advanced-Tasks/) section of this site.  
+To learn more about packaging your operator for OLM, installing/uninstalling an operator etc, visit the [Core Tasks](/docs/tasks/) and the [Advanced Tasks](/docs/advanced-tasks/) section of this site.
