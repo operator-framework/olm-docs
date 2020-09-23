@@ -70,7 +70,7 @@ copyright = "The Operator Lifecycle Manager Authors"
 
 # Menu title if your navbar has a versions selector to access old versions of your site.
 # This menu appears only if you have at least one [params.versions] set.
-version_menu = "Releases"
+version_menu = "v0.16.z"
 
 # Repository configuration (URLs for in-page links to opening issues and suggesting changes)
 github_repo = "https://github.com/operator-framework/olm-docs"
@@ -94,16 +94,13 @@ algolia_docsearch = false
   primary = true
 
 [[params.versions]]
-  version = "v0.15.z"
-  url = "https://v0-15-x.olm.operatorframework.io/"
+  version = "v0.16.z"
+  url = "https://v0-16-z.olm.operatorframework.io/"
 
 [[params.versions]]
-  version = "v0.14.z"
-  url = "https://v0-14-x.olm.operatorframework.io/"
+   version = "legacy"
+  url = "https://legacy.olm.operatorframework.io/"
 
-[[params.versions]]
-  version = "v0.13.z"
-  url = "https://v0-13-x.olm.operatorframework.io/"
 
 # Flag used in the "version-banner" partial to decide whether to display a 
 # banner on every page indicating that this is an archived version of the docs.
