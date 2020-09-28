@@ -6,12 +6,6 @@ description: >
   Once you've packaged your operator for OLM, you can make it a part of a catalog, which is then queried to list the operators available to be installed with OLM in the cluster.
 ---
 
-{{% alert title="Warning" color="warning" %}}
-TODO: This needs to be completed/checked for completion.
-{{% /alert %}}
-
-
-
 The [operator-registry project](https://github.com/operator-framework/operator-registry) defines a format for storing sets of operators and exposing them to make them available on a cluster. The simplest way to test that your package can be added to a catalog is by actually attempting to create a catalog that includes your operator.
 
 To create a catalog that includes your package, simply build a container image that uses the operator-registry command line tools to generate a registry and serve it. For example, create a file in the root of your project called `registry.Dockerfile`

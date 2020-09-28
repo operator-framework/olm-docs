@@ -4,10 +4,6 @@ title: "Operator Registry"
 weight: 3
 ---
 
-{{% alert title="Warning" color="warning" %}}
-These pages are under construction.
-{{% /alert %}}
-
 ## What is Operator-Registry?
   
 [Operator Registry](https://github.com/operator-framework/operator-registry) runs in a Kubernetes cluster to provide operator catalog data to [Operator Lifecycle Manager](https://github.com/operator-framework/operator-lifecycle-manager).

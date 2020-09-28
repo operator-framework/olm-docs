@@ -7,11 +7,6 @@ description: >
   A discussion on the architecture of Operator Lifecycle Manager (OLM).
 ---
 
-{{% alert title="Warning" color="warning" %}}
-These pages are under construction. 
-**ToDo: Complete this (Include images/diagrams etc) **
-{{% /alert %}}
-
 
 The Operator Lifecycle Manager is composed of two Operators: the OLM Operator and the Catalog Operator.
 
