@@ -2,7 +2,6 @@
 ---
 title: "Troubleshooting"
 linkTitle: "Troubleshooting"
-date: 2020-03-25
 description: >
   Tips and tricks for troubleshooting unexpected behavior when installing and managing operators with OLM.
 ---

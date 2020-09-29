@@ -8,7 +8,7 @@ enableRobotsTXT = true
 theme = "docsy"
 
 # Will give values to .Lastmod etc.
-enableGitInfo = false
+enableGitInfo = true
 
 # Language settings
 contentDir = "content/en"
@@ -29,10 +29,6 @@ pygmentsUseClassic = false
 # See https://help.farbox.com/pygments.html
 pygmentsStyle = "tango"
 
-# Configure how URLs look like per section.
-# [permalinks]
-# blog = "/:section/:year/:month/:day/:slug/"
-
 ## Configuration for Goldmark markdown parser: https://github.com/yuin/goldmark
 [markup]
   [markup.goldmark]
@@ -44,11 +40,6 @@ pygmentsStyle = "tango"
 resampleFilter = "CatmullRom"
 quality = 75
 anchor = "smart"
-
-# [services]
-# [services.googleAnalytics]
-# Comment out the next line to disable GA tracking. Also disables the feature described in [params.ui.feedback].
-# id = "UA-00000000-0"
 
 # Language configuration
 
@@ -77,14 +68,8 @@ github_repo = "https://github.com/operator-framework/olm-docs"
 # An optional link to a related project repo. For example, the sibling repository where your product code lives.
 github_project_repo = "https://github.com/operator-framework/operator-lifecycle-manager"
 
-# Specify a value here if your content directory is not in your repo's root directory
-# github_subdir = ""
-
-
 # Enable Algolia DocSearch
 algolia_docsearch = true
-
-# version configuration
 
 [[params.versions]]
   version = "master"
@@ -99,27 +84,10 @@ algolia_docsearch = true
   version = "legacy"
   url = "https://legacy.olm.operatorframework.io/"
 
-
-# Flag used in the "version-banner" partial to decide whether to display a 
-# banner on every page indicating that this is an archived version of the docs.
-# Set this flag to "true" if you want to display the banner.
-# archived_version = false
-
-# The version number for the version of the docs represented in this doc set.
-# Used in the "version-banner" partial to display a version number for the 
-# current doc set.
-# version = "0.0"
-
-# A link to latest version of the docs. Used in the "version-banner" partial to
-# point people to the main doc site.
-# url_latest_version = "https://example.com"
-
 # User interface configuration
 [params.ui]
-# Enable to show the side bar menu in its compact state.
-sidebar_menu_compact = true
 #  Set to true to disable breadcrumb navigation.
-breadcrumb_disable = true
+breadcrumb_disable = false
 #  Set to true to hide the sidebar search box (the top nav search box will still be displayed if search is enabled)
 sidebar_search_disable = true
 #  Set to false if you don't want to display a logo (/assets/icons/logo.svg) in the top nav bar
@@ -142,23 +110,9 @@ no = 'Sorry to hear that. Please <a href="https://github.com/operator-framework/
 	url = "https://groups.google.com/forum/#!forum/operator-framework"
 	icon = "fas fa-comment"
 
-# [[params.links.social]]
-# 	name = "twitter"
-# 	url = "https://example.org/mail"
-# 	icon = "fab fa-twitter"
-
-# [[params.links.social]]
-# 	name = "youtube"
-# 	url = "https://example.org/mail"
-# 	icon = "fab fa-youtube"
-
 [[params.links.social]]
 	name = "github"
 	url = "https://github.com/operator-framework/operator-lifecycle-manager"
 	icon = "fab fa-github"
-	
-# [[params.links.social]]
-# 	name = "slack"
-# 	url = "https://example.org/mail"
-# 	icon = "fab fa-slack"
+
 

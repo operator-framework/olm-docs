@@ -1,16 +1,10 @@
 ---
 title: "Glossary"
 linkTitle: "Glossary"
-date: 2020-03-25
-weight: 8
+weight: 5
 description: >
   A list of jargon used in the context of OLM, along with their definitions.
 ---
-
-{{% alert title="Warning" color="warning" %}}
-These pages are under construction. 
-{{% /alert %}}
-
 
 ### Bundle
 
