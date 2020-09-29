@@ -1,6 +1,5 @@
 ---
 title: "Validating your package"
-date: 2020-03-25
 weight: 3
 description: >
   Once you've created your operator's package manifests, you will want to ensure that your package is valid and in the correct format. 

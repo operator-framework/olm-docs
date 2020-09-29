@@ -3,10 +3,12 @@ title: "Operator scoping with OperatorGroups"
 linkTitle: "Operator scoping with OperatorGroups"
 weight: 4
 description: >
-    OLM runs with cluster-admin privileges and is capable of granting permissions to operators that it deploys. By default, an operator can specify any set of permission(s) in the CSV and OLM will consequently grant it to the operator. In effect, an operator can achieve cluster-scoped privilege(s) which may not always be desired.
-
-    OLM introduces the concept of `OperatorGroups` to enable cluster admins complete control over the permissions that OLM grants operators that it deploys.
+    Carve your cluster with OperatorGroup    
 ---
+
+OLM runs with cluster-admin privileges and is capable of granting permissions to operators that it deploys. By default, an operator can specify any set of permission(s) in the CSV and OLM will consequently grant it to the operator. In effect, an operator can achieve cluster-scoped privilege(s) which may not always be desired.
+
+OLM introduces the concept of `OperatorGroups` to enable cluster admins complete control over the permissions that OLM grants operators that it deploys.
 
 An admin may create a single [`OperatorGroup`](/docs/concepts/crds/operatorgroup) in a given namespace. Any CSV created in that namespace is said to be a member operator of that `OperatorGroup`. With `OperatorGroups`, a cluster admin can:
 

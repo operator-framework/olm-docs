@@ -3,11 +3,12 @@ title: "Packaging an operator for OLM"
 date: 2020-03-25
 weight: 2
 description: >
-  OLM requires you to provide metadata about your operator, so that the operator's lifecycle can be managed safely on a cluster. This section introduces you to the process of packaging the metadata in a format that is compatible with OLM.  
-  
-  This is very similar to packaging software for a traditional operating system - think of the packaging step for OLM as the stage at which you make your rpm, dep, or apk bundle.
+  Package your operator metadata in a format that is compatible with OLM  
 ---
 
+OLM requires you to provide metadata about your operator, so that the operator's lifecycle can be managed safely on a cluster. This section introduces you to the process of packaging the metadata in a format that is compatible with OLM.  
+  
+This is very similar to packaging software for a traditional operating system - think of the packaging step for OLM as the stage at which you make your rpm, dep, or apk bundle.
 
 ## Writing your Operator Manifests
 
