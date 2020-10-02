@@ -3,7 +3,6 @@
 @import "../../themes/docsy/assets/scss/support/mixins";
 
 @import "../../themes/docsy/assets/vendor/bootstrap/scss/bootstrap";
-//@import "../../themes/docsy/assets/vendor/bootstrap/scss/reboot";
 
 @import "../../themes/docsy/assets/vendor/Font-Awesome/scss/fontawesome.scss";
 @import "../../themes/docsy/assets/vendor/Font-Awesome/scss/solid.scss";
@@ -15,7 +14,7 @@
 @import "../../themes/docsy/assets/scss/blog";
 @import "../../themes/docsy/assets/scss/code";
 @import "../../themes/docsy/assets/scss/nav";
-@import "../../themes/docsy/assets/scss/sidebar-tree";
+//@import "../../themes/docsy/assets/scss/sidebar-tree";
 @import "../../themes/docsy/assets/scss/sidebar-toc";
 @import "../../themes/docsy/assets/scss/buttons";
 @import "../../themes/docsy/assets/scss/breadcrumb";
@@ -63,6 +62,7 @@ footer {
 @import "variables";
 @import "reset";
 @import "type";
+@import "sidebar-tree";
 
 //components
 @import "header";
