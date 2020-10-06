@@ -4,7 +4,7 @@ weight: 4
 ---
 
 
-A Subscription represents an intention to install an operator. It is the CustomResource that relate an operator to a CatalogSource. Subscriptions describe which [channel](/docs/glossary/glossary/#channel) of an operator package to subscribe to, and whether to perform updates automatically or manually. If set to automatic, the Subscription ensures OLM will manage and upgrade the operator to ensure the latest version is always running in the cluster.
+A Subscription represents an intention to install an operator. It is the CustomResource that relate an operator to a CatalogSource. Subscriptions describe which [channel](/docs/glossary/#channel) of an operator package to subscribe to, and whether to perform updates automatically or manually. If set to automatic, the Subscription ensures OLM will manage and upgrade the operator to ensure the latest version is always running in the cluster.
 
 Here's an example of a Subscription definition:
 

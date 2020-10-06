@@ -1,4 +1,3 @@
-
 ---
 title: "Glossary"
 linkTitle: "Glossary"
