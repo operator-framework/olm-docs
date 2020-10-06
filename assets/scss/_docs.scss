@@ -1,6 +1,6 @@
 .td-sidebar-nav .td-sidebar-link__page {
     color: #222;
-    font-weight: normal;
+    //font-weight: normal;
 }
 
 .of-docs__wrapper {
@@ -11,12 +11,13 @@
         list-style: disc;
         margin-left: 2rem;
     }
-    .td-sidebar-nav .td-sidebar-link__page {
+   .td-sidebar-nav .td-sidebar-link__page {
         font-weight: normal;
     }
     h1,h2,h3,h4,h5,h6 {
         color: var(--of--Color--brand--200);
         font-weight: 800;
+        letter-spacing: 2px;
         margin: var(--of--spacer--md) 0 var(--of--spacer--sm);
 
         a:hover {
