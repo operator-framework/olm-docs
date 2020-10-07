@@ -30,10 +30,10 @@ ol {
  li {
   counter-increment: ordered-list-counter;
   position: relative;
-  padding-left: var(--of--spacer--lg);
+  //padding-left: var(--of--spacer--lg);
 }
- li::before {
-  content: counter(ordered-list-counter) ". ";
+li::before {
+  //content: counter(ordered-list-counter) ". ";
   position: absolute;
   left: 0;
   top: 0;
@@ -673,7 +673,7 @@ ol {
 
  .of-capability-level__table__footnotes {
     counter-reset: footnotes;
-  }
+}
   
 .of-table-footnotes {
     margin-bottom: var(--of--spacer--lg);

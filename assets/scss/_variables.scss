@@ -76,3 +76,12 @@
       $ov--breakpoint--xl: 1200px;
       $ov--breakpoint--2xl: 1450px; 
 
+// Breadcrumbs
+$breadcrumb-font-size:              null !default;
+$breadcrumb-padding-y:              .75rem !default;
+$breadcrumb-margin-bottom:          1rem !default;
+$breadcrumb-bg:                     $gray-100 !default;
+$breadcrumb-divider-color:          $gray-600 !default;
+$breadcrumb-active-color:           $gray-600 !default;
+$breadcrumb-divider:                quote("/") !default;
+$breadcrumb-border-radius:          $border-radius !default;
