@@ -12,7 +12,8 @@ A typical example is an operator that requires the use of some other Operator's 
 {{<mermaid>}}
 graph TD;
     e(FooOperator) --> |Provides|ec(Kind: Foo<br/>apiVerson: foogroup.io/foo/v1alpha1);
-    v(BarOperator)--> |Provides|vs(Kind: Bar<br/>apiVersion: bargroup.io/bar/v1alpha1);
+    v(BarOperator) --> |Provides|vs(Kind: Bar<br/>apiVersion: bargroup.io/bar/v1alpha1);
+    s(BazOperator) --> |Provides|ss(Kind: Baz<br />apiVersion: bazgroup.io/baz/v1alpha1)
     v--> |Requires|ec;
     
     classDef foo fill:#8addf2,stroke:#333,stroke-width:4px;
@@ -277,16 +278,11 @@ Like dependencies, subscription constraints have preference as well. OLM will ch
 
 Within a namespace, no two operators may come from the same package.
 
-
-#### Operator Minimization
-
-In the case that there is more than one valid solution, the solution that installs the fewest operators is preferred.
-
 ## Best Practices
 
-### Depend on APIs
+### Either depend on APIs or a specific version range of operators
 
-Operators may add or remove APIs at any time - always specify an `olm.gvk` dependency on any APIs your operator requires.
+Operators may add or remove APIs at any time - always specify an `olm.gvk` dependency on any APIs your operator requires. The exception to this is if you are specifying `olm.packageVersion` constraints instead. See [Caveats](#caveats) for more information.
 
 ### Set a minimum version
 
@@ -336,13 +332,13 @@ dependencies:
     version: v1beta2
 ```
 
-It would be possible, but unlikely, for OLM to satisfy this with two operators: one that provides `EtcdCluster` and one that has version `>3.1.0`. However, because of [Operator Minimization](#operator-minimization), this will only happen if there does not exist any operator that does satisfy both constraints.
+It would be possible for OLM to satisfy this with two operators: one that provides `EtcdCluster` and one that has version `>3.1.0`. Whether that happens, or whether an operator is selected that satisfies both constraints, depends on the ordering that potential options are visited. This [order is well-defined](#understanding-preferences) and can be reasoned about, but to be on the safe side, operators should stick to one mechanism or the other.
 
-A future release of OLM will support compound constraints.
+A future release of OLM will support compound constraints. When that happens, this guidance will change.
 
 ### Cross-Namespace Compatibility
 
-OLM performs dependency resolution at the namespace scope. It is possible to get into an update deadlock if updating an operator in one namespace would be an issue for an operator in another namespace, and vice-versa.  
+OLM performs dependency resolution at the namespace scope. It is possible to get into an update deadlock if updating an operator in one namespace would be an issue for an operator in another namespace, and vice-versa. 
 
 ## Backwards-Compatibility Notes
 
