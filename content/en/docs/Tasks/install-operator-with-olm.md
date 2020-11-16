@@ -128,7 +128,7 @@ spec:
   name: my-operator
   source: my-catalog
   sourceNamespace: olm
-  approval: Manual
+  installPlanApproval: Manual
   startingCSV: 1.1.0
 ```
 
