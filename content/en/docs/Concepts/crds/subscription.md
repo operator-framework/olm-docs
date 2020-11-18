@@ -25,7 +25,7 @@ This Subscription object defines the name and namespace of the operator, as well
 
 ## Manually Approving Upgrades via Subscriptions
 
-By default, OLM will automatically approve updates to an operator as new versions become available via a CatalogSource. When creating a subscription, it is possible to disable automatic updates by setting the `approval` field to `Manual` like so:
+By default, OLM will automatically approve updates to an operator as new versions become available via a CatalogSource. When creating a subscription, it is possible to disable automatic updates by setting the `installPlanApproval` field to `Manual` like so:
 
 ```yaml
 apiVersion: operators.coreos.com/v1alpha1
@@ -38,10 +38,10 @@ spec:
   name: my-operator
   source: my-catalog
   sourceNamespace: operators
-  approval: Manual
+  installPlanApproval: Manual
 ```
 
-Setting the `approval` field to manual will prevent OLM from automatically installing the operator. As such, you will need to approve the installPlan which can be done with the following commands:
+Setting the `installPlanApproval` field to manual will prevent OLM from automatically installing the operator. As such, you will need to approve the installPlan which can be done with the following commands:
 
 ```bash
 kubectl -n operators get installplans
