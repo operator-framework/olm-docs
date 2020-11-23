@@ -20,7 +20,7 @@ There are two important ways to think about the CSV:
 
 This is all in service of ensuring that when a user installs an operator from OLM, they can understand what changes are happening to the cluster, and OLM can ensure that installing the operator is a safe operation.
 
-## Example ClussterServiceVersion
+## Example ClusterServiceVersion
 
 ```yaml
 apiVersion: operators.coreos.com/v1alpha1
