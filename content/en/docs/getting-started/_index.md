@@ -39,7 +39,7 @@ make run-local
 
 ### Verify Installation
 
-You can verify your installation of OLM by first checking for all the neccesasary CRDs in the cluster:
+You can verify your installation of OLM by first checking for all the necessary CRDs in the cluster:
 
 ```sh
 $ kubectl get crd
