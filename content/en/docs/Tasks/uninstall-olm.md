@@ -1,7 +1,7 @@
 ---
 title: "Uninstall OLM"
 date: 2020-03-25
-weight: 8
+weight: 9
 description: >
     Uninstall OLM from your cluster
 ---
