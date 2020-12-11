@@ -22,7 +22,7 @@ spec:
 
 ```yaml
 apiVersion: operators.coreos.com/v1
-kind: Condition
+kind: OperatorCondition
 metadata:
   name: foo-operator
   namespace: operators
