@@ -19,7 +19,7 @@ In addition to these fields, OLM requires that you define:
 
 This document will not cover the steps required to create an operator that includes an admission or conversion webhook. If you are interested in creating such an operator, please refer to the following documentation provided by the Operator-SDK and Kubebuilder projects:
 
-- [Creating an Admission Webhook](https://sdk.operatorframework.io/docs/building-operators/golang/webhooks/)
+- [Creating an Admission Webhook](https://book.kubebuilder.io/cronjob-tutorial/webhook-implementation.html)
 - [Creating a Conversion Webhook](https://book.kubebuilder.io/multiversion-tutorial/conversion.html)
 
 ## Deploying an operator with webhooks using OLM
