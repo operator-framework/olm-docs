@@ -10,7 +10,7 @@ As part of its role in managing the lifecycle of an operator, the Operator-Lifec
 
 ## OperatorConditions
 
-OLM introduced a new [CustomResourceDefinition](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/) called the [OperatorCondition](/docs/Concepts/crds/operatorcondition.md) allowing operators to communicate conditions to OLM. There are a set of "OLM Supported Conditions" which influence OLM's management of the operator when present in the OperatorCondition's [Status.Conditions](https://github.com/operator-framework/api/blob/b55a341f6560db4adec39d69aab1ff3092ea202a/pkg/operators/v1/operatorcondition_types.go#L22) array.
+OLM introduced a new [CustomResourceDefinition](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/) called the [OperatorCondition](/docs/Concepts/crds/operatorcondition) allowing operators to communicate conditions to OLM. There are a set of "OLM Supported Conditions" which influence OLM's management of the operator when present in the OperatorCondition's [Status.Conditions](https://github.com/operator-framework/api/blob/b55a341f6560db4adec39d69aab1ff3092ea202a/pkg/operators/v1/operatorcondition_types.go#L22) array.
 
 ### OLM Supported Conditions
 
@@ -29,11 +29,11 @@ The `Upgradeable` condition might be useful when:
 * An operator is about to start a critical process and should not be upgraded until after the process is completed.
 * The operator is performing a migration of CRs that must be completed before the operator is ready to be upgraded.
 
-##### Example Upgradeable Condition
+##### Example Upgradeable OperatorCondition
 
 ```yaml
 apiVersion: operators.coreos.com/v1
-kind: Condition
+kind: OperatorCondition
 metadata:
   name: foo-operator
   namespace: operators
@@ -48,17 +48,17 @@ status:
 
 Given that the `Upgradable Condition`'s status is set to `False`, OLM will understand that it should not upgrade the operator.
 
-### Overriding Conditions
+### Overriding OperatorConditions
 
-There are times as a Cluster Admin that you may want to ignore an "OLM Supported Condition" reported by an Operator. For example, imagine that a known version of an operator always communicates that it is not upgradeable. In this instance, you may want to upgrade the operator despite the operator communicating that it is not upgradeable. This could be accomplished by overriding the `OLM Supported Condition` by adding the condition's type and status to the `spec.overrides` array in the `Condition` CR:
+There are times as a Cluster Admin that you may want to ignore an "OLM Supported Condition" reported by an Operator. For example, imagine that a known version of an operator always communicates that it is not upgradeable. In this instance, you may want to upgrade the operator despite the operator communicating that it is not upgradeable. This could be accomplished by overriding the `OLM Supported Condition` by adding the condition's type and status to the `spec.overrides` array in the `OperatorCondition` CR:
 
-"OLM Supported Conditions" can be overridden by Cluster Admins by appending the desired Condition to the opertor's OperatorCondition's [Spec.Overrides](https://github.com/operator-framework/api/blob/b55a341f6560db4adec39d69aab1ff3092ea202a/pkg/operators/v1/operatorcondition_types.go#L16) Condition Array. When present, "OLM Supported Conditions" in the `Spec.Overrides` array will override the Conditions in the `Status.Conditions` array, allowing Cluster Admins to deal with situations where an operator is incorrectly reporting a state to OLM.
+"OLM Supported Conditions" can be overridden by Cluster Admins by appending the desired OperatorCondition to the opertor's OperatorCondition's [Spec.Overrides](https://github.com/operator-framework/api/blob/b55a341f6560db4adec39d69aab1ff3092ea202a/pkg/operators/v1/operatorcondition_types.go#L16) Condition Array. When present, "OLM Supported Conditions" in the `Spec.Overrides` array will override the Conditions in the `Status.conditions` array, allowing Cluster Admins to deal with situations where an operator is incorrectly reporting a state to OLM.
 
 #### Example Override
 
 ```yaml
 apiVersion: operators.coreos.com/v1
-kind: Condition
+kind: OperatorCondition
 metadata:
   name: foo-operator
   namespace: operators
@@ -77,7 +77,7 @@ status:
     lastTransitionTime: "2020-08-24T23:15:55Z"
 ```
 
-## Updating your operator to use OLM Conditions
+## Updating your operator to use OLM OperatorCondition
 
 OLM will automatically create an `OperatorCondition` for each `ClusterServiceVersion` that it reconciles. All service accounts in the CSV will be granted the RBAC to interact with the `OperatorCondition` owned by the operator.
 
