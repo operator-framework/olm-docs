@@ -10,13 +10,13 @@ As part of its role in managing the lifecycle of an operator, the Operator-Lifec
 
 ## OperatorConditions
 
-OLM introduced a new [CustomResourceDefinition](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/) called the [OperatorCondition](/docs/Concepts/crds/operatorcondition) allowing operators to communicate conditions to OLM. There are a set of "OLM Supported Conditions" which influence OLM's management of the operator when present in the OperatorCondition's [Status.Conditions](https://github.com/operator-framework/api/blob/b55a341f6560db4adec39d69aab1ff3092ea202a/pkg/operators/v1/operatorcondition_types.go#L22) array.
+OLM introduced a new [CustomResourceDefinition](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/) called the [OperatorCondition](/docs/concepts/crds/operatorcondition) allowing operators to communicate conditions to OLM. There are a set of "OLM Supported Conditions" which influence OLM's management of the operator when present in the OperatorCondition's [Status.Conditions](https://github.com/operator-framework/api/blob/b55a341f6560db4adec39d69aab1ff3092ea202a/pkg/operators/v1/operatorcondition_types.go#L22) array.
 
 ### OLM Supported Conditions
 
  The set of "OLM Supported Conditions" include:
 
-* The [Upgradeable](####Upgradeable) Condition
+* The [Upgradeable](#upgradeable) Condition
 
 #### Upgradeable
 
