@@ -66,8 +66,8 @@ spec:
   overrides:
   - type: Upgradeable # Allows the cluster admin to change operator's Upgrade readiness to True
     status: "True"
-    reason: "upgradeIsSafe" # optional
-    message: "The cluster admin wants to make the operator eligible for an upgrade." # optional
+    reason: "upgradeIsSafe"
+    message: "This is a known issue with the operator where it always reports that it cannot be upgraded."
 status:
   conditions:
   - type: Upgradeable
