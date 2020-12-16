@@ -89,7 +89,7 @@ spec:
   targetNamespaces:
   - default
 
-$ kubectl apply -f operaotorgroup.yaml
+$ kubectl apply -f operatorgroup.yaml
 operatorgroup.operators.coreos.com/og-single created
 ```
 
