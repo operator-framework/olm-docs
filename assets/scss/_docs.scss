@@ -3,6 +3,16 @@
     //font-weight: normal;
 }
 
+.td-sidebar__inner {
+    width: 100%;
+}
+
+
+.td-sidebar-nav > .td-sidebar-nav__section {
+    padding-top: .5rem;
+    padding-left: 1.5rem;
+}
+
 .of-docs__wrapper {
     pre, p, ol, ul {
         margin-bottom: var(--of--spacer--md);
@@ -14,6 +24,7 @@
    .td-sidebar-nav .td-sidebar-link__page {
         font-weight: normal;
     }
+
     h1,h2,h3,h4,h5,h6 {
         color: var(--of--Color--brand--200);
         font-weight: 800;
