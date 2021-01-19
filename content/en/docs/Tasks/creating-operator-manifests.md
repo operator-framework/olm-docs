@@ -1,9 +1,9 @@
 ---
-title: "Packaging an operator for OLM"
+title: "Creating operator manifests"
 date: 2020-03-25
 weight: 2
 description: >
-  Package your operator metadata in a format that is compatible with OLM  
+  Create operator manifests to describe your operator to OLM, i.e package your operator for OLM.  
 ---
 
 OLM requires you to provide metadata about your operator, so that the operator's lifecycle can be managed safely on a cluster. This section introduces you to the process of packaging the metadata in a format that is compatible with OLM.  
@@ -190,7 +190,7 @@ spec:
       kind: Memcached
 ```
 
-Dependency resolution and ownership is discussed more in depth in our [registry documentation]().
+Dependency resolution and ownership is discussed more in depth in the [Concepts section](/docs/Concepts/olm-architecture/dependency-resolution).
 
 ```yaml
 apiVersion: operators.coreos.com/v1alpha1
@@ -236,7 +236,7 @@ TODO: example status
 
 ## Packaging Additional Objects Alongside an Operator
 
-Operators can include additional objects alongisde their `CSV` in the `/manifests` directory. These objects should be YAML files and valid kuberenetes objects. The following objects are supported as of OLM 0.16.0:
+Operators can include additional objects alongside their `CSV` in the `/manifests` directory. These objects should be YAML files and valid kubernetes objects. The following objects are supported as of OLM 0.16.0:
 * ConfigMaps
 * Secrets
 * Services
