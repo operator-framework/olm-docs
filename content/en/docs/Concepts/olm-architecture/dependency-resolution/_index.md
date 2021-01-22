@@ -22,6 +22,7 @@ graph TD;
 
     class e,ec foo;
     class v,vs bar;
+    class s,ss baz;
     
     linkStyle default fill:none,stroke-width:2px;
 {{</mermaid>}}
