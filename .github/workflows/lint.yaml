@@ -1,0 +1,15 @@
+name: lint
+on: pull_request
+
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v2
+
+    - name: Run the lint check script
+      run: |
+        set -eu
+
+        git submodule update --init --recursive && ${PWD}/hack/ci/link-check.sh
