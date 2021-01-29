@@ -190,7 +190,7 @@ spec:
       kind: Memcached
 ```
 
-Dependency resolution and ownership is discussed more in depth in the [Concepts section](/docs/Concepts/olm-architecture/dependency-resolution).
+Dependency resolution and ownership is discussed more in depth in the [Concepts section](/docs/concepts/olm-architecture/dependency-resolution).
 
 ```yaml
 apiVersion: operators.coreos.com/v1alpha1
