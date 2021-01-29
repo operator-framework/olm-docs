@@ -1,5 +1,0 @@
-services:
-  - docker
-
-script:
-  ./hack/ci/link-check.sh
