@@ -105,6 +105,13 @@ no = 'Sorry to hear that. Please <a href="https://github.com/operator-framework/
 
 [params.links]
 # End user relevant links. These will show up on left side of footer and in the community page if you have one.
+
+[[params.links.social]]
+	name = "Slack"
+	url = "https://kubernetes.slack.com/archives/C0181L6JYQ2"
+	icon = "fab fa-slack"
+        desc = "Chat with OLM contributors"
+
 [[params.links.social]]
 	name = "Forum"
 	url = "https://groups.google.com/forum/#!forum/operator-framework"
