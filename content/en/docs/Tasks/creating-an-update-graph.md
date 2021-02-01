@@ -1,9 +1,9 @@
 ---
-title: "Creating an udpate graph with OLM"
+title: "Creating an update graph with OLM"
 date: 2020-12-14
 weight: 7
 description: >
-    Creating an udpate graph with OLM 
+    Creating an update graph with OLM
 ---
 
 # Creating an Update Graph
