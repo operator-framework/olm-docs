@@ -59,7 +59,8 @@ metadata:
   namespace: my-namespace
 spec:
   selector:
-    cool.io/prod: "true"
+    matchLabels:
+      cool.io/prod: "true"
 ```
 
 In the example above, member operators will be scoped to any namespaces with the `cool.io/prod: true` label. If no namespaces exist with the `cool.io/prod: true` label, OLM will fail to install any member operators.
