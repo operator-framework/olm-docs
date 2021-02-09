@@ -34,17 +34,23 @@ Any changes will be included in real time.
 
 ## Running the Linting Script Locally
 
-The ./hack/ci/link-check.sh script is responsible for building the site and running [html-proofer](https://github.com/gjtorikian/html-proofer) that validates the generated HTML output.
+The `hack/ci/link-check.sh` script is responsible for building the site and running [html-proofer](https://github.com/gjtorikian/html-proofer) that validates the generated HTML output.
 
-In order to run the linting script locally, run the following command from the root directory:
+Before running the linting script, ensure you have the correct environment variable sets locally:
 
-```sh
+- `$CONTAINER_ENGINE`: controls what container engine will be used. Defaults to `docker`.
+- `$CONTAINER_RUN_EXTRA_OPTIONS`: allows you to specify any additional run options to the container engine. Defaults to an empty string.
+
+In order to run the linting script locally using `podman`, run the following command from the root directory:
+
+```bash
+export CONTAINER_ENGINE="podman"
 ${PWD}/hack/ci/link-check.sh
 ```
 
 **Note**: In the case you're getting permission denied errors when reading from that mounted volume, set the following environment variable and re-run the linting script:
 
-```sh
+```bash
 export CONTAINER_RUN_EXTRA_OPTIONS="--security-opt label=disable"
-./hack/ci/link-check.sh
+${PWD}/hack/ci/link-check.sh
 ```
