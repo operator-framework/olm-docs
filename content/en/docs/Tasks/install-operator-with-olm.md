@@ -3,22 +3,23 @@ title: "Install your operator with OLM"
 date: 2020-03-25
 weight: 6
 description: >
-    Install your operator from a catalog of operators  
+    Install your operator from a catalog of operators
 ---
 
-[Once you've made your operator available in a catalog](/docs/tasks/make-operator-part-of-catalog/), or you've chosen an operator from the [list of operators available to be installed in the cluster](/docs/tasks/list-operators-available-to-install/), you can install your operator by creating a [`Subscription`](/docs/concepts/crds/subscription/) to a specific [channel](/docs/glossary/#channel). 
+[Once you've made your operator available in a catalog](/docs/tasks/make-operator-part-of-catalog/), or you've chosen an operator from the [list of operators available to be installed in the cluster](/docs/tasks/list-operators-available-to-install/), you can install your operator by creating a [`Subscription`](/docs/concepts/crds/subscription/) to a specific [channel](/docs/glossary/#channel).
 
 ## Prerequisites
 
-Before installing an operator into a namespace, you will need to create an `OperatorGroup` that targets the namespaces your operator is planning to watch, to generate the required RBACs for your operator in those namespaces. You can read more about `OperatorGroup` [here](/docs/concepts/crds/operatorgroup). 
+Before installing an operator into a namespace, you will need to create an `OperatorGroup` that targets the namespaces your operator is planning to watch, to generate the required RBACs for your operator in those namespaces. You can read more about `OperatorGroup` [here](/docs/concepts/crds/operatorgroup).
 
-> Note: The namespaces targeted by the OperatorGroup must align with the `installModes` specified  in the `ClusterServiceVersion` of the operator's package. To know the `installModes` of an operator, inspect the packagemanifest: 
+> Note: The namespaces targeted by the OperatorGroup must align with the `installModes` specified  in the `ClusterServiceVersion` of the operator's package. To know the `installModes` of an operator, inspect the packagemanifest:
+
 ```bash
 kubectl get packagemanifest <operator-name> -o jsonpath="{.status.channels[0].currentCSVDesc.installModes}"
 
 ```
 
-> Note: This document uses a global OperatorGroup in the examples to install operators. To learn more about installing namespaced scoped operators, check out [operator scoping with OperatorGroups](/docs/advanced-tasks/operator-scoping-with-operatorgroups).  
+> Note: This document uses a global OperatorGroup in the examples to install operators. To learn more about installing namespaced scoped operators, check out [operator scoping with OperatorGroups](/docs/advanced-tasks/operator-scoping-with-operatorgroups).
 
 ## Install your operator
 
@@ -36,7 +37,7 @@ spec:
   source: <name-of-catalog-operator-is-part-of>
   sourceNamespace: <namespace-that-has-catalog>
   approval: <Automatic/Manual>
- ```  
+ ```
 
 You can read more about the `Subscription` object and what the different fields mean [here](/docs/concepts/crds/subscription).
 
@@ -44,12 +45,12 @@ The `Subscription` object creates an [InstallPlan](/docs/concepts/crds/installpl
 
 ## Example: Install the latest version of an Operator
 
-If you want to install an operator named `my-operator` in the namespace `foo` that is cluster scoped (i.e `installModes:AllNamespaces`), from a catalog named `my-catalog` that is in the namespace `olm`, and you want to subscribe to the channel `stable`, 
+If you want to install an operator named `my-operator` in the namespace `foo` that is cluster scoped (i.e `installModes:AllNamespaces`), from a catalog named `my-catalog` that is in the namespace `olm`, and you want to subscribe to the channel `stable`,
 
-create a _global_ `OperatorGroup` (which selects all namespaces): 
+create a _global_ `OperatorGroup` (which selects all namespaces):
 
 ```bash
-$ cat og.yaml 
+$ cat og.yaml
 
   apiVersion: operators.coreos.com/v1
   kind: OperatorGroup
@@ -57,11 +58,11 @@ $ cat og.yaml
     name: my-group
     namespace: foo
 
-$ kubectl apply og.yaml 
-  operatorgroup.operators.coreos.com/my-group created 
+$ kubectl apply og.yaml
+  operatorgroup.operators.coreos.com/my-group created
 ```
 
-Then, create a subscription for the operator: 
+Then, create a subscription for the operator:
 
 ```bash
 $ cat sub.yaml
@@ -92,19 +93,19 @@ install-nlwcw   my-operator.v0.9.2   Automatic     false
 
 $ kubectl edit ip install-nlwcw -n foo
 ```
+
 And then change the `spec.approved` from `false` to `true`
 
 This should spin up the `ClusterServiceVersion` of the operator in the `foo` namespace`, following which the operator pod will spin up.
 
-To ensure the operator installed successfully, check for the ClusterServiceVersion and the operator deployment in the namespace it was installed in. 
+To ensure the operator installed successfully, check for the ClusterServiceVersion and the operator deployment in the namespace it was installed in.
 
-```
+```bash
 $ kubectl get csv -n <namespace-operator-was-installed-in>
 
 NAME                  DISPLAY          VERSION           REPLACES              PHASE
 <name-of-csv>     <operator-name>     <version>  <csv-of-previous-version>   Succeeded
-```
-```
+...
 $ kubectl get deployments -n <namespace-operator-was-installed-in>
 NAME                         READY   UP-TO-DATE   AVAILABLE   AGE
 <name-of-your-operator>      1/1     1            1           9m48s

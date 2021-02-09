@@ -15,8 +15,8 @@ OLM uses an api called `ClusterServiceVersion` (CSV) to describe a single instan
 
 There are two important ways to think about the CSV:
 
- 1. Like an `rpm` or `deb`, it collects metadata about the operator that is required to install it onto the cluster.
- 2. Like a `Deployment` that can stamp out `Pod`s from a template, the `ClusterServiceVersion` describes a template for the operator `Deployment` and can stamp them out.
+1. Like an `rpm` or `deb`, it collects metadata about the operator that is required to install it onto the cluster.
+2. Like a `Deployment` that can stamp out `Pod`s from a template, the `ClusterServiceVersion` describes a template for the operator `Deployment` and can stamp them out.
 
 This is all in service of ensuring that when a user installs an operator from OLM, they can understand what changes are happening to the cluster, and OLM can ensure that installing the operator is a safe operation.
 
@@ -29,7 +29,7 @@ metadata:
   annotations:
   name: memcached-operator.v0.10.0
 spec:
-  # metadata 
+  # metadata
   description: This is an operator for memcached.
   displayName: Memcached Operator
   keywords:
@@ -44,7 +44,7 @@ spec:
     url: www.example.com
   version: 0.10.0
 
-  # operator scope 
+  # operator scope
   installModes:
   - supported: true
     type: OwnNamespace
@@ -54,15 +54,15 @@ spec:
     type: MultiNamespace
   - supported: true
     type: AllNamespaces
-  
-  # installation 
+
+  # installation
   install:
     # strategy indicates what type of deployment artifacts are used
     strategy: deployment
     # spec for the deployment strategy is a list of deployment specs and required permissions - similar to a pod template used in a deployment
     spec:
       permissions:
-      - serviceAccountName: memcached-operator 
+      - serviceAccountName: memcached-operator
         rules:
         - apiGroups:
           - ""
@@ -73,7 +73,7 @@ spec:
           # the rest of the rules
       # permissions required at the cluster scope
       clusterPermissions:
-      - serviceAccountName: memcached-operator 
+      - serviceAccountName: memcached-operator
         rules:
         - apiGroups:
           - ""
@@ -91,7 +91,7 @@ spec:
   # apis provided by the operator
   customresourcedefinitions:
     owned:
-    # a list of CRDs that this operator owns 
+    # a list of CRDs that this operator owns
     # name is the metadata.name of the CRD
     - name: cache.example.com
       # version is the version of the CRD (one per entry)

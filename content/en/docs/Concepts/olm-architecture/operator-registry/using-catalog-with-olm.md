@@ -56,7 +56,7 @@ apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
 metadata:
   name: etcd-subscription
-  namespace: default 
+  namespace: default
 spec:
   channel: alpha
   name: etcd

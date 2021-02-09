@@ -13,10 +13,10 @@ Once you have your operator packaged in the bundle format, use the `initializer`
 ./bin/initializer -m <relative path to directory of manifests> -o <relative path to a sqlite file to create or overwrite>
 ```
 
-Once you have a database file, eg sqlite.db, you can serve the database locally using the `registry-server` binary. 
+Once you have a database file, eg sqlite.db, you can serve the database locally using the `registry-server` binary.
 
 ```bash
-./bin/registry-server -d sqlite.db -p <port number to serve on (default "50051")> 
+./bin/registry-server -d sqlite.db -p <port number to serve on (default "50051")>
 ```
 
 [grpcurl](https://github.com/fullstorydev/grpcurl) is a useful tool for interacting with the example catalog server.

@@ -3,11 +3,11 @@ title: "Creating operator manifests"
 date: 2020-03-25
 weight: 2
 description: >
-  Create operator manifests to describe your operator to OLM, i.e package your operator for OLM.  
+  Create operator manifests to describe your operator to OLM, i.e package your operator for OLM.
 ---
 
-OLM requires you to provide metadata about your operator, so that the operator's lifecycle can be managed safely on a cluster. This section introduces you to the process of packaging the metadata in a format that is compatible with OLM.  
-  
+OLM requires you to provide metadata about your operator, so that the operator's lifecycle can be managed safely on a cluster. This section introduces you to the process of packaging the metadata in a format that is compatible with OLM.
+
 This is very similar to packaging software for a traditional operating system - think of the packaging step for OLM as the stage at which you make your rpm, dep, or apk bundle.
 
 ## Writing your Operator Manifests
@@ -16,8 +16,8 @@ OLM uses an api called `ClusterServiceVersion` (CSV) to describe a single instan
 
 There are two important ways to think about the CSV:
 
- 1. Like an `rpm` or `deb`, it collects metadata about the operator that is required to install it onto the cluster.
- 2. Like a `Deployment` that can stamp out `Pod`s from a template, the `ClusterServiceVersion` describes a template for the operator `Deployment` and can stamp them out.
+1. Like an `rpm` or `deb`, it collects metadata about the operator that is required to install it onto the cluster.
+2. Like a `Deployment` that can stamp out `Pod`s from a template, the `ClusterServiceVersion` describes a template for the operator `Deployment` and can stamp them out.
 
 This is all in service of ensuring that when a user installs an operator from OLM, they can understand what changes are happening to the cluster, and OLM can ensure that installing the operator is a safe operation.
 
@@ -27,11 +27,11 @@ For this example, we'll use the example manifests from [the example memcached op
 
 These manifests consist of:
 
-- **CRDs** that define the APIs your operator will manage
-- **Operator** (`operator.yaml`), containing the`Deployment` that runs your operator pods
+- **CRDs** that define the APIs your operator will manage.
+- **Operator** (`operator.yaml`), containing the`Deployment` that runs your operator pods.
 - **RBAC** (`role.yaml`, `role_binding.yaml`, `service_account.yaml`) that configures the service account permissions your operator requires.
 
-Building a minimal `ClusterServiceVersion` from these requires transplanting the contents of the Operator definition and the RBAC definitions into a CSV. Together, your CSV and CRDs will form the package that you give to OLM to install an operator.
+Building a minimal `ClusterServiceVersion` from these manifests requires transplanting the contents of the Operator definition and the RBAC definitions into a CSV. Together, your CSV and CRDs will form the package that you give to OLM to install an operator.
 
 #### Basic Metadata (Optional)
 
@@ -63,7 +63,7 @@ Most of these fields are optional, but they provide an opportunity to describe y
 
 #### Installation Metadata (Required)
 
-The next section to add to the CSV is the Install Strategy - this tells OLM about the runtime components of your operator and their requirements. 
+The next section to add to the CSV is the Install Strategy - this tells OLM about the runtime components of your operator and their requirements.
 
 Here is an example of the basic structure of an install strategy:
 
@@ -80,7 +80,7 @@ spec:
     # spec for the deployment strategy is a list of deployment specs and required permissions - similar to a pod template used in a deployment
     spec:
       permissions:
-      - serviceAccountName: memcached-operator 
+      - serviceAccountName: memcached-operator
         rules:
         - apiGroups:
           - ""
@@ -91,7 +91,7 @@ spec:
           # the rest of the rules
       # permissions required at the cluster scope
       clusterPermissions:
-      - serviceAccountName: memcached-operator 
+      - serviceAccountName: memcached-operator
         rules:
         - apiGroups:
           - ""
@@ -117,7 +117,7 @@ kind: ClusterServiceVersion
 metadata:
   name: memcached-operator.v0.10.0
 spec:
-  # ... 
+  # ...
   installModes:
   - supported: true
     type: OwnNamespace
@@ -136,18 +136,18 @@ spec:
 Here is a simple `faq` script that can generate an install strategy from a single deployment:
 
 ```sh
-$ faq -f yaml  '{install: {strategy: "deployment", spec:{ deployments: [{name: .metadata.name, template: .spec }] }}}' operator.yaml
+faq -f yaml  '{install: {strategy: "deployment", spec:{ deployments: [{name: .metadata.name, template: .spec }] }}}' operator.yaml
 ```
 
 If you have an existing CSV `csv.yaml` (refer to the example from Basic Metadata) and you'd like to insert or update an install strategy from a deployment `operator.yaml`, a role `role.yaml`, and a service account `service_account.yaml`, that is also possible:
 
 ```sh
-$ faq -f yaml -o yaml --slurp '.[0].spec.install = {strategy: "deployment", spec:{ deployments: [{name: .[1].metadata.name, template: .[1].spec }], permissions: [{serviceAccountName: .[3].metadata.name, rules: .[2].rules }]}} | .[0]' csv.yaml operator.yaml role.yaml service_account.yaml
+faq -f yaml -o yaml --slurp '.[0].spec.install = {strategy: "deployment", spec:{ deployments: [{name: .[1].metadata.name, template: .[1].spec }], permissions: [{serviceAccountName: .[3].metadata.name, rules: .[2].rules }]}} | .[0]' csv.yaml operator.yaml role.yaml service_account.yaml
 ```
 
 #### Defining APIs (Required)
 
-By definition, operators are programs that can talk to the Kubernetes API. Often, they are also programs that *extend* the Kubernetes API, by providing an interface via `CustomResourceDefinition`s or, less frequently, `APIService`s. 
+By definition, operators are programs that can talk to the Kubernetes API. Often, they are also programs that *extend* the Kubernetes API, by providing an interface via `CustomResourceDefinition`s or, less frequently, `APIService`s.
 
 ##### Owned APIs
 
@@ -159,10 +159,10 @@ kind: ClusterServiceVersion
 metadata:
   name: memcached-operator.v0.10.0
 spec:
-  # ... 
+  # ...
   customresourcedefinitions:
     owned:
-    # a list of CRDs that this operator owns 
+    # a list of CRDs that this operator owns
       # name is the metadata.name of the CRD
     - name: cache.example.com
       # version is the version of the CRD (one per entry)
@@ -181,7 +181,7 @@ kind: ClusterServiceVersion
 metadata:
   name: other-operator.v1.0
 spec:
-  # ... 
+  # ...
   customresourcedefinitions:
     required:
     # a list of CRDs that this operator requires
@@ -198,10 +198,10 @@ kind: ClusterServiceVersion
 metadata:
   name: memcached-operator.v0.10.0
 spec:
-  # ... 
+  # ...
   customresourcedefinitions:
     owned:
-    # a list of CRDs that this operator owns 
+    # a list of CRDs that this operator owns
       # name is the metadata.name of the CRD
     - name: cache.example.com
       # version is the version of the CRD (one per entry)
@@ -228,7 +228,7 @@ spec:
     kind: Pod
 ```
 
-The absence of any required `nativeAPIs` from a cluster will pause the installation of the operator, and `OLM` will write a status into the `CSV` indicating the missing APIs. 
+The absence of any required `nativeAPIs` from a cluster will pause the installation of the operator, and `OLM` will write a status into the `CSV` indicating the missing APIs.
 
 TODO: example status
 
@@ -237,37 +237,35 @@ TODO: example status
 ## Packaging Additional Objects Alongside an Operator
 
 Operators can include additional objects alongside their `CSV` in the `/manifests` directory. These objects should be YAML files and valid kubernetes objects. The following objects are supported as of OLM 0.16.0:
-* ConfigMaps
-* Secrets
-* Services
-* [PodDisruptionBudgets](https://github.com/operator-framework/operator-lifecycle-manager/blob/master/doc/design/adding-pod-disruption-budgets.md)
-* [PriorityClasses](https://github.com/operator-framework/operator-lifecycle-manager/blob/master/doc/design/adding-priority-classes.md)
-* [VerticalPodAutoscalers](https://github.com/operator-framework/operator-lifecycle-manager/blob/master/doc/design/adding-vertical-pod-autoscaler.md)
 
-*Note: some of these objects can affect an upgrade of the cluster and potentially cause problems for workloads unrelated to your operator. Be sure to understand
-the safe use of these objects before packaging them with your operator. See the docs linked above for more information on these objects as they relate to OLM.* 
+- ConfigMaps
+- Secrets
+- Services
+- [PodDisruptionBudgets](https://github.com/operator-framework/operator-lifecycle-manager/blob/master/doc/design/adding-pod-disruption-budgets.md)
+- [PriorityClasses](https://github.com/operator-framework/operator-lifecycle-manager/blob/master/doc/design/adding-priority-classes.md)
+- [VerticalPodAutoscalers](https://github.com/operator-framework/operator-lifecycle-manager/blob/master/doc/design/adding-vertical-pod-autoscaler.md)
+
+**Note**: some of these objects can affect an upgrade of the cluster and potentially cause problems for workloads unrelated to your operator. Be sure to understand the safe use of these objects before packaging them with your operator. See the docs linked above for more information on these objects as they relate to OLM.*
 
 ### Limitations on Pod Disruption Budgets
 
 No limitations are placed on the contents of a PDB at this time when installing on-cluster.
 However, the following are suggested guidelines to follow when including PDB objects in a bundle.
 
-* maxUnavailable field cannot be set to 0 or 0%.
-    * This can make a node impossible to drain and block important lifecycle actions like operator upgrades or even cluster upgrades.
-* minAvailable field cannot be set to 100%.
-    * This can make a node impossible to drain and block important lifecycle actions like operator upgrades or even cluster upgrades.
+- maxUnavailable field cannot be set to 0 or 0%.
+  - This can make a node impossible to drain and block important lifecycle actions like operator upgrades or even cluster upgrades.
+- minAvailable field cannot be set to 100%.
+  - This can make a node impossible to drain and block important lifecycle actions like operator upgrades or even cluster upgrades.
 
 ### Limitations on Priority Classes
 
 No limitations are placed on the contents of a PriorityClass manifest at this time when installing on-cluster.
 However, the following is a suggested guideline to follow when including PriorityClass objects in a bundle.
 
-* globalDefault should always be false on a PriorityClass included in a bundle.
-    * Setting globalDefault on a PriorityClass means that all pods in the cluster without an explicit priority class will use this default PriorityClass. This can unintentionally affect other pods running in the cluster.
+- globalDefault should always be false on a PriorityClass included in a bundle.
+  - Setting globalDefault on a PriorityClass means that all pods in the cluster without an explicit priority class will use this default PriorityClass. This can unintentionally affect other pods running in the cluster.
 
-
-
-##### Extension apiservers and APIServices
+#### Extension apiservers and APIServices
 
 Please see the document on [extension apiservers]() if your operator does not rely on CRDs to provide its API.
 

@@ -25,17 +25,15 @@ Each of these Operators are responsible for managing the CRDs that are the basis
 
 Each of these Operators are also responsible for creating resources:
 
-
 **_Table 2. Resources created by OLM and Catalog Operator_**
 
-
-| Resource                           | Short Name  | 
+| Resource                           | Short Name  |
 |------------------------------------|-------------|
 | Deployments                        | OLM     |
 | ServiceAccounts                    | OLM     |
 | (Cluster)Roles                     | OLM     |
 | (Cluster)RoleBindings              | OLM     |
-| Custom Resource Definitions (CRDs) | Catalog | 
+| Custom Resource Definitions (CRDs) | Catalog |
 | ClusterServiceVersions (CSVs)      | Catalog |
 ----------------
 

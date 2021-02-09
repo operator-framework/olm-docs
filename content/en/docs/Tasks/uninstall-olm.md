@@ -6,7 +6,7 @@ description: >
     Uninstall OLM from your cluster
 ---
 
-The process of uninstalling OLM is symmetrical to the process of installing it. Specifically all OLM specific [CRDs](https://github.com/operator-framework/operator-lifecycle-manager/blob/master/deploy/upstream/quickstart/crds.yaml) and [the OLM deployment](https://github.com/operator-framework/operator-lifecycle-manager/blob/master/deploy/upstream/quickstart/olm.yaml) need to be deleted. The `apiservices` should be removed as the first step, preventing it from becoming a dangling resource. 
+The process of uninstalling OLM is symmetrical to the process of installing it. Specifically all OLM specific [CRDs](https://github.com/operator-framework/operator-lifecycle-manager/blob/master/deploy/upstream/quickstart/crds.yaml) and [the OLM deployment](https://github.com/operator-framework/operator-lifecycle-manager/blob/master/deploy/upstream/quickstart/olm.yaml) need to be deleted. The `apiservices` should be removed as the first step, preventing it from becoming a dangling resource.
 
 >Note that uninstalling OLM does not necessarily clean up the operators installed with it. Please clean up installed operator resources before uninstalling OLM, especially for resources that do not have an owner reference.
 

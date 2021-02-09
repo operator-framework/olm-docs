@@ -3,7 +3,7 @@ title: "Uninstall your operator"
 date: 2020-03-25
 weight: 8
 description: >
-    Uninstall your operator from the cluster  
+    Uninstall your operator from the cluster
 ---
 
 When uninstalling an operator managed by OLM, a Cluster Admin must decide whether or not to remove the CustomResourceDefinitions (CRD), APIServices, and resources related to these types owned by the operator. By design, when OLM uninstalls an operator it does not remove any of the operator's owned CRDs, APIServices, or CRs in order to prevent data loss. Instead, it is left to the Cluster Admin to remove any unwanted types and resources from the cluster. This document will discuss the steps a Cluster Admin should take when uninstalling an operator.

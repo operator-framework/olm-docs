@@ -3,7 +3,7 @@ title: "Operator scoping with OperatorGroups"
 linkTitle: "Operator scoping with OperatorGroups"
 weight: 4
 description: >
-    Carve your cluster with OperatorGroup    
+    Carve your cluster with OperatorGroup
 ---
 
 OLM runs with cluster-admin privileges and is capable of granting permissions to operators that it deploys. By default, an operator can specify any set of permission(s) in the CSV and OLM will consequently grant it to the operator. In effect, an operator can achieve cluster-scoped privilege(s) which may not always be desired.

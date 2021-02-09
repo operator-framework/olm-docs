@@ -60,10 +60,10 @@ olm-operator       1/1     1            1           5m52s
 packageserver      2/2     2            2           5m43s
 ```
 
-## Installing an Operator using OLM 
+## Installing an Operator using OLM
 
-When you install OLM, it comes packaged with a number of Operators developed by the community that you can install instantly. 
-You can use the `pacakagemanifest` api to see the operators available for you to install in your cluster: 
+When you install OLM, it comes packaged with a number of Operators developed by the community that you can install instantly.
+You can use the `pacakagemanifest` api to see the operators available for you to install in your cluster:
 
 ```sh
 $ kubectl get packagemanifest -n olm
@@ -75,7 +75,7 @@ prometheus                         Community Operators   26m
 wildfly                            Community Operators   26m
 ```
 
-To install the etcd operator in the default namespace, first create an `OperatorGroup` for the default namespace: 
+To install the etcd operator in the default namespace, first create an `OperatorGroup` for the default namespace:
 
 ```sh
 $ cat operatorgroup.yaml
@@ -92,7 +92,7 @@ $ kubectl apply -f operatorgroup.yaml
 operatorgroup.operators.coreos.com/og-single created
 ```
 
-Then create a subscription for the etcd operator: 
+Then create a subscription for the etcd operator:
 
 ```sh
 $ cat subscription.yaml
@@ -116,15 +116,15 @@ subscription.operators.coreos.com/etcd created
 This installs the v0.9.2 version of the etcd operator, and then upgrades to the latest version of the etcd operator in your cluster.
 
 ```sh
-$ kubectl get sub -n default 
+$ kubectl get sub -n default
 NAME   PACKAGE   SOURCE                  CHANNEL
 etcd   etcd      operatorhubio-catalog   singlenamespace-alpha
 
-$ kubectl get csv -n default 
+$ kubectl get csv -n default
 NAME                  DISPLAY   VERSION   REPLACES              PHASE
 etcdoperator.v0.9.4   etcd      0.9.4     etcdoperator.v0.9.2   Succeeded
 
-$ kubectl get deployment -n default 
+$ kubectl get deployment -n default
 NAME            READY   UP-TO-DATE   AVAILABLE   AGE
 etcd-operator   1/1     1            1           3m29s
 ```
