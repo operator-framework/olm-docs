@@ -19,6 +19,7 @@ The cluster admin should first understand which types (CRDs and APIServices) are
 OLM uses the subscription resource to convey a user's intent to subscribe to the latest version of an operator. If the operator was installed with Automatic Updates (spec.Approval: `Automatic`), OLM will reinstall a new version of the operator even if the operator's CSV was deleted earlier. In effect, you must tell OLM that you do not want new versions of the operator to be installed by deleting the subscription associated with the operator.
 
 You can list existing `Subscription` in a specific namespace with the following `kubectl` command:
+
 ```bash
 $ kubectl get subscription -n <namespace>
 # Example output
@@ -29,6 +30,7 @@ foo-sub                                              foo                  foo-ca
 > Note: The name of the operator installed by the subscription is available under the `Package` column.
 
 The `Subscription` can be deleted by running this command:
+
 ```bash
 kubectl delete subscription <subscription-name> -n <namespace>
 ```
@@ -55,6 +57,7 @@ kubectl delete clusterserviceversion <csv-name> -n <namespace>
 ### Combine steps 2 and 3
 
 Alternatively, you can delete both `Subscription` and its `CSV` using a sequence of commands:
+
 ```bash
 CSV=kubectl delete subscription <subscription-name> -n <namespace> -o json | jq '.status.installedCSV'
 kubectl delete subscription <subscription-name> -n <namespace>

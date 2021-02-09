@@ -64,7 +64,6 @@ $ kubectl apply og.yaml
 Then, create a subscription for the operator: 
 
 ```bash
-
 $ cat sub.yaml
 
 apiVersion: operators.coreos.com/v1alpha1
@@ -81,7 +80,7 @@ spec:
 
 $ kubectl apply -f sub.yaml
 subscription.operators.coreos.com/sub-to-my-operator created
- ``` 
+ ```
 
 Since the `approval` is `Manual`, we need to manually go in and approve the `InstallPlan`
 

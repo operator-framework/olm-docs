@@ -78,9 +78,8 @@ opm index add --bundles quay.io/my-container-registry-namespace/my-manifest-bund
 <pre></pre>
 For more detail on using `opm` to generate index images, take a look at the [documentation](https://github.com/operator-framework/operator-registry/blob/master/docs/design/opm-tooling.md).
 <pre></pre>
+
 ## Where should I go next?
 
 * [Use the catalog of operators locally](/docs/concepts/olm-architecture/operator-registry/using-a-catalog-locally): Test your catalog locally 
 * [Using a Catalog with OLM](/docs/concepts/olm-architecture/operator-registry/using-catalog-with-olm): Make your operator available for OLM in a cluster
-
-

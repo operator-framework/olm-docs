@@ -6,7 +6,6 @@ description: >
   Install OLM in a kubernetes cluster.
 ---
 
-
 ## Prerequisites
 
 - [git](https://git-scm.com/downloads)
@@ -18,6 +17,7 @@ description: >
 ## Installing OLM in your cluster
 
 ### Install Released OLM
+
 For installing release versions of OLM, for example version 0.15.1, you can use the following command:
 
 ```sh
@@ -27,7 +27,6 @@ kubectl apply -f https://github.com/operator-framework/operator-lifecycle-manage
 ```
 
 Learn more about available releases [here](https://github.com/operator-framework/operator-lifecycle-manager/releases).
-
 
 To deploy OLM locally on a [minikube cluster](https://kubernetes.io/docs/tasks/tools/install-minikube/) for development work, use the `run-local` target in the [Makefile](https://github.com/operator-framework/operator-lifecycle-manager/blob/master/Makefile).
 

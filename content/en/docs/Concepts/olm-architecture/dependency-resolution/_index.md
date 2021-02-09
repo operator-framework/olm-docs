@@ -15,7 +15,7 @@ graph TD;
     v(BarOperator) --> |Provides|vs(Kind: Bar<br/>apiVersion: bargroup.io/bar/v1alpha1);
     s(BazOperator) --> |Provides|ss(Kind: Baz<br />apiVersion: bazgroup.io/baz/v1alpha1)
     v--> |Requires|ec;
-    
+
     classDef foo fill:#8addf2,stroke:#333,stroke-width:4px;
     classDef bar fill:#ffcc26,stroke:#333,stroke-width:4px;
     classDef baz fill:#ff7452,stroke:#333,stroke-width:4px;
@@ -23,7 +23,7 @@ graph TD;
     class e,ec foo;
     class v,vs bar;
     class s,ss baz;
-    
+
     linkStyle default fill:none,stroke-width:2px;
 {{</mermaid>}}
 
@@ -104,26 +104,26 @@ spec:
   priority: 100
 ```
 
-`CatalogSource` has a `priority` field, which is used by the resolver to know how to prefer options for a dependency. 
+`CatalogSource` has a `priority` field, which is used by the resolver to know how to prefer options for a dependency.
 
 There are two rules that govern catalog preference:
 
- - Options in higher-priority catalogs are preferred to options in lower-priority catalogs
- - Options in the same catalog as the depender are preferred to any other catalogs.
+- Options in higher-priority catalogs are preferred to options in lower-priority catalogs
+- Options in the same catalog as the depender are preferred to any other catalogs.
 
 #### Example - Same catalog preferred to all others
 
 {{<mermaid>}}
 graph TD
     subgraph Catalog A - Priority 0
-    e(FooOperator<br /><br />Provides: Foo) 
+    e(FooOperator<br /><br />Provides: Foo)
     v(BarOperator<br /><br />Provides: Bar<br />Requires: Foo)
     end
-    
+
     subgraph Catalog B - Priority 50
-        e2(FooOperatorAlt<br /><br />Provides: Foo) 
+        e2(FooOperatorAlt<br /><br />Provides: Foo)
     end
-    
+
     classDef foo fill:#8addf2,stroke:#333,stroke-width:4px;
     classDef fooSelected fill:#8addf2,stroke:green,stroke-width:4px;
     classDef bar fill:#ffcc26,stroke:#333,stroke-width:4px;
@@ -132,7 +132,7 @@ graph TD
     class e fooSelected;
     class e2 foo;
     class v,vs bar;
-    
+
     linkStyle default fill:none,stroke-width:2px;
 {{</mermaid>}}
 
@@ -163,7 +163,7 @@ graph TD
     class e3 fooSelected;
     class e2 foo;
     class v,vs bar;
-    
+
     linkStyle default fill:none,stroke-width:2px;
 {{</mermaid>}}
 

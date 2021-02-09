@@ -1,11 +1,10 @@
-
 ---
 title: "Operator Registry"
 weight: 3
 ---
 
 ## What is Operator-Registry?
-  
+
 [Operator Registry](https://github.com/operator-framework/operator-registry) runs in a Kubernetes cluster to provide operator catalog data to [Operator Lifecycle Manager](https://github.com/operator-framework/operator-lifecycle-manager).
 
 <pre></pre>
@@ -26,7 +25,8 @@ And libraries:
  * `pkg/containertools` - providing an interface to interact with and shell out to common container tooling binaries (if installed on the environment)
   
 ## Why do I want Operator Registry?
-Operator registry allows you to package your operator in a defined format and make it available for OLM so that it can install your operator in a 
+
+Operator registry allows you to package your operator in a defined format and make it available for OLM so that it can install your operator in a
 kubernetes cluster.
 <pre></pre>   
 You can find all the releases of operator-registry in the [github release page](https://github.com/operator-framework/operator-registry/releases)

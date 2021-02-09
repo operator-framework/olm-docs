@@ -37,7 +37,6 @@ labels:
     operatorframework.io/os.linux: supported
 ```
 
-
 If a ClusterServiceVersion does not include an `arch` label, a target architecture is assumed to be `amd64`.
 
 ```yaml

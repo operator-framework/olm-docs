@@ -279,7 +279,6 @@ TODO: link to SDK csv generation
 
 Please see the documentation for [advanced operator configuration]() which includes additional suggestions for further integration with OLM.
 
-
 ```
 This is the final element on the page and there should be no margin below this.
 ```
