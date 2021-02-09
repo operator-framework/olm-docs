@@ -16,7 +16,7 @@ Once you've packaged your operator and made it part of catalog, you can see it a
 
 The `PackageManifest` API when queried, will return the union of globally available as well as namespaced available operators, from the namespace you're querying in.
 ```bash
-$ kubectl get packagemanifest -n <namespace>
+kubectl get packagemanifest -n <namespace>
 ```
 
 The list of available operators will be displayed as an output of those above commands:

@@ -65,7 +65,7 @@ If you've found a problem in the docs, but you're not sure how to fix it yoursel
 Clone the repository:
 
 ```sh
-$ git clone https://github.com/operator-framework/olm-docs/
+git clone https://github.com/operator-framework/olm-docs/
 ```
 
 The docs are built with [Hugo](https://gohugo.io/) which can be installed along with the
@@ -76,7 +76,7 @@ We use `git submodules` to install the docsy theme. From the
 root directory, update the submodules to install the theme.
 
 ```sh
-$ git submodule update --init --recursive
+git submodule update --init --recursive
 ```
 
 ## Build and Serve
@@ -84,7 +84,7 @@ $ git submodule update --init --recursive
 You can build and serve your docs to localhost:1313 with:
 
 ```sh
-$ hugo server
+hugo server
 ```
 
 Any changes will be included in real time.

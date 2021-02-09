@@ -10,15 +10,15 @@ description: >
 
 You can perform some basic static verification on your package by using [`operator-courier`](https://github.com/operator-framework/operator-courier).
 
-```
-$ pip3 install operator-courier
-$ operator-courier verify manifests/my-operator-package
+```bash
+pip3 install operator-courier
+operator-courier verify manifests/my-operator-package
 ```
 
 You can also use `operator-courier` to verify that your operator will be displayed properly on [OperatorHub.io](https://operatorhub.io/).
 
-```
-$ operator-courier verify --ui_validate_io manifests/my-operator-package
+```bash
+operator-courier verify --ui_validate_io manifests/my-operator-package
 ```
 
 
@@ -46,7 +46,8 @@ Some validators are disabled by default and can be optionally enabled via the `-
 #### Custom bundle categories
 The operatorhub validator can verify against custom bundle categories by setting the `OPERATOR_BUNDLE_CATEGORIES` environmental variable.
 Setting the `OPERATOR_BUNDLE_CATEGORIES` environmental variable to the path to a json file containing a list of categories will enable those categories to be used when comparing CSV categories for operatorhub validation. The json file should be in the following format:
-```
+
+```json
 {
    "categories":[
       "Cloud Pak",

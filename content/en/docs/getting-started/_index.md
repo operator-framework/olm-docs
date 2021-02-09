@@ -66,7 +66,7 @@ packageserver      2/2     2            2           5m43s
 When you install OLM, it comes packaged with a number of Operators developed by the community that you can install instantly. 
 You can use the `pacakagemanifest` api to see the operators available for you to install in your cluster: 
 
-```sh 
+```sh
 $ kubectl get packagemanifest -n olm
 NAME                               CATALOG               AGE
 cassandra-operator                 Community Operators   26m
@@ -95,7 +95,7 @@ operatorgroup.operators.coreos.com/og-single created
 
 Then create a subscription for the etcd operator: 
 
-```sh 
+```sh
 $ cat subscription.yaml
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription

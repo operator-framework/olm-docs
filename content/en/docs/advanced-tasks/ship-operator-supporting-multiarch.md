@@ -50,7 +50,7 @@ labels:
 Only windows:
 
 ```sh
-$ kubectl get packagemanifests -l operatorframework.io/os.windows=supported
+kubectl get packagemanifests -l operatorframework.io/os.windows=supported
 ```
 
 ## Caveats

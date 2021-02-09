@@ -30,7 +30,7 @@ foo-sub                                              foo                  foo-ca
 
 The `Subscription` can be deleted by running this command:
 ```bash
-$ kubectl delete subscription <subscription-name> -n <namespace>
+kubectl delete subscription <subscription-name> -n <namespace>
 ```
 
 ## Step 3: Delete the Operator's ClusterServiceVersion (CSV)
@@ -49,16 +49,16 @@ foo                         Foo Operator         1.0.0                          
 You can delete the `ClusterServiceVersion` in the namespace that the operator was installed into using this command:
 
 ```bash
-$ kubectl delete clusterserviceversion <csv-name> -n <namespace>
+kubectl delete clusterserviceversion <csv-name> -n <namespace>
 ```
 
 ### Combine steps 2 and 3
 
 Alternatively, you can delete both `Subscription` and its `CSV` using a sequence of commands:
 ```bash
-$ CSV=kubectl delete subscription <subscription-name> -n <namespace> -o json | jq '.status.installedCSV'
-$ kubectl delete subscription <subscription-name> -n <namespace>
-$ kubectl delete csv $CSV -n <namespace>
+CSV=kubectl delete subscription <subscription-name> -n <namespace> -o json | jq '.status.installedCSV'
+kubectl delete subscription <subscription-name> -n <namespace>
+kubectl delete csv $CSV -n <namespace>
 ```
 
 ## Step 4: Deciding whether or not to delete the CRDs and APIServices

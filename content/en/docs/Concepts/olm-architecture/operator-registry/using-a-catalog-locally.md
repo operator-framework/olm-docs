@@ -34,7 +34,7 @@ ListPackages
 ```
 
 ```sh
-$ grpcurl -plaintext  localhost:50051 api.Registry/ListPackages
+grpcurl -plaintext  localhost:50051 api.Registry/ListPackages
 ```
 ```json
 {
@@ -46,7 +46,7 @@ $ grpcurl -plaintext  localhost:50051 api.Registry/ListPackages
 ```
 
 ```sh
-$ grpcurl -plaintext -d '{"name":"etcd"}' localhost:50051 api.Registry/GetPackage
+grpcurl -plaintext -d '{"name":"etcd"}' localhost:50051 api.Registry/GetPackage
 ```
 ```json
 {
@@ -111,7 +111,7 @@ api.GetBundleInChannelRequest is a message:
 ```
 
 ```sh
-$ grpcurl -plaintext -d '{"pkgName":"etcd","channelName":"alpha"}' localhost:50051 api.Registry/GetBundleForChannel
+grpcurl -plaintext -d '{"pkgName":"etcd","channelName":"alpha"}' localhost:50051 api.Registry/GetBundleForChannel
 ```
 ```json
 {

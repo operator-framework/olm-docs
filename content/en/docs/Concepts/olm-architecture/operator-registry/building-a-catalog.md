@@ -11,7 +11,8 @@ description: >
 
 We refer to a directory of files with one ClusterServiceVersion as a "bundle". A bundle typically includes a ClusterServiceVersion and the CRDs that define the owned APIs of the CSV in its manifest directory, though additional objects may be included. It also includes an annotations file in its metadata folder which defines some higher level aggregate data that helps to describe the format and package information about how the bundle should be added into an index of bundles.
 <pre></pre>
-```
+
+```yaml
  # example bundle
  etcd
  ├── manifests

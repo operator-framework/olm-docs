@@ -36,13 +36,13 @@ You can find all the releases of operator-registry in the [github release page](
 1. Clone the operator registry repository:
 
 ```bash
-$ git clone https://github.com/operator-framework/operator-registry
+git clone https://github.com/operator-framework/operator-registry
 ```
 
 2. Build the binaries using this command:
 
 ```bash
-$ make all
+make all
 ```
 
 This generates the required binaries that can be used to package your operator

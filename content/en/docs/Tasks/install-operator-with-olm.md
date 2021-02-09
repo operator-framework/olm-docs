@@ -14,8 +14,8 @@ Before installing an operator into a namespace, you will need to create an `Oper
 
 > Note: The namespaces targeted by the OperatorGroup must align with the `installModes` specified  in the `ClusterServiceVersion` of the operator's package. To know the `installModes` of an operator, inspect the packagemanifest: 
 ```bash
-$ kubectl get packagemanifest <operator-name> -o jsonpath="{.status.channels[0].currentCSVDesc.installModes}"
-          
+kubectl get packagemanifest <operator-name> -o jsonpath="{.status.channels[0].currentCSVDesc.installModes}"
+
 ```
 
 > Note: This document uses a global OperatorGroup in the examples to install operators. To learn more about installing namespaced scoped operators, check out [operator scoping with OperatorGroups](/docs/advanced-tasks/operator-scoping-with-operatorgroups).  
@@ -85,7 +85,7 @@ subscription.operators.coreos.com/sub-to-my-operator created
 
 Since the `approval` is `Manual`, we need to manually go in and approve the `InstallPlan`
 
-```bash 
+```bash
 $ kubectl get ip -n foo
 
 NAME            CSV                   APPROVAL    APPROVED
