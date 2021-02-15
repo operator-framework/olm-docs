@@ -97,8 +97,8 @@ flowchart TB
    classDef head fill:#ff668d;
    classDef installed fill:#34ebba;
  
-   E(v0.0.2 \n fa:fa-tag vendor=v4.x)
-{{</mermaid>}} | Index image label to define the cluster vendor support for the operator bundle version. (eg.`LABEL com.vendor.release.versions:=v4.7`)
+   E(v0.0.2 \n fa:fa-tag label=value)
+{{</mermaid>}} | Index image label with its value for an operator bundle version. (eg.`LABEL com.vendor.release.versions:=v4.7`)
 
 ## Creating graphs 
 
@@ -227,12 +227,12 @@ flowchart TB
    
    C(v2.0.3) o-.-o |>= 2.0.4 < 3.0.0| D(v3.0.1)
 {{</mermaid>}} |
-| Index image label  |    `ID(<bundle tag> \n fa:fa-tag <vendor version range>)` | {{<mermaid>}}
+| Index image label  |    `ID(<bundle tag> \n fa:fa-tag <label>=<value>)` | {{<mermaid>}}
 flowchart TB
    classDef head fill:#ffbfcf;
    classDef installed fill:#34ebba;
    
-   E(v0.0.2 \n fa:fa-tag vendor=v4.x)
+   E(v0.0.2 \n fa:fa-tag label=value)
 {{</mermaid>}} |
 
 [csv-definition]:/docs/concepts/crds/clusterserviceversion/
