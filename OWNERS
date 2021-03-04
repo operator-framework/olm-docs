@@ -4,6 +4,8 @@ approvers:
   - njhale
   - anik120
   - hasbro17
+  - marc-obrien
+  - theishshah
 # review == this code is good /lgtm
 reviewers:
   - ecordell
@@ -18,3 +20,6 @@ reviewers:
   - ankitathomas
   - anik120
   - hasbro17
+  - sujil02
+  - laxmikantbpandhare
+  - venkat19967
