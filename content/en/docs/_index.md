@@ -75,7 +75,7 @@ We will publish the package into a catalog, install that catalog onto a Kube clu
 
 ### [Subscriptions](https://github.com/laxmikantbpandhare/olm-docs/blob/master/content/en/docs/Concepts/crds/subscription.md)
 
-Subscriptions are Custom Resources that relate an operator to a CatalogSource. Subscriptions describe which channel of an operator package to subscribe to and whether to perform updates automatically or manually. If set to automatic, the Subscription ensures OLM will manage and upgrade the operator to ensure the latest version is always running in the cluster.
+A Subscription represents an intention to install an operator. Subscriptions are Custom Resources that relate an operator to a CatalogSource. Subscriptions describe which [channel](/docs/glossary/#channel) of an operator package to subscribe to and whether to perform updates automatically or manually. If set to automatic, the Subscription ensures OLM will manage and upgrade the operator to ensure the latest version is always running in the cluster.
 
 ### [Install Operator](https://github.com/laxmikantbpandhare/olm-docs/blob/master/content/en/docs/Tasks/install-operator-with-olm.md)
 
@@ -89,8 +89,8 @@ By deleting `ClusterServiceVersion`, it will delete the operator's resources tha
 
 ## Where should I go next?
 
-- [How do I install OLM?](getting-started/_index.md)
-- [How do I validate the package?](Tasks/validate-package.md)
-- [How do I install my operator with OLM?](Tasks/install-operator-with-olm.md)
-- [How do I uninstall an Operator?](Tasks/uninstall-operator.md)
-- [How do I uninstall OLM?](Tasks/uninstall-operator.md)
+- [How do I install OLM?](https://github.com/laxmikantbpandhare/olm-docs/blob/master/content/en/docs/getting-started/_index.md)
+- [How do I validate the package?](https://github.com/laxmikantbpandhare/olm-docs/blob/master/content/en/docs/Tasks/validate-package.md)
+- [How do I install my operator with OLM?](https://github.com/laxmikantbpandhare/olm-docs/blob/master/content/en/docs/Tasks/install-operator-with-olm.md)
+- [How do I uninstall an Operator?](https://github.com/laxmikantbpandhare/olm-docs/blob/master/content/en/docs/Tasks/uninstall-operator.md)
+- [How do I uninstall OLM?](https://github.com/laxmikantbpandhare/olm-docs/blob/master/content/en/docs/Tasks/uninstall-operator.md)
