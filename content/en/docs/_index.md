@@ -67,7 +67,7 @@ OLM requires you to provide metadata about your operator in order to ensure that
 
 ### [Package Validation](https://github.com/laxmikantbpandhare/olm-docs/blob/master/content/en/docs/Tasks/validate-package.md)
 
-Once you've [created your operator's package manifests](packaging-an-operator.md), you will want to ensure that your package is valid and in the correct format. To ensure this, you should take several steps to ensure that your package can be used to install your operator in OLM.
+Once you've [created your operator's package manifests](https://github.com/laxmikantbpandhare/olm-docs/blob/master/content/en/docs/Tasks/creating-operator-manifests.md), you will want to ensure that your package is valid and in the correct format. To ensure this, you should take several steps to ensure that your package can be used to install your operator in OLM.
 
 ### [Publish Package into catalog](https://github.com/laxmikantbpandhare/olm-docs/blob/master/content/en/docs/Tasks/make-operator-part-of-catalog.md)
 
@@ -79,7 +79,7 @@ A Subscription represents an intention to install an operator. Subscriptions are
 
 ### [Install Operator](https://github.com/laxmikantbpandhare/olm-docs/blob/master/content/en/docs/Tasks/install-operator-with-olm.md)
 
-[Once you've made your operator available in a catalog](openshift/coming-soon.md), [or you've chosen an operator from an existing catalog](openshift/coming-soon.md), you can install your operator by creating a Subscription to a specific channel. 
+Once you've made your operator available in a catalog, or you've chosen an operator from an existing catalog, you can install your operator by creating a Subscription to a specific channel. 
 
 ### [Uninstall Operator](https://github.com/laxmikantbpandhare/olm-docs/blob/master/content/en/docs/Tasks/uninstall-operator.md)
 
