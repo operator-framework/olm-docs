@@ -17,6 +17,14 @@ More technically, Operators are a method of packaging, deploying, and managing a
 
 A Kubernetes application is an app that is both deployed on Kubernetes and managed using the Kubernetes APIs and `kubectl` or `oc` tooling. To be able to make the most of Kubernetes, you require a set of cohesive APIs to extend in order to service and manage your apps that run on Kubernetes. Think of Operators as the runtime that manages this type of app on Kubernetes.
 
+## What is the difference between a Controller and an Operator
+
+An Operator is an application-specific controller that extends the Kubernetes API to create, configure and manage instances of complex stateful applications on behalf of a Kubernetes user. It is built on to of the basic Kubernetes resource and Kubernetes Controller along with some application-specific knowledge.
+
+We use Operators because managing stateful applications, like databases, caches and monitoring systems, is a big challenge, especially at massive scale. These systems require human operational knowledge to correctly scale, upgrade and reconfigure while at the same time protecting against data loss and unavailability.
+
+All Operators use the controller pattern, but the converse is not true. It's only an Operator if it has API extension and single-app focus in addition to the controller pattern
+
 ## What do Operators provide?
 
 - Repeatability of installation and upgrade.
@@ -49,3 +57,9 @@ The Operator Lifecycle Manager (OLM) is the backplane that facilitates managemen
 With OLM, administrators can control which Operators are available in what namespaces and who can interact with running Operators. The permissions of an Operator are accurately configured automatically to follow a least-privilege approach. OLM manages the overall lifecycle of Operators and their resources, by doing things like resolving dependencies on other Operators, triggering updates to both an Operator and the application it manages, or granting a team access to an Operator for their slice of the cluster.
 
 Simple, stateless applications can use the Lifecycle Management features of the Operator Framework—without writing any code—by using a generic Operator (for example, the Helm Operator). However, complex and stateful applications are where an Operator can be especially useful. The managed-service capabilities that are encoded into the Operator code can provide an advanced user experience, automating such features as updates, backups and scaling.
+
+#### Follow the links to set up sample Operators and integrate it with OLM
+
+[Create sample operator](https://sdk.operatorframework.io/docs/building-operators/)
+
+[Integrate your Operator with OLM](https://sdk.operatorframework.io/docs/olm-integration/)
