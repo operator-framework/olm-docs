@@ -19,7 +19,7 @@ A Kubernetes application is an app that is both deployed on Kubernetes and manag
 
 ## What is the difference between a Controller and an Operator
 
-An Operator is an application-specific controller that extends the Kubernetes API to create, configure and manage instances of complex stateful applications on behalf of a Kubernetes user. It is built on to of the basic Kubernetes resource and Kubernetes Controller along with some application-specific knowledge.
+An Operator is an application-specific controller that extends the Kubernetes API to create, configure and manage instances of complex stateful applications on behalf of a Kubernetes user. It is built on top of the basic Kubernetes resource and Kubernetes Controller along with some application-specific knowledge.
 
 We use Operators because managing stateful applications, like databases, caches and monitoring systems, is a big challenge, especially at massive scale. These systems require human operational knowledge to correctly scale, upgrade and reconfigure while at the same time protecting against data loss and unavailability.
 
@@ -29,7 +29,7 @@ All Operators use the controller pattern, but the converse is not true. It's onl
 
 - Repeatability of installation and upgrade.
 - Constant health checks of every system component.
-- Over-the-air (OTA) updates for OpenShift components and ISV content.
+- Over-the-air (OTA) updates for Kubernetes components and ISV content.
 - A place to encapsulate knowledge from field engineers and spread it to all users, not just one or two.
 
 
@@ -47,12 +47,10 @@ For developers, a self-service experience allows provisioning and configuring in
 
 ## Build with the Operator SDK
 
-The [Operator Software Development Kit (SDK)](https://sdk.operatorframework.io/) provides the tools to build, test and package Operators. The SDK strips away a lot of the boilerplate code that is normally required to integrate with the Kubernetes API. It also provides a useable scaffolding so developers can focus on adding business logic (for example, how to scale, upgrade, or backup the application it manages). Leading practices and code patterns shared across Operators are included in the SDK to help prevent duplicating efforts. The SDK also encourages short, iterative development and test cycles with tooling that allow for basic validation of the Operator, and automated packaging for deployment using the [Operator Lifecycle Manager](https://olm.operatorframework.io/).
+The [Operator SDK](https://sdk.operatorframework.io/) provides the tools to build, test and package Operators. The Operator SDK strips away a lot of the boilerplate code that is normally required to integrate with the Kubernetes API. It also provides a usable scaffolding so developers can focus on adding business logic (for example, how to scale, upgrade, or backup the application it manages). Leading practices and code patterns shared across Operators are included in the Operator SDK to help prevent duplicating efforts. The Operator SDK also encourages short, iterative development and test cycles with tooling that allow for basic validation of the Operator, and automated packaging for deployment using the [Operator Lifecycle Manager](https://olm.operatorframework.io/).
 
 
 ## Package with the Operator Lifecycle Manager
-
-The Operator Lifecycle Manager (OLM) is the backplane that facilitates management of operators on a Kubernetes cluster. Operators that provide popular applications as a service are going to be long-lived workloads with, potentially, lots of permissions on the cluster.
 
 With OLM, administrators can control which Operators are available in what namespaces and who can interact with running Operators. The permissions of an Operator are accurately configured automatically to follow a least-privilege approach. OLM manages the overall lifecycle of Operators and their resources, by doing things like resolving dependencies on other Operators, triggering updates to both an Operator and the application it manages, or granting a team access to an Operator for their slice of the cluster.
 
@@ -60,4 +58,4 @@ Simple, stateless applications can use the Lifecycle Management features of the 
 
 #### Next steps
 
-See [How to use SDK to build operators](https://sdk.operatorframework.io/build/). And then, check how SDK can help you to [Integrate your Operator with OLM](https://sdk.operatorframework.io/docs/olm-integration/)
+See [How to use Operator SDK to build operators](https://sdk.operatorframework.io/build/). And then, check how Operator SDK can help you to [Integrate your Operator with OLM](https://sdk.operatorframework.io/docs/olm-integration/)
