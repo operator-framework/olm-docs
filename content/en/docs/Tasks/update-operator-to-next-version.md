@@ -4,7 +4,7 @@
 
 In the Operator Lifecycle Manager (OLM) ecosystem, the following resources are used to resolve Operator installations and upgrades:
 
-1. `ClusterServiceVersion (CSV)` - A ClusterServiceVersion (CSV) is a YAML manifest created from Operator metadata that assists the Operator Lifecycle Manager (OLM) in running the Operator in a cluster.
+1. `ClusterServiceVersion (CSV)` - A YAML manifest created from Operator metadata that assists the Operator Lifecycle Manager (OLM) in running the Operator in a cluster.
 
 2. `CatalogSource` - Operator metadata, defined in CSVs, can be stored in a collection called a CatalogSource.
 
