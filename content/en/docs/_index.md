@@ -46,7 +46,7 @@ If a dependency is ever discovered, OLM will attempt to resolve said dependency 
 
 ### Work similar to package Managers
 
-OLM verifies that all require APIs are available for the operator. If it is not available, then it will not install the operator.
+OLM verifies that all required APIs are available for the operator. If it is not available, then it will not install the operator.
 
 OLM will never update an operator in a way that breaks another that depends upon it.
 
