@@ -40,14 +40,14 @@ Operator Lifecycle Manager (OLM) helps users install, update, and manage the lif
 
 ## How does OLM enable cluster admins and Developers?
 
-The OLM runs by default in OpenShift Container Platform 4.1, which aids cluster administrators in installing, upgrading, and granting access to Operators running on their cluster. The OpenShift Container Platform web console provides management screens for cluster administrators to install Operators, as well as grant specific projects access to use the catalog of Operators available on the cluster.
+The OLM is enabled by default in OpenShift Container Platform 4.X, which aids cluster administrators in installing, upgrading, and granting access to Operators running on their cluster. The OpenShift Container Platform web console provides management screens for cluster administrators to install Operators, as well as grant specific projects access to use the catalog of Operators available on the cluster.
 
 For developers, a self-service experience allows provisioning and configuring instances of databases, monitoring, and big data services without having to be subject matter experts, because the Operator has that knowledge baked into it.
 
 
 ## Build with the Operator SDK
 
-The Operator software development kit (SDK) provides the tools to build, test and package Operators. The SDK strips away a lot of the boilerplate code that is normally required to integrate with the Kubernetes API. It also provides a useable scaffolding so developers can focus on adding business logic (for example, how to scale, upgrade, or backup the application it manages). Leading practices and code patterns shared across Operators are included in the SDK to help prevent duplicating efforts. The SDK also encourages short, iterative development and test cycles with tooling that allow for basic validation of the Operator, and automated packaging for deployment using the Operator Lifecycle Manager.
+The [Operator Software Development Kit (SDK)](https://sdk.operatorframework.io/) provides the tools to build, test and package Operators. The SDK strips away a lot of the boilerplate code that is normally required to integrate with the Kubernetes API. It also provides a useable scaffolding so developers can focus on adding business logic (for example, how to scale, upgrade, or backup the application it manages). Leading practices and code patterns shared across Operators are included in the SDK to help prevent duplicating efforts. The SDK also encourages short, iterative development and test cycles with tooling that allow for basic validation of the Operator, and automated packaging for deployment using the [Operator Lifecycle Manager](https://olm.operatorframework.io/).
 
 
 ## Package with the Operator Lifecycle Manager
@@ -58,8 +58,6 @@ With OLM, administrators can control which Operators are available in what names
 
 Simple, stateless applications can use the Lifecycle Management features of the Operator Framework—without writing any code—by using a generic Operator (for example, the Helm Operator). However, complex and stateful applications are where an Operator can be especially useful. The managed-service capabilities that are encoded into the Operator code can provide an advanced user experience, automating such features as updates, backups and scaling.
 
-#### Follow the links to set up sample Operators and integrate it with OLM
+#### Next steps
 
-[Create sample operator](https://sdk.operatorframework.io/docs/building-operators/)
-
-[Integrate your Operator with OLM](https://sdk.operatorframework.io/docs/olm-integration/)
+See [How to use SDK to build operators](https://sdk.operatorframework.io/build/). And then, check how SDK can help you to [Integrate your Operator with OLM](https://sdk.operatorframework.io/docs/olm-integration/)
