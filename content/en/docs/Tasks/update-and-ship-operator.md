@@ -16,7 +16,7 @@ In the Operator Lifecycle Manager (OLM) ecosystem, the following resources are u
 
     A CSV is composed of a Metadata, Install strategy, and CRDs.
 
-2. <b>`CatalogSource`</b> - Operator metadata, defined in CSVs, can be stored in a collection called a CatalogSource. CatalogSource contains metadata that OLM can query to discover and install operators with thrie dependencies.
+2. <b>`CatalogSource`</b> - Operator metadata, defined in CSVs, can be stored in a collection called a CatalogSource. CatalogSource contains metadata that OLM can query to discover and install operators with their dependencies.
 
 3. <b>`Subscription`</b> - A user indicates a particular package and channel in a particular CatalogSource in a Subscription. Subscription ensures OLM will manage and upgrades/installs the operator to ensure the latest version is always running in the cluster
 
@@ -109,4 +109,56 @@ spec:
 
 Consider the following example Old CatalogSource and New CatalogSource:
 
-![Graph Image](https://raw.githubusercontent.com/laxmikantbpandhare/olm-docs/olm-opr-updt-ship/content/en/docs/Tasks/images/skipping.png)
+![skipping Image](https://raw.githubusercontent.com/laxmikantbpandhare/olm-docs/olm-opr-updt-ship/content/en/docs/Tasks/images/Skipping.png)
+
+In the above example, skips parameters has the version `etcdoperator.v0.9.1`. While upgrading from `0.9.0` to `0.9.2` then it will skip the updates for `0.9.1`. This is beacuse of the version `0.9.1` is marked for skip. 
+
+
+This graph maintains that:
+
+- Any Operator found in Old CatalogSource has a single replacement in New CatalogSource.
+
+- Any Operator found in New CatalogSource has a single replacement in New CatalogSource.
+
+- If the bad update has not yet been installed, it will never be.
+
+## Replacing Multiple Operators
+
+Creating the New CatalogSource as described requires publishing CSVs that replace one Operator, but can `skip` several. This can be accomplished using the `skipRange` annotation:
+
+        olm.skipRange: <semver_range>
+
+where `<semver_range>` has the version range format supported by the [semver library](https://github.com/blang/semver#ranges).
+
+When searching catalogs for updates, if the head of a channel has a `skipRange` annotation and the currently installed Operator has a version field that falls in the range, OLM updates to the latest entry in the channel.
+
+The order of precedence is:
+
+- Channel head in the source specified by sourceName on the Subscription, if the other criteria for skipping are met.
+
+- The next Operator that replaces the current one, in the source specified by sourceName.
+
+- Channel head in another source that is visible to the Subscription, if the other criteria for skipping are met.
+
+- The next Operator that replaces the current one in any source visible to the Subscription.
+
+`skipRange example:`
+
+```yaml
+apiVersion: operators.coreos.com/v1alpha1
+kind: ClusterServiceVersion
+metadata:
+    name: elasticsearch-operator.v4.1.2
+    namespace: placeholder
+    annotations:
+        olm.skipRange: '>=4.1.0 <4.1.2'
+```
+
+## Z-stream support
+
+A z-stream (patch release) needs to replace all previous z-stream releases for the same minor version. OLM doesn't care about major/minor/patch versions, we just need to build the correct graph in a catalog.
+
+In other words, we need to be able to take a graph as in "Old Catalog" and, similar to before, generate a graph as in "New Catalog"
+
+![skipping Image](https://raw.githubusercontent.com/laxmikantbpandhare/olm-docs/olm-opr-updt-ship/content/en/docs/Tasks/images/replace.png)
+
