@@ -18,6 +18,8 @@ Cluster admins cannot override which `InstallMode`s an operator supports, and sh
 
 # OwnNamespace
 
+When we want to watch ONLY the operator's namespace, we specify the operator's namespace in the `spec.targetNamespaces`. 
+
 > When we want to watch ONLY the operator's namespace, we specify the operator's namespace in the `spec.targetNamespaces`
 
 ```yaml
