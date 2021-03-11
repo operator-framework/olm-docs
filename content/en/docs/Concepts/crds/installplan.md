@@ -52,6 +52,8 @@ spec:
 
 # MultiNamespace
 
+When watching multiple namespaces, we need to list out the namespaces in the `spec.targetNamespaces` section. 
+
 > When watching multiple namespaces, we need to list out the namespaces in the `spec.targetNamespaces` section.
 
 ```yaml
