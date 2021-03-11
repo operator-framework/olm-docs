@@ -30,7 +30,7 @@ Operators must claim ownership of their APIs. OLM will prevent conflicting Opera
 Operators can behave like managed service providers. Their user interface on the command line are APIs. For graphical consoles OLM annotates those APIs with descriptors that drive the creation of rich interfaces and forms for users to interact with the Operator in a natural, cloud-like way. 
 
 
-## How OLM solved the cluster admin and developer needs.
+## How OLM solves the cluster admin and developer needs.
 
 ### Operator Installation and Management
 
@@ -44,9 +44,9 @@ OLM manages the dependency resolution and upgrade lifecycle of running operators
 
 If a dependency is ever discovered, OLM will attempt to resolve said dependency by searching through known `CatalogSources` for an operator that `owns` the API. If an operator is found that `owns`the `required` API, OLM will attempt to deploy the operator that `owns` the API. If no `owner` is found, OLM will fail to deploy the operator with the dependency.
 
-### Work similar to package Managers
+### Works similar to package Managers
 
-OLM verifies that all required APIs are available for the operator. If it is not available, then it will not install the operator.
+OLM verifies that all required APIs are available for the operator. If they are not available, then OLM will not install the operator.
 
 OLM will never update an operator in a way that breaks another that depends upon it.
 
