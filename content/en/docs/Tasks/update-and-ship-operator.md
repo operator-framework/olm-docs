@@ -10,22 +10,22 @@ description: >
 
 In the Operator Lifecycle Manager (OLM) ecosystem, the following resources are used to resolve Operator installations and upgrades:
 
-1. <b>`ClusterServiceVersion (CSV)`</b> - A YAML manifest created from Operator metadata that assists the Operator Lifecycle Manager (OLM) in running the Operator in a cluster.
+1. `ClusterServiceVersion (CSV)` - A YAML manifest created from Operator metadata that assists the Operator Lifecycle Manager (OLM) in running the Operator in a cluster.
 
     A CSV is the metadata that accompanies an Operator container image, used to populate user interfaces with information like its logo, description, and version. It is also a source of technical information needed to run the Operator, like the RBAC rules it requires and which Custom Resources (CRs) it manages or depends on.
 
     A CSV is composed of a Metadata, Install strategy, and CRDs.
 
-2. <b>`CatalogSource`</b> - Operator metadata, defined in CSVs, can be stored in a collection called a CatalogSource. CatalogSource contains metadata that OLM can query to discover and install operators with their dependencies.
+2. `CatalogSource` - Operator metadata, defined in CSVs, can be stored in a collection called a CatalogSource. CatalogSource contains metadata that OLM can query to discover and install operators with their dependencies.
 
-3. <b>`Subscription`</b> - A user indicates a particular package and channel in a particular CatalogSource in a Subscription. Subscription ensures OLM will manage and upgrades/installs the operator to ensure the latest version is always running in the cluster
+3. `Subscription` - A user indicates a particular package and channel in a particular CatalogSource in a Subscription. Subscription ensures OLM will manage and upgrades/installs the operator to ensure the latest version is always running in the cluster
 
 
 OLM uses CatalogSources, which use the Operator Registry API, to query for available Operators as well as upgrades for installed Operators.
 
 ![CatalogSource Image](https://raw.githubusercontent.com/laxmikantbpandhare/olm-docs/olm-opr-updt/content/en/docs/Tasks/images/catalogsource.png)
 
-<I> <b> Figure 1. CatalogSource overview </b> </I>
+`Figure 1. CatalogSource overview`
 
 In the above image, etcd is a package. Alpha and beta are the channels.
 
@@ -33,7 +33,7 @@ Within a CatalogSource, Operators are organized into packages and streams of upd
 
 ![Channels Image](https://raw.githubusercontent.com/laxmikantbpandhare/olm-docs/olm-opr-updt/content/en/docs/Tasks/images/channels.png)
 
-<I> <b> Figure 2. Packages and channels in a CatalogSource </b> </I>
+`Figure 2. Packages and channels in a CatalogSource`
 
 A user indicates a particular package and channel in a particular CatalogSource in a Subscription.
 
@@ -53,7 +53,7 @@ For this given scenario, OLM installs Operator version `0.1.2` to replace the ex
 
 ![Graph Image](https://raw.githubusercontent.com/laxmikantbpandhare/olm-docs/olm-opr-updt-ship/content/en/docs/Tasks/images/graph.png)
 
-<I> <b> Figure 3. OLM's graph of available channel updates </b> </I>
+`Figure 3. OLM's graph of available channel updates`
 
 Each CSV has a replaces parameter that indicates which Operator it replaces. This builds a graph of CSVs that can be queried by OLM, and updates can be shared between channels. Channels can be thought of as entry points into the graph of updates.
 
@@ -111,6 +111,8 @@ Consider the following example Old CatalogSource and New CatalogSource:
 
 ![skipping Image](https://raw.githubusercontent.com/laxmikantbpandhare/olm-docs/olm-opr-updt-ship/content/en/docs/Tasks/images/Skipping.png)
 
+`Figure 4. Skipping updates`
+
 In the above example, skips parameters has the version `etcdoperator.v0.9.1`. While upgrading from `0.9.0` to `0.9.2` then it will skip the updates for `0.9.1`. This is beacuse of the version `0.9.1` is marked for skip. 
 
 
@@ -160,5 +162,31 @@ A z-stream (patch release) needs to replace all previous z-stream releases for t
 
 In other words, we need to be able to take a graph as in "Old Catalog" and, similar to before, generate a graph as in "New Catalog"
 
-![skipping Image](https://raw.githubusercontent.com/laxmikantbpandhare/olm-docs/olm-opr-updt-ship/content/en/docs/Tasks/images/replace.png)
+![replace Image](https://raw.githubusercontent.com/laxmikantbpandhare/olm-docs/olm-opr-updt-ship/content/en/docs/Tasks/images/replace.png)
+
+`Figure 5. Replacing several Operators`
+
+This graph maintains that:
+
+- Any Operator found in Old CatalogSource has a single replacement in New CatalogSource.
+
+- Any Operator found in New CatalogSource has a single replacement in New CatalogSource.
+
+- Any z-stream release in Old CatalogSource will update to the latest z-stream release in New CatalogSource.
+
+- Unavailable releases can be considered "virtual" graph nodes; their content does not need to exist, the registry just needs to respond as if the graph looks like this.
+
+# Ship Operator
+
+For the shimpment of an operator, first make sure that manifests gets created with the updated version of operator. Check below link for mre details on operator manifest creation process.
+
+[How to create Operator manaifest?](/docs/tasks/creating-operator-manifests/)
+
+Then, validate the created manifest or package.
+
+[How to validate package?](/docs/tasks/validate-package/)
+
+At the end, make the updated operator package as a part of catalog.
+
+[How to make operator part of catalog?](/docs/tasks/make-operator-part-of-catalog/)
 

@@ -45,6 +45,7 @@ For this given scenario, OLM installs Operator version 0.1.2 to replace the exis
 
 ## Below links for more details
 
+- [Update Operator]()
 
 
 
