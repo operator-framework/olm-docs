@@ -35,6 +35,8 @@ spec:
 
 # SingleNamespace
 
+When you want to watch a single namespace that is **NOT** the operator's namespace, we specify that one namespace in the `spec.targetNamespaces` field.
+
 > When you want to watch a single namespace that is **NOT** the operator's namespace, we specify that one namespace in the `spec.targetNamespaces` field.
 
 ```yaml
