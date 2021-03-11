@@ -2,8 +2,8 @@
 title: "Update and ship an Operator"
 date: 2021-03-10
 weight: 2
-description: >
-
+description: > 
+    In depth explanation of operator update and shipment process. 
 --- 
 
 ## Introduction
