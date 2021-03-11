@@ -72,6 +72,8 @@ spec:
 
 # AllNamespaces
 
+Notice that in the `AllNamespaces` case, we omit the `spec`.
+
 > Notice that in the `AllNamespaces` case, we omit the `spec`.
 
 ```yaml
