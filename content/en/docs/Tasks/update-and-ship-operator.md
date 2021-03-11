@@ -51,4 +51,62 @@ OLM walks back from the channel head to previous versions via the replaces field
 
 For this given scenario, OLM installs Operator version `0.1.2` to replace the existing Operator version `0.1.1`. Then, it installs Operator version `0.1.3` to replace the previously installed Operator version `0.1.2`. At this point, the installed operator version `0.1.3` matches the channel head and the upgrade is completed.
 
-![Graph Image](https://raw.githubusercontent.com/laxmikantbpandhare/olm-docs/olm-opr-updt/content/en/docs/Tasks/images/graph.png)
+![Graph Image](https://raw.githubusercontent.com/laxmikantbpandhare/olm-docs/olm-opr-updt-ship/content/en/docs/Tasks/images/graph.png)
+
+<I> <b> Figure 3. OLM's graph of available channel updates </b> </I>
+
+Each CSV has a replaces parameter that indicates which Operator it replaces. This builds a graph of CSVs that can be queried by OLM, and updates can be shared between channels. Channels can be thought of as entry points into the graph of updates.
+
+
+##### Channels in a package
+
+```yaml
+packageName: etcd
+channels:
+- name: alpha
+  currentCSV: etcdoperator.v0.9.0
+- name: beta
+  currentCSV: etcdoperator.v0.9.2
+defaultChannel: alpha
+```
+
+For OLM to successfully query for updates, given a `CatalogSource`, `package`, `channel`, and `CSV`, a catalog must be able to return, unambiguously and deterministically, a single CSV that replaces the input CSV.
+
+
+## Skipping upgrades
+
+OLM's basic path for upgrades is:
+
+- A `CatalogSource` is updated with one or more updates to an Operator.
+
+- OLM traverses every version of the Operator until reaching the latest version the `CatalogSource` contains.
+
+But sometimes this is not a safe operation to perform. There will be cases where a published version of an operator should never be installed on a cluster if it hasn't already (e.g. because that version introduces a serious vulnerability).
+
+In those cases we have to consider two cluster states and provide an update graph that supports both:
+
+- The "bad" intermediate operator has been seen by a cluster and installed
+- The "bad" intermediate operator has not yet been installed onto a cluster
+
+By shipping a new catalog and adding a "skipped" release, we can keep our catalog invariant (always get a single unique update) regardless of the cluster state and whether it has seen the bad update yet.
+
+For example:
+
+```yaml
+apiVersion: operators.coreos.com/v1alpha1
+kind: ClusterServiceVersion
+metadata:
+  name: etcdoperator.v0.9.2
+  namespace: placeholder
+  annotations:
+spec:
+    displayName: etcd
+    description: Etcd Operator
+    replaces: etcdoperator.v0.9.0
+    skips:
+    - etcdoperator.v0.9.1
+```
+
+Consider the following example Old CatalogSource and New CatalogSource:
+
+![Graph Image](https://raw.githubusercontent.com/laxmikantbpandhare/olm-docs/olm-opr-updt-ship/content/en/docs/Tasks/images/skipping.png)
