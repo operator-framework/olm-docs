@@ -1,4 +1,10 @@
-# Given an operator at version n, what should I do to create a version n+1?
+---
+title: "Update operator to next version"
+date: 2021-03-09
+weight: 2
+description: >
+   Given an operator at version n, what should I do to create a version n+1.
+--- 
 
 ## Introduction
 
@@ -13,14 +19,14 @@ In the Operator Lifecycle Manager (OLM) ecosystem, the following resources are u
 
 OLM uses CatalogSources, which use the Operator Registry API, to query for available Operators as well as upgrades for installed Operators.
 
-![CatalogSource Image](https://github.com/laxmikantbpandhare/olm-docs/blob/olm-opr-updt/content/en/docs/Tasks/images/catalogsource.png)
+![CatalogSource Image](/docs/Tasks/images/catalogsource.png)
 
 
 ## Steps to update the operator
 
 Within a CatalogSource, Operators are organized into packages and streams of updates called `channels`, which should be a familiar update pattern from OpenShift Container Platform or other software on a continuous release cycle like web browsers.
 
-![Channels Image](https://github.com/laxmikantbpandhare/olm-docs/blob/olm-opr-updt/content/en/docs/Tasks/images/channels.png)
+![Channels Image](/docs/Tasks/images/channels.png)
 
 In the above image, etcd is a package. Alpha and beta are the channels.
 
@@ -37,9 +43,9 @@ OLM walks back from the channel head to previous versions via the replaces field
 
 For this given scenario, OLM installs Operator version 0.1.2 to replace the existing Operator version 0.1.1. Then, it installs Operator version 0.1.3 to replace the previously installed Operator version 0.1.2. At this point, the installed operator version 0.1.3 matches the channel head and the upgrade is completed.
 
-## Look for below links for more details
+## Below links for more details
 
-
+- [Update Operator]()
 
 
 
