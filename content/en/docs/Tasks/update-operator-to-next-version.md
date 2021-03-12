@@ -19,14 +19,14 @@ In the Operator Lifecycle Manager (OLM) ecosystem, the following resources are u
 
 OLM uses CatalogSources, which use the Operator Registry API, to query for available Operators as well as upgrades for installed Operators.
 
-![CatalogSource Image](https://raw.githubusercontent.com/laxmikantbpandhare/olm-docs/olm-opr-updt/content/en/docs/Tasks/images/catalogsource.png)
+![CatalogSource Image](/docs/Tasks/images/catalogsource.png)
 
 
 ## Steps to update the operator
 
 Within a CatalogSource, Operators are organized into packages and streams of updates called `channels`, which should be a familiar update pattern from OpenShift Container Platform or other software on a continuous release cycle like web browsers.
 
-![Channels Image](https://raw.githubusercontent.com/laxmikantbpandhare/olm-docs/olm-opr-updt/content/en/docs/Tasks/images/channels.png)
+![Channels Image](/docs/Tasks/images/channels.png)
 
 In the above image, etcd is a package. Alpha and beta are the channels.
 

@@ -23,7 +23,7 @@ In the Operator Lifecycle Manager (OLM) ecosystem, the following resources are u
 
 OLM uses CatalogSources, which use the Operator Registry API, to query for available Operators as well as upgrades for installed Operators.
 
-![CatalogSource Image](https://raw.githubusercontent.com/laxmikantbpandhare/olm-docs/olm-opr-updt/content/en/docs/Tasks/images/catalogsource.png)
+![CatalogSource Image](/docs/Tasks/images/catalogsource.png)
 
 `Figure 1. CatalogSource overview`
 
@@ -31,7 +31,7 @@ In the above image, etcd is a package. Alpha and beta are the channels.
 
 Within a CatalogSource, Operators are organized into packages and streams of updates called channels, which should be a familiar update pattern from OpenShift Container Platform or other software on a continuous release cycle like web browsers.
 
-![Channels Image](https://raw.githubusercontent.com/laxmikantbpandhare/olm-docs/olm-opr-updt/content/en/docs/Tasks/images/channels.png)
+![Channels Image](/docs/Tasks/images/channels.png)
 
 `Figure 2. Packages and channels in a CatalogSource`
 
@@ -51,7 +51,7 @@ OLM walks back from the channel head to previous versions via the replaces field
 
 For this given scenario, OLM installs Operator version `0.1.2` to replace the existing Operator version `0.1.1`. Then, it installs Operator version `0.1.3` to replace the previously installed Operator version `0.1.2`. At this point, the installed operator version `0.1.3` matches the channel head and the upgrade is completed.
 
-![Graph Image](https://raw.githubusercontent.com/laxmikantbpandhare/olm-docs/olm-opr-updt-ship/content/en/docs/Tasks/images/graph.png)
+![Graph Image](/docs/Tasks/images/graph.png)
 
 `Figure 3. OLM's graph of available channel updates`
 
@@ -109,7 +109,7 @@ spec:
 
 Consider the following example Old CatalogSource and New CatalogSource:
 
-![skipping Image](https://raw.githubusercontent.com/laxmikantbpandhare/olm-docs/olm-opr-updt-ship/content/en/docs/Tasks/images/Skipping.png)
+![skipping Image](/docs/Tasks/images/Skipping.png)
 
 `Figure 4. Skipping updates`
 
@@ -162,7 +162,7 @@ A z-stream (patch release) needs to replace all previous z-stream releases for t
 
 In other words, we need to be able to take a graph as in "Old Catalog" and, similar to before, generate a graph as in "New Catalog"
 
-![replace Image](https://raw.githubusercontent.com/laxmikantbpandhare/olm-docs/olm-opr-updt-ship/content/en/docs/Tasks/images/replace.png)
+![replace Image](/docs/Tasks/images/replace.png)
 
 `Figure 5. Replacing several Operators`
 
