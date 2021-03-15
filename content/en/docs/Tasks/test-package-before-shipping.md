@@ -36,7 +36,7 @@ When loading manifests into the Operator Registry database, the following requir
 - Every bundle has exactly one cluster service version (CSV).
 - If a CSV owns a custom resource definition (CRD), that CRD must exist in the bundle.
 
-You can find the more details about [run bundle](https://sdk.operatorframework.io/docs/olm-integration/testing-deployment/#operator-sdk-run-bundle-command-overview) and [run packagemanifests](https://sdk.operatorframework.io/docs/olm-integration/testing-deployment/#operator-sdk-run-packagemanifests-command-overview) to understand the shared configurations and the anatomy of those commands.
+You can find more details about [run bundle](https://sdk.operatorframework.io/docs/olm-integration/testing-deployment/#operator-sdk-run-bundle-command-overview) and [run packagemanifests](https://sdk.operatorframework.io/docs/olm-integration/testing-deployment/#operator-sdk-run-packagemanifests-command-overview) to understand the shared configurations and the anatomy of those commands.
 
 
 For an Operator to be tested in OLM, they need to be in a proper [PackageManifest](https://github.com/operator-framework/operator-registry/tree/v1.5.3#manifest-format) or they need to be in a proper [Bundle](https://github.com/operator-framework/operator-registry/tree/v1.15.3#manifest-format) format. Once they are brought to the appropriate format, they need to be deployed in the cluster. We assume that [OLM installtion](https://sdk.operatorframework.io/docs/cli/operator-sdk_olm_install/) should be complete before we run the Operator for testing. Once your Operator is deployed and tested, we have to cleanup using [operator-sdk cleanup](https://sdk.operatorframework.io/docs/cli/operator-sdk_olm_install/).
