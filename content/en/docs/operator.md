@@ -1,42 +1,19 @@
 ---
 title: Operators
-menu:
-  main:
-    weight: 10
+weight: 10
 ---
 
 ## What is an Operator?
 
-An Operator is a method of packaging, deploying and managing a Kubernetes-native application. A Kubernetes-native application is an application that is both deployed on Kubernetes and managed using the Kubernetes APIs and kubectl tooling. An Operator is a piece of software that runs in a Pod inside the Kubernetes cluster and it interacts with the Kubernetes API. It has a reconciler loop that runs continuously, which monitors Objects (Pods, Services, ConfigMaps, or PersistentVolumes) for a desired state given by a Custom Resource Definition (CRD) and replicates that state in the cluster.
-
-Conceptually, Operators take human operational knowledge and encode it into software that is more easily shared with consumers.
-
-Operators are pieces of software that ease the operational complexity of running another piece of software. They act like an extension of the software vendor’s engineering team, watching over a Kubernetes environment (such as OpenShift Container Platform) and using its current state to make decisions in real time. Advanced Operators are designed to handle upgrades seamlessly, react to failures automatically, and not take shortcuts, like skipping a software backup process to save time.
-
-More technically, Operators are a method of packaging, deploying, and managing a Kubernetes application.
-
-A Kubernetes application is an app that is both deployed on Kubernetes and managed using the Kubernetes APIs and `kubectl` or `oc` tooling. To be able to make the most of Kubernetes, you require a set of cohesive APIs to extend in order to service and manage your apps that run on Kubernetes. Think of Operators as the runtime that manages this type of app on Kubernetes.
+Operators make it easy to manage complex stateful applications on top of Kubernetes. By [Extendig the Kubernetes API with CustomResourceDefinitions](https://kubernetes.io/docs/tasks/extend-kubernetes/custom-resources/custom-resource-definitions/) it is possible to create what we call Operator Projects where you will be able to create and define your own API's to represent your solutions on the cluster and managed them by looking for the desired state. For a better understanding see [Operator Pattern][operator-pattern]
 
 ## What is the difference between a Controller and an Operator
 
-An Operator is an application-specific controller that extends the Kubernetes API to create, configure and manage instances of complex stateful applications on behalf of a Kubernetes user. It is built on top of the basic Kubernetes resource and Kubernetes Controller along with some application-specific knowledge.
-
-We use Operators because managing stateful applications, like databases, caches and monitoring systems, is a big challenge, especially at massive scale. These systems require human operational knowledge to correctly scale, upgrade and reconfigure while at the same time protecting against data loss and unavailability.
-
-All Operators use the controller pattern, but the converse is not true. It's only an Operator if it has API extension and single-app focus in addition to the controller pattern
-
-## What do Operators provide?
-
-- Repeatability of installation and upgrade.
-- Constant health checks of every system component.
-- Over-the-air (OTA) updates for Kubernetes components and ISV content.
-- A place to encapsulate knowledge from field engineers and spread it to all users, not just one or two.
-
+See that following the [Operator's pattern][operator-pattern]; you will create [Controllers](https://kubernetes.io/docs/concepts/architecture/controller/) which provides a reconcile function responsible for synchronizing the resources until a desired state on the cluster. For a more practical explanation, see also [What’s in a controller?](https://book.kubebuilder.io/cronjob-tutorial/controller-overview.html#whats-in-a-controller)
 
 ## What is Operator Lifecycle Manager?
 
-Operator Lifecycle Manager (OLM) helps users install, update, and manage the lifecycle of all Operators and their associated services running across their clusters. It is part of the Operator Framework, an open source toolkit designed to manage Kubernetes native applications (Operators) in an effective, automated, and scalable way.
-
+Operator Lifecycle Manager (OLM) helps users install, update, and manage the lifecycle of all Operators and their associated services running across their clusters. This project is a component of the [Operator Framework][operator-framework], an open-source toolkit to manage Kubernetes native applications, called Operators, in an effective, automated, and scalable way. Read more in the introduction [blog post](https://www.openshift.com/blog/introducing-the-operator-framework?extIdCarryOver=true&sc_cid=701f2000001Css5AAC).
 
 ## How does OLM enable cluster admins and Developers?
 
@@ -47,7 +24,13 @@ For developers, a self-service experience allows provisioning and configuring in
 
 ## Build with the Operator SDK
 
-The [Operator SDK](https://sdk.operatorframework.io/) provides the tools to build, test and package Operators. The Operator SDK strips away a lot of the boilerplate code that is normally required to integrate with the Kubernetes API. It also provides a usable scaffolding so developers can focus on adding business logic (for example, how to scale, upgrade, or backup the application it manages). Leading practices and code patterns shared across Operators are included in the Operator SDK to help prevent duplicating efforts. The Operator SDK also encourages short, iterative development and test cycles with tooling that allow for basic validation of the Operator, and automated packaging for deployment using the [Operator Lifecycle Manager](https://olm.operatorframework.io/).
+[Operator SDK][osdk] is also a component of the [Operator Framework][operator-framework]. Writing an operator today can be difficult because of challenges such as using low-level APIs, writing boilerplate, and a lack of modularity which leads to duplication.
+The [Operator SDK][osdk] is a framework that uses the [controller-runtime][controller-runtime] library to make writing operators easier by providing:
+- High-level APIs and abstractions to write the operational logic more intuitively
+- Tools for scaffolding and code generation to bootstrap a new project fast
+- Extensions to cover common operator use cases
+
+Note that [Operator SDK][osdk] provides helpers and features to help you [integrate your project with OLM][olm-integration].  For further information check https://sdk.operatorframework.io/ .
 
 
 ## Package with the Operator Lifecycle Manager
@@ -56,6 +39,9 @@ With OLM, administrators can control which Operators are available in what names
 
 Simple, stateless applications can use the Lifecycle Management features of the Operator Framework—without writing any code—by using a generic Operator (for example, the Helm Operator). However, complex and stateful applications are where an Operator can be especially useful. The managed-service capabilities that are encoded into the Operator code can provide an advanced user experience, automating such features as updates, backups and scaling.
 
-#### Next steps
 
-See [How to use Operator SDK to build operators](https://sdk.operatorframework.io/build/). And then, check how Operator SDK can help you to [Integrate your Operator with OLM](https://sdk.operatorframework.io/docs/olm-integration/)
+[osdk]: https://sdk.operatorframework.io/
+[operator-framework]: https://github.com/operator-framework
+[controller-runtime]: https://github.com/kubernetes-sigs/controller-runtime
+[olm-integration]: https://sdk.operatorframework.io/docs/olm-integration/
+[operator-pattern]: https://kubernetes.io/docs/concepts/extend-kubernetes/operator/
