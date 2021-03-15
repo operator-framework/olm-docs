@@ -48,36 +48,16 @@ Operator developers may need to use one or more APIs for the operator installati
 
 To give cluster admins complete control over the permissions that OLM grants operators, OLM introduced the concept of `OperatorGroups`.
 
-* Define the set of permissions that OLM may grant to member operators
-* Define the set of namespaces that OLM may grant namespaced permissions in.
+* Defines the set of permissions that OLM may grant to member operators
+* Defines the set of namespaces that OLM may grant namespaced permissions in.
 
 ## Building blocks of OLM
 
-### [Install OLM](/docs/getting-started/)
-
-OLM requires you to provide metadata about your operator in order to ensure that it can be kept running safely on a cluster, and to provide information about how updates should be applied as you publish new versions of your operator. This is very similar to packaging software for a traditional operating system.
-
-### [Package Validation](/docs/tasks/validate-package)
-
-Once you've [created your operator's package manifests](https://github.com/laxmikantbpandhare/olm-docs/blob/master/content/en/docs/Tasks/creating-operator-manifests.md), you will want to ensure that your package is valid and in the correct format. To ensure this, you should take several steps to ensure that your package can be used to install your operator in OLM.
-
-### [Publish Package into catalog](/docs/tasks/make-operator-part-of-catalog)
-
-We will publish the package into a catalog, install that catalog onto a Kube cluster, and then install the operator onto that cluster. If all of that succeeds and your operator is behaving as expected, your package is valid.
 
 ### [Subscriptions](/docs/concepts/crds/subscription)
 
 A Subscription represents an intention to install an operator. Subscriptions are Custom Resources that relate an operator to a CatalogSource. Subscriptions describe which [channel](/docs/glossary/#channel) of an operator package to subscribe to and whether to perform updates automatically or manually. If set to automatic, the Subscription ensures OLM will manage and upgrade the operator to ensure the latest version is always running in the cluster.
 
-### [Install Operator](/docs/tasks/install-operator-with-olm/)
-
-Once you've made your operator available in a catalog, or you've chosen an operator from an existing catalog, you can install your operator by creating a Subscription to a specific channel. 
-
-### [Uninstall Operator](/docs/tasks/uninstall-olm)
-
-Delete subscriptions and ClusterServiceVersion. Both `Subscription` and `CSV` are namespaced objects meaning you need to delete a `Subscription` and a `CSV` in a specific namespace where you install the operator into. 
-
-By deleting `ClusterServiceVersion`, it will delete the operator's resources that OLM created for the operator such as deployment, pod(s), RBAC, and others.
 
 ## Where should I go next?
 
