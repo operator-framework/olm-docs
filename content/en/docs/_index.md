@@ -38,11 +38,11 @@ This packaging mechanism helps to simplify the multiple steps involved in deploy
 
 ### Dependency Resolution
 
-Operator developers often require other operators to support their operators. It creates a dependency on the other operators. OLM offers dependency resolution and upgrades lifecycle of running operators. This functionality helps operator developers to resolve the problems related to dependency. As a developer or cluster admin, no need to care about the dependency of my operator.
+Using OLM eliminates the need for developers and cluster admins to have to worry about managing dependancies when developing one or more operators. OLM offers dependency resolution and upgrades the lifecycle of running operators. This functionality helps operator developers to resolve the problems related to dependency management.
 
 ### Works similar to package Managers
 
-Operator developers may need all APIs for the operator installation. OLM verifies that all required APIs are available for the operator. If they are not available, then OLM will not install the operator. As an operator developer, there is no need to looks for the required APIs. OLM will take care of it.
+Operator developers may need to use one or more APIs for the operator installation and OLM helps solve this use case by verifying that all of the required APIs are available for the operator. If they are not available, then OLM will not install the operator.
 
 ### Operator Groups
 
