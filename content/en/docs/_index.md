@@ -30,58 +30,50 @@ Operators must claim ownership of their APIs. OLM will prevent conflicting Opera
 Operators can behave like managed service providers. Their user interface on the command line are APIs. For graphical consoles OLM annotates those APIs with descriptors that drive the creation of rich interfaces and forms for users to interact with the Operator in a natural, cloud-like way. 
 
 
-## How OLM solved the cluster admin and developer needs.
+## How OLM solves the cluster admin and developer needs.
 
 ### Operator Installation and Management
 
-As there are multiple steps involved in deploying an Operator, including creating the deployment, adding the custom resource definitions, and configuring the necessary permissions, a management layer becomes necessary to facilitate the process.
-
-Operator Lifecycle Manager (OLM) fulfills this role by introducing a packaging mechanism for delivering Operators and the necessary metadata for visualizing them in compatible UIs, including installation instructions and API hints in the form of CRD descriptors.
+This packaging mechanism helps to simplify the multiple steps involved in deploying an Operator. OLM fulfills necessary metadata for visualizing them incompatible UIs, including installation instructions and API hints in the form of CRD descriptors. It helps cluster admin, developers to manage the lifecycle of all Operators and their associated services running across their clusters.
 
 ### Dependency Resolution
 
-OLM manages the dependency resolution and upgrade lifecycle of running operators. 
+Operator developers often require other operators to support their operators. It creates a dependency on the other operators. OLM offers dependency resolution and upgrades lifecycle of running operators. This functionality helps operator developers to resolve the problems related to dependency. As a developer or cluster admin, no need to care about the dependency of my operator.
 
-If a dependency is ever discovered, OLM will attempt to resolve said dependency by searching through known `CatalogSources` for an operator that `owns` the API. If an operator is found that `owns`the `required` API, OLM will attempt to deploy the operator that `owns` the API. If no `owner` is found, OLM will fail to deploy the operator with the dependency.
+### Works similar to package Managers
 
-### Work similar to package Managers
-
-OLM verifies that all require APIs are available for the operator. If it is not available, then it will not install the operator.
-
-OLM will never update an operator in a way that breaks another that depends upon it.
+Operator developers may need all APIs for the operator installation. OLM verifies that all required APIs are available for the operator. If they are not available, then OLM will not install the operator. As an operator developer, there is no need to looks for the required APIs. OLM will take care of it.
 
 ### Operator Groups
 
-OLM introduces the concept of `OperatorGroups` to enable cluster admins complete control over the permissions that OLM grants operators that it deploys.
-
-With `OperatorGroups`, a cluster admin can:
+To give cluster admins complete control over the permissions that OLM grants operators, OLM introduced the concept of `OperatorGroups`.
 
 * Define the set of permissions that OLM may grant to member operators
 * Define the set of namespaces that OLM may grant namespaced permissions in.
 
 ## Building blocks of OLM
 
-### [Install OLM](https://github.com/laxmikantbpandhare/olm-docs/blob/master/content/en/docs/getting-started/_index.md)
+### [Install OLM](/docs/getting-started/)
 
 OLM requires you to provide metadata about your operator in order to ensure that it can be kept running safely on a cluster, and to provide information about how updates should be applied as you publish new versions of your operator. This is very similar to packaging software for a traditional operating system.
 
-### [Package Validation](https://github.com/laxmikantbpandhare/olm-docs/blob/master/content/en/docs/Tasks/validate-package.md)
+### [Package Validation](/docs/tasks/validate-package)
 
 Once you've [created your operator's package manifests](https://github.com/laxmikantbpandhare/olm-docs/blob/master/content/en/docs/Tasks/creating-operator-manifests.md), you will want to ensure that your package is valid and in the correct format. To ensure this, you should take several steps to ensure that your package can be used to install your operator in OLM.
 
-### [Publish Package into catalog](https://github.com/laxmikantbpandhare/olm-docs/blob/master/content/en/docs/Tasks/make-operator-part-of-catalog.md)
+### [Publish Package into catalog](/docs/tasks/make-operator-part-of-catalog)
 
 We will publish the package into a catalog, install that catalog onto a Kube cluster, and then install the operator onto that cluster. If all of that succeeds and your operator is behaving as expected, your package is valid.
 
-### [Subscriptions](https://github.com/laxmikantbpandhare/olm-docs/blob/master/content/en/docs/Concepts/crds/subscription.md)
+### [Subscriptions](/docs/concepts/crds/subscription)
 
 A Subscription represents an intention to install an operator. Subscriptions are Custom Resources that relate an operator to a CatalogSource. Subscriptions describe which [channel](/docs/glossary/#channel) of an operator package to subscribe to and whether to perform updates automatically or manually. If set to automatic, the Subscription ensures OLM will manage and upgrade the operator to ensure the latest version is always running in the cluster.
 
-### [Install Operator](https://github.com/laxmikantbpandhare/olm-docs/blob/master/content/en/docs/Tasks/install-operator-with-olm.md)
+### [Install Operator](/docs/tasks/install-operator-with-olm/)
 
 Once you've made your operator available in a catalog, or you've chosen an operator from an existing catalog, you can install your operator by creating a Subscription to a specific channel. 
 
-### [Uninstall Operator](https://github.com/laxmikantbpandhare/olm-docs/blob/master/content/en/docs/Tasks/uninstall-operator.md)
+### [Uninstall Operator](/docs/tasks/uninstall-olm)
 
 Delete subscriptions and ClusterServiceVersion. Both `Subscription` and `CSV` are namespaced objects meaning you need to delete a `Subscription` and a `CSV` in a specific namespace where you install the operator into. 
 
@@ -89,8 +81,8 @@ By deleting `ClusterServiceVersion`, it will delete the operator's resources tha
 
 ## Where should I go next?
 
-- [How do I install OLM?](https://github.com/laxmikantbpandhare/olm-docs/blob/master/content/en/docs/getting-started/_index.md)
-- [How do I validate the package?](https://github.com/laxmikantbpandhare/olm-docs/blob/master/content/en/docs/Tasks/validate-package.md)
-- [How do I install my operator with OLM?](https://github.com/laxmikantbpandhare/olm-docs/blob/master/content/en/docs/Tasks/install-operator-with-olm.md)
-- [How do I uninstall an Operator?](https://github.com/laxmikantbpandhare/olm-docs/blob/master/content/en/docs/Tasks/uninstall-operator.md)
-- [How do I uninstall OLM?](https://github.com/laxmikantbpandhare/olm-docs/blob/master/content/en/docs/Tasks/uninstall-operator.md)
+- [How do I install OLM?](/docs/getting-started/)
+- [How do I validate the package?](/docs/tasks/validate-package)
+- [How do I install my operator with OLM?](/docs/tasks/install-operator-with-olm/)
+- [How do I uninstall an Operator?](/docs/tasks/uninstall-operator)
+- [How do I uninstall OLM?](/docs/tasks/uninstall-olm)
