@@ -34,7 +34,7 @@ Operators can behave like managed service providers. Their user interface on the
 
 ### Operator Installation and Management
 
-This packaging mechanism helps to simplify the multiple steps involved in deploying an Operator. OLM fulfills necessary metadata for visualizing them incompatible UIs, including installation instructions and API hints in the form of CRD descriptors. It helps cluster admin, developers to manage the lifecycle of all Operators and their associated services running across their clusters.
+This packaging mechanism helps to simplify the multiple steps involved in deploying an Operator. OLM fulfills necessary metadata for visualizing them in compatible UIs, including installation instructions and API hints in the form of CRD descriptors. It helps cluster admin, developers to manage the lifecycle of all Operators and their associated services running across their clusters.
 
 ### Dependency Resolution
 
