@@ -1,7 +1,7 @@
 ---
 title: "Glossary"
 linkTitle: "Glossary"
-weight: 5
+weight: 6
 description: >
   A list of jargon used in the context of OLM, along with their definitions.
 ---
