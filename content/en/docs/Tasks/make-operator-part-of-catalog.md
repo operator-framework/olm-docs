@@ -31,7 +31,7 @@ This Dockerfile assumes that your package is in a directory called `./manifests/
 
 Then just use your favorite container tooling to build the container image and push it to a registry:
 
-```
+```bash
 docker build -t example-registry:latest -f registry-Dockerfile .
 docker push example-registry:latest
 ```

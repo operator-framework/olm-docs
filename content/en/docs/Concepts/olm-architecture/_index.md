@@ -14,7 +14,6 @@ Each of these Operators are responsible for managing the CRDs that are the basis
 
 **_Table 1. CRDs managed by OLM and Catalog Operators_**
 
-
 | Resource              | Short Name  | Owner   | Description                           |
 |-----------------------|-------------|---------|---------------------------------------|
 | ClusterServiceVersion | **csv**     | OLM     | Application metadata: name, version, icon, required resources, installation, etc.  |
@@ -26,17 +25,15 @@ Each of these Operators are responsible for managing the CRDs that are the basis
 
 Each of these Operators are also responsible for creating resources:
 
-
 **_Table 2. Resources created by OLM and Catalog Operator_**
 
-
-| Resource                           | Short Name  | 
+| Resource                           | Short Name  |
 |------------------------------------|-------------|
 | Deployments                        | OLM     |
 | ServiceAccounts                    | OLM     |
 | (Cluster)Roles                     | OLM     |
 | (Cluster)RoleBindings              | OLM     |
-| Custom Resource Definitions (CRDs) | Catalog | 
+| Custom Resource Definitions (CRDs) | Catalog |
 | ClusterServiceVersions (CSVs)      | Catalog |
 ----------------
 
@@ -71,7 +68,6 @@ Users can also create an InstallPlan resource directly, containing the names of 
   * For each required CRD, finds the CSV that manages it.
 * Watches for resolved InstallPlans and creates all of the discovered resources for it (if approved by a user or automatically).
 * Watches for CatalogSources and Subscriptions and creates InstallPlans based on them.
-
 
 ## Catalog Registry
 

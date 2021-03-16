@@ -15,6 +15,7 @@ An OperatorGroup is an OLM resource that provides rudimentary multitenant config
 ## Membership
 
 An operator defined by CSV `csv-a` is said to be a _member_ of `OperatorGroup` `op-a` in namespace `ns-a` if both of the following hold:
+
 * `op-a` is the only `OperatorGroup` in `ns-a`
 * `csv-a`'s `InstallMode`s support `op-a`'s target namespace set
 
@@ -25,6 +26,7 @@ If there exists more than one `OperatorGroup` in a single namespace, any CSV cre
 ### InstallModes and Supported OperatorGroups
 
 An `InstallMode` consists of an `InstallModeType` field and a boolean `Supported` field. A CSV's spec can contain a set of `InstallModes` of four distinct `InstallModeTypes`:
+
 * `OwnNamespace`: If supported, the operator can be a member of an `OperatorGroup` that selects its own namespace
 * `SingleNamespace`: If supported, the operator can be a member of an `OperatorGroup` that selects one namespace
 * `MultiNamespace`: If supported, the operator can be a member of an `OperatorGroup` that selects more than one namespace
@@ -85,6 +87,7 @@ The resolved set of selected namespaces is surfaced in an `OperatorGroup`'s `sta
 ## OperatorGroup CSV Annotations
 
 Member CSVs of an `OperatorGroup` get the following annotations:
+
 * `olm.operatorGroup=<group-name>`
   * Contains the name of the `OperatorGroup`
 * `olm.operatorGroupNamespace=<group-namespace>`
@@ -125,6 +128,7 @@ status:
 ## RBAC
 
 When an `OperatorGroup` is created, 3 ClusterRoles each containing a single AggregationRule are generated:
+
 * `<operatorgroup-name>-admin`
   * ClusterRoleSelector set to match the `olm.opgroup.permissions/aggregate-to-admin: <operatorgroup-name>` label
 
@@ -135,6 +139,7 @@ When an `OperatorGroup` is created, 3 ClusterRoles each containing a single Aggr
   * ClusterRoleSelector set to match the `olm.opgroup.permissions/aggregate-to-view: <operatorgroup-name>` label
 
 When a CSV becomes an active member of an `OperatorGroup` and is not in a failed state with reason InterOperatorGroupOwnerConflict, the following RBAC resources are generated:
+
 * For each provided API resource from a CRD:
   * A `<kind.group-version-admin>` ClusterRole is generated with the `*` verb on `<group>` `<kind>` with aggregation labels `rbac.authorization.k8s.io/aggregate-to-admin: true` and `olm.opgroup.permissions/aggregate-to-admin: <operatorgroup-name>`
   * A `<kind.group-version-edit>` ClusterRole is generated with the `create, update, patch, release` verbs on `<group>` `<kind>` with aggregation labels `rbac.authorization.k8s.io/aggregate-to-edit: true` and `olm.opgroup.permissions/aggregate-to-edit: <operatorgroup-name>`
@@ -190,6 +195,7 @@ spec:
 ### Rules for Intersection
 
 Each time an active member CSV syncs, OLM queries the cluster for the set of _intersecting provided APIs_ between the CSV's `OperatorGroup` and all others. OLM then checks if that set __is the empty set__:
+
 * If __true__ and the CSV's provided APIs __are a subset__ of the `OperatorGroup`'s:
   * Continue transitioning
 * If __true__ and the CSV's provided APIs __are not a subset__ of the `OperatorGroup`'s:
@@ -209,10 +215,10 @@ Each time an active member CSV syncs, OLM queries the cluster for the set of _in
     * Replace the `OperatorGroup`'s `olm.providedAPIs` annotation with the difference between itself and the CSV's provided APIs
 
 > Note: Failure states caused by `OperatorGroup`s are non-terminal.
-
 > Note: When checking intersection rules, an `OperatorGroup`'s namespace is always included as part of its selected target namespaces.
 
 Each time an `OperatorGroup` syncs:
+
 * The set of provided APIs from active member CSV's is calculated from the cluster (ignoring [copied CSVs](#copied-csvs))
 * The cluster set is compared to `olm.providedAPIs`:
   * If `olm.providedAPIs` contains any extraneous provided APIs:

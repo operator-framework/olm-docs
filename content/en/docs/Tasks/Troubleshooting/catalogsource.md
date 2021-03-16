@@ -4,7 +4,7 @@ linkTitle: "CatalogSource"
 date: 2020-03-25
 weight: 2
 description: >
-  Tips and tricks related to troubleshooting the configuration of a `CatalogSource`. 
+  Tips and tricks related to troubleshooting the configuration of a `CatalogSource`.
 ---
 
 ## How to debug a failing CatalogSource

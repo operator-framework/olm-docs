@@ -13,11 +13,12 @@ Once you have your operator packaged in the bundle format, use the `initializer`
 ./bin/initializer -m <relative path to directory of manifests> -o <relative path to a sqlite file to create or overwrite>
 ```
 
-Once you have a database file, eg sqlite.db, you can serve the database locally using the `registry-server` binary. 
+Once you have a database file, eg sqlite.db, you can serve the database locally using the `registry-server` binary.
 
 ```bash
-./bin/registry-server -d sqlite.db -p <port number to serve on (default "50051")> 
+./bin/registry-server -d sqlite.db -p <port number to serve on (default "50051")>
 ```
+
 [grpcurl](https://github.com/fullstorydev/grpcurl) is a useful tool for interacting with the example catalog server.
 
 ```sh
@@ -34,8 +35,9 @@ ListPackages
 ```
 
 ```sh
-$ grpcurl -plaintext  localhost:50051 api.Registry/ListPackages
+grpcurl -plaintext  localhost:50051 api.Registry/ListPackages
 ```
+
 ```json
 {
   "name": "etcd"
@@ -46,8 +48,9 @@ $ grpcurl -plaintext  localhost:50051 api.Registry/ListPackages
 ```
 
 ```sh
-$ grpcurl -plaintext -d '{"name":"etcd"}' localhost:50051 api.Registry/GetPackage
+grpcurl -plaintext -d '{"name":"etcd"}' localhost:50051 api.Registry/GetPackage
 ```
+
 ```json
 {
   "name": "etcd",
@@ -65,6 +68,7 @@ $ grpcurl -plaintext -d '{"name":"etcd"}' localhost:50051 api.Registry/GetPackag
 $ grpcurl localhost:50051 describe api.Registry.GetBundleForChannel
 api.Registry.GetBundleForChannel is a method:
 ```
+
 ```json
 {
   "name": "GetBundleForChannel",
@@ -79,6 +83,7 @@ api.Registry.GetBundleForChannel is a method:
 $ grpcurl localhost:50051 describe api.GetBundleInChannelRequest
 api.GetBundleInChannelRequest is a message:
 ```
+
 ```json
 {
   "name": "GetBundleInChannelRequest",
@@ -111,8 +116,9 @@ api.GetBundleInChannelRequest is a message:
 ```
 
 ```sh
-$ grpcurl -plaintext -d '{"pkgName":"etcd","channelName":"alpha"}' localhost:50051 api.Registry/GetBundleForChannel
+grpcurl -plaintext -d '{"pkgName":"etcd","channelName":"alpha"}' localhost:50051 api.Registry/GetBundleForChannel
 ```
+
 ```json
 {
   "csvName": "etcdoperator.v0.9.2",

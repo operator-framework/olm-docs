@@ -8,7 +8,7 @@ description: >
 
 ### Bundle
 
-**Definition**: A collection of Operator [CSV](/docs/concepts/crds/clusterserviceversion), manifests, and metadata which together form a unique version of an Operator that can be installed onto the cluster. 
+**Definition**: A collection of Operator [CSV](/docs/concepts/crds/clusterserviceversion), manifests, and metadata which together form a unique version of an Operator that can be installed onto the cluster.
 
 ### Bundle Image
 
@@ -52,4 +52,3 @@ description: >
 ### Update Graph
 
 **Definition**: An upgrade graph links versions of [CSV](/docs/concepts/crds/clusterserviceversion) together, similar to the upgrade graph of any other packaged software. Operators can be installed sequentially, or certain versions can be skipped. The update graph is expected to grow only at the head with newer versions being added.
-

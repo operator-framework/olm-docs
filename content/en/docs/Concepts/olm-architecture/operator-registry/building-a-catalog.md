@@ -4,14 +4,15 @@ linkTitle: "Building a Catalog"
 date: 2020-04-27
 weight: 3
 description: >
-    Build a Catalog of Operators using [Operator-Registry](https://github.com/operator-framework/operator-registry) 
+    Build a Catalog of Operators using [Operator-Registry](https://github.com/operator-framework/operator-registry)
 ---
 
-# Manifest format
+## Manifest format
 
 We refer to a directory of files with one ClusterServiceVersion as a "bundle". A bundle typically includes a ClusterServiceVersion and the CRDs that define the owned APIs of the CSV in its manifest directory, though additional objects may be included. It also includes an annotations file in its metadata folder which defines some higher level aggregate data that helps to describe the format and package information about how the bundle should be added into an index of bundles.
 <pre></pre>
-```
+
+```yaml
  # example bundle
  etcd
  ├── manifests
@@ -32,7 +33,7 @@ Bundle directories are identified solely by the fact that they contain a Cluster
 Check out the [operator bundle design proposal](https://github.com/operator-framework/operator-registry/blob/master/docs/design/operator-bundle.md) for more detail on the bundle format.
 <pre></pre>
 
-# Bundle images
+## Bundle images
 
 Using [OCI spec](https://github.com/opencontainers/image-spec/blob/master/spec.md) container images as a method of storing the manifest and metadata contents of individual bundles, `opm` interacts directly with these images to generate and incrementally update the database. Once you have your [manifests defined](https://operator-framework.github.io/olm-book/docs/packaging-an-operator.html#writing-your-operator-manifests) and have created a directory in the format defined above, building the image is as simple as defining a Dockerfile and building that image:
 
@@ -65,8 +66,7 @@ podman push quay.io/my-container-registry-namespace/my-manifest-bundle:latest
 Of course, this build step can be done with any other OCI spec container tools like `docker`, `buildah`, `libpod`, etc.
 <pre></pre>
 
-# Building an index of Operators using opm
-
+## Building an index of Operators using opm
 
 <pre></pre>
 Index images are additive, so you can add a new version of your operator bundle when you publish a new version:
@@ -77,9 +77,8 @@ opm index add --bundles quay.io/my-container-registry-namespace/my-manifest-bund
 <pre></pre>
 For more detail on using `opm` to generate index images, take a look at the [documentation](https://github.com/operator-framework/operator-registry/blob/master/docs/design/opm-tooling.md).
 <pre></pre>
+
 ## Where should I go next?
 
-* [Use the catalog of operators locally](/docs/concepts/olm-architecture/operator-registry/using-a-catalog-locally): Test your catalog locally 
+* [Use the catalog of operators locally](/docs/concepts/olm-architecture/operator-registry/using-a-catalog-locally): Test your catalog locally
 * [Using a Catalog with OLM](/docs/concepts/olm-architecture/operator-registry/using-catalog-with-olm): Make your operator available for OLM in a cluster
-
-

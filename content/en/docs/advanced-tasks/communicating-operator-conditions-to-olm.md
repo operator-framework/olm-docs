@@ -4,7 +4,7 @@ linkTitle: "Communicating Operator Conditions to OLM"
 weight: 3
 ---
 
-# Communicating Operator Conditions to OLM
+## Communicating Operator Conditions to OLM
 
 As part of its role in managing the lifecycle of an operator, the Operator-Lifecycle-Manager (OLM) infers the state of an operator from the state of Kubernetes resources that define the operator. While this approach provides some level of assurance that an operator is in a given state, there are many instances where an operator may wish to communicate information to OLM that could not be inferred otherwise. This information can then be used by OLM to better manage the lifecycle of the operator.
 
