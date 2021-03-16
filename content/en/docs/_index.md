@@ -53,10 +53,28 @@ To give cluster admins complete control over the permissions that OLM grants ope
 
 ## Building blocks of OLM
 
+### [ClusterServiceVersion](/docs/concepts/crds/clusterserviceversion)
+A `ClusterServiceVersion (CSV)` represents a particular version a running operator on a cluster. It includes metadata such as name, description, version, repository link, labels, icon, etc. 
+
+
+### [CatalogSource](/docs/concepts/crds/catalogsource/)
+A `CatalogSource` represents a store of metadata that OLM can query to discover and install operators and their dependencies.
+
+
+### [OperatorCondition](/docs/concepts/crds/operatorcondition/)
+An `OperatorCondition` is CustomResourceDefinition that creates a communication between OLM and an operator it manages. Operators may write to the `Status.Conditions` array to modify OLM management the operator.
+
 
 ### [Subscriptions](/docs/concepts/crds/subscription)
+A `Subscription` represents an intention to install an operator. Subscriptions are Custom Resources that relate an operator to a CatalogSource. Subscriptions describe which [channel](/docs/glossary/#channel) of an operator package to subscribe to and whether to perform updates automatically or manually. If set to automatic, the Subscription ensures OLM will manage and upgrade the operator to ensure the latest version is always running in the cluster.
 
-A Subscription represents an intention to install an operator. Subscriptions are Custom Resources that relate an operator to a CatalogSource. Subscriptions describe which [channel](/docs/glossary/#channel) of an operator package to subscribe to and whether to perform updates automatically or manually. If set to automatic, the Subscription ensures OLM will manage and upgrade the operator to ensure the latest version is always running in the cluster.
+
+### [InstallPlan](/docs/concepts/crds/installplan/)
+An `InstallPlan` defines a set of resources to be created in order to install or upgrade to a specific version of a ClusterService defined by a CSV.
+
+
+### [OperatorGroup](/docs/concepts/crds/operatorgroup/)
+An `OperatorGroup` is an OLM resource that provides rudimentary multitenant configuration to OLM installed operators.
 
 
 ## Where should I go next?
