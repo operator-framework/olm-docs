@@ -1,7 +1,7 @@
 ---
 title: "Creating operator manifests"
 date: 2020-03-25
-weight: 2
+weight: 1
 description: >
   Create operator manifests to describe your operator to OLM, i.e package your operator for OLM.
 ---
