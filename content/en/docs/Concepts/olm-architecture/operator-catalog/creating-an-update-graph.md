@@ -20,9 +20,9 @@ such:
 
 ```yaml
 metadata:
-   name: myoperator.v1.0.1
+  name: myoperator.v1.0.1
 spec:
-   replaces: myoperator.v1.0.0
+  replaces: myoperator.v1.0.0
 ```
 
 In order for `myoperator.v1.0.1` to be added to the catalog successfully, `myoperator.v1.0.0` needs to
@@ -50,12 +50,12 @@ In order to skip through certain updates you can specify a list of CSV names to 
 
 ```yaml
 metadata:
-   name: myoperator.v1.0.3
+  name: myoperator.v1.0.3
 spec:
-   replaces: myoperator.v1.0.0
-   skips:
-   - myoperator.v1.0.1
-   - myoperator.v1.0.2
+  replaces: myoperator.v1.0.0
+  skips:
+    - myoperator.v1.0.1
+    - myoperator.v1.0.2
 ```
 
 Using the above graph, this will mean subscriptions on `myoperator.v1.0.0` can update directly to
@@ -68,6 +68,22 @@ or contain bugs.
 
 Skipped CSVs do not need to be present in a catalog or set of manifests prior to adding to a catalog.
 
+#### Example: Replaces and skips
+
+```yaml
+apiVersion: operators.coreos.com/v1alpha1
+kind: ClusterServiceVersion
+metadata:
+  name: etcdoperator.v0.9.2
+  namespace: placeholder
+spec:
+  displayName: etcd
+  description: Etcd Operator
+  replaces: etcdoperator.v0.9.0
+  skips:
+    - etcdoperator.v0.9.1
+```
+
 ### SkipRange
 
 OLM also allows you to specify updates through version ranges in your CSV. This requires your CSVs
@@ -76,9 +92,9 @@ Internally, OLM uses the [blang/semver](https://github.com/blang/semver) go libr
 
 ```yaml
 metadata:
-   name: myoperator.v1.0.3
-   annotations:
-      olm.skipRange: ">=1.0.0 <1.0.3"
+  name: myoperator.v1.0.3
+  annotations:
+    olm.skipRange: ">=1.0.0 <1.0.3"
 ```
 
 The version specifying the `olm.skipRange` will be presented as a direct (one hop) update to
@@ -113,6 +129,20 @@ SkipRange by itself is useful for teams who are not interested in supporting dir
 versions within a given range or for whom consumers of the operator are always on the latest
 version.
 
+#### Example: SkipRange
+
+```yaml
+apiVersion: operators.coreos.com/v1alpha1
+kind: ClusterServiceVersion
+metadata:
+  name: elasticsearch-operator.v4.1.2
+  namespace: placeholder
+  annotations:
+    olm.skipRange: '>=4.1.0 <4.1.2'
+```
+
+In the above example, `elasticsearch-operator.v4.1.2` will replace all operators in its package with versions falling in the range `>=4.1.0` `<4.1.2`, while at the same time preventing those operators from being installed.
+
 ## Channel Guidelines
 
 ### Cross channel updates
@@ -138,4 +168,4 @@ The version currently installed must be in the `olm.skipRange` field of a CSV in
 
 ## Add Modes
 
-TODO
+[Install Modes and Supported Operator Groups](/docs/concepts/crds/operatorgroup/#installmodes-and-supported-operatorgroups)
