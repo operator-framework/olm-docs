@@ -3,10 +3,10 @@ title: "Update operator to next version"
 date: 2021-03-09
 weight: 2
 description: >
-   Given an operator at version n, what should I do to create a version n+1.
+   This guide shows OLM users how to upgrade their operator bundles and how to distribute the new versions of the projects.
 --- 
 
-## Introduction
+## Overview
 
 In the Operator Lifecycle Manager (OLM) ecosystem, the following resources are used to resolve Operator installations and upgrades:
 
@@ -37,15 +37,15 @@ In the above image, etcd is a package. Alpha and beta are the channels.
 
 ## How upgrade works
 
-For an example upgrade scenario, consider an installed Operator corresponding to CSV version 0.1.1. OLM queries the CatalogSource and detects an upgrade in the subscribed channel with new CSV version 0.1.3 that replaces an older but not-installed CSV version 0.1.2, which in turn replaces the older and installed CSV version 0.1.1.
+For an example upgrade scenario, consider an installed Operator corresponding to CSV version `0.1.1`. OLM queries the CatalogSource and detects an upgrade in the subscribed channel with new CSV version `0.1.3` that replaces an older but not-installed CSV version `0.1.2`, which in turn replaces the older and installed CSV version `0.1.1`.
 
-OLM walks back from the channel head to previous versions via the replaces field specified in the CSVs to determine the upgrade path 0.1.3 → 0.1.2 → 0.1.1; the direction of the arrow indicates that the former replaces the latter. OLM upgrades the Operator one version at the time until it reaches the channel head.
+OLM walks back from the channel head to previous versions via the replaces field specified in the CSVs to determine the upgrade path `0.1.3` → `0.1.2` → `0.1.1`; the direction of the arrow indicates that the former replaces the latter. OLM upgrades the Operator one version at the time until it reaches the channel head.
 
-For this given scenario, OLM installs Operator version 0.1.2 to replace the existing Operator version 0.1.1. Then, it installs Operator version 0.1.3 to replace the previously installed Operator version 0.1.2. At this point, the installed operator version 0.1.3 matches the channel head and the upgrade is completed.
+For this given scenario, OLM installs Operator version `0.1.2` to replace the existing Operator version `0.1.1`. Then, it installs Operator version `0.1.3` to replace the previously installed Operator version `0.1.2`. At this point, the installed operator version `0.1.3` matches the channel head and the upgrade is completed.
 
 ## Below links for more details
 
-- [Update Operator]()
+- [Update Operator](/docs/tasks/update-and-ship-operator)
 
 
 
