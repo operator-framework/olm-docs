@@ -1,7 +1,7 @@
 ---
 title: "Uninstall your operator"
 date: 2020-03-25
-weight: 8
+weight: 7
 description: >
     Uninstall your operator from the cluster
 ---

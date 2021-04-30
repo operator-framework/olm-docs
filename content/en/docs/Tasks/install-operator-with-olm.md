@@ -1,6 +1,6 @@
 ---
 title: "Install your operator with OLM"
-date: 2020-03-25
+date: 2021-04-30
 weight: 6
 description: >
     Install your operator from a catalog of operators
