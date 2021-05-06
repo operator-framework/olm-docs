@@ -10,7 +10,7 @@ menu:
 
 Read more in the [introduction blog post](https://operatorhub.io/what-is-an-operator).
 
-## Features provided by OLM?
+## Features provided by OLM
 
 
 ### Over-the-Air Updates and Catalogs

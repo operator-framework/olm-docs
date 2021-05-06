@@ -37,10 +37,10 @@ Each type of check for an updated catalog source is called an `updateStrategy`. 
 
 #### Caveats
 
-*The polling sequence is not instantaneous - it can take up to 15 minutes from each poll for the new catalog source pod to be deployed into the cluster. It may take longer for larger clusters.
-*Because OLM pulls down the image every poll interval and starts the pod, to see if its updated, the updated catalog pod must be able to be scheduled onto the cluster. If the cluster is at absolutely maximum capacity, without autoscaling enabled, this feature may not work.
-*OLM checks to see whether the container ImageID has changed between the old and new catalog source image when determining if an upgrade is in order. It does not actually parse the image content itself to check for later CSVs. If there is a bad upgrade to the catalog source image, simply overwrite the tag with another version and it will be pulled down, or delete and recreate the catalog source.
-*The polling interval should be reasonably high to ensure the update functionality works as intended. Avoid intervals less than 15m.
+- The polling sequence is not instantaneous - it can take up to 15 minutes from each poll for the new catalog source pod to be deployed into the cluster. It may take longer for larger clusters.
+- Because OLM pulls down the image every poll interval and starts the pod, to see if its updated, the updated catalog pod must be able to be scheduled onto the cluster. If the cluster is at absolutely maximum capacity, without autoscaling enabled, this feature may not work.
+- OLM checks to see whether the container ImageID has changed between the old and new catalog source image when determining if an upgrade is in order. It does not actually parse the image content itself to check for later CSVs. If there is a bad upgrade to the catalog source image, simply overwrite the tag with another version and it will be pulled down, or delete and recreate the catalog source.
+- The polling interval should be reasonably high to ensure the update functionality works as intended. Avoid intervals less than 15m.
 
 ### Using registry images that require authentication as index/bundle/operator/operand images 
 
@@ -58,7 +58,7 @@ metadata:
   namespace: operator
 spec:
   sourceType: grpc
-  secrets: <1>
+  secrets: 
   - "<secret_name_1>"
   - "<secret_name_2>"
   image: quay.io/my-namespace/my-index:latest

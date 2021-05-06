@@ -136,7 +136,7 @@ Of course, this build step can be done with any other OCI spec container tools l
 
 Once you've created your bundle, you will want to ensure that your bundle is valid and in the correct format. The [api][api-repo] library contains a validation library that is used by operator-framework tools like `operator-sdk` and `opm` to validate operator bundles. For more information on validating via the `operator-sdk` see the [`operator-sdk bundle validate` documentation][sdk-bundle-validate].
 
-The `opm alpha bundle validate` command will validate bundle image from a remote registry to determine if its format and content information are accurate.
+The `opm alpha bundle validate` command will validate a bundle image from a remote registry to determine if its format and content information are accurate.
 The following validators will run by default on every invocation of the command.
 
 - CSV validator - validates the CSV name and replaces fields.
@@ -149,16 +149,16 @@ For example:
 
 ### Optional Validation
 
-Some validators are disabled by default and can be optionally enabled via the `--optional-validators` or `-o` flag
+Some validators are disabled by default and can be optionally enabled via the `--optional-validators` or `-o` flag.
 
-- Operatorhub validator - performs operatorhub.io validation. To validate a bundle using custom categories use with the `OPERATOR_BUNDLE_CATEGORIES` environmental variable to point to a json-encoded categories file. Enable via `--optional-validators=operatorhub`.
-- Bundle objects validator - performs validation on resources like PodDisruptionBudgets and PriorityClasses. Enable via `--optional-validators=bundle-objects`.
+- Operatorhub validator - performs operatorhub.io validation. To validate a bundle using custom categories use the `OPERATOR_BUNDLE_CATEGORIES` environmental variable to point to a json-encoded categories file. Enable this option via `--optional-validators=operatorhub`.
+- Bundle objects validator - performs validation on resources like `PodDisruptionBudgets` and `PriorityClasses`. Enable this option via `--optional-validators=bundle-objects`.
 Multiple optional validators can be enabled at once, for example `--optional-validators=operatorhub,bundle-objects`.
 
 #### Custom bundle categories
 
-The operatorhub validator can verify against custom bundle categories by setting the `OPERATOR_BUNDLE_CATEGORIES` environmental variable.
-Setting the `OPERATOR_BUNDLE_CATEGORIES` environmental variable to the path to a json file containing a list of categories will enable those categories to be used when comparing CSV categories for operatorhub validation. The json file should be in the following format:
+The operatorhub validator can verify against custom bundle categories by setting the `OPERATOR_BUNDLE_CATEGORIES` environment variable.
+Setting the `OPERATOR_BUNDLE_CATEGORIES` environment variable to the path to a json file containing a list of categories will enable those categories to be used when comparing CSV categories for operatorhub validation. The json file should be in the following format:
 
 ```json
 {
