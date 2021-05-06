@@ -138,4 +138,4 @@ If your intent is to pin an installed Operator to the particular version `1.1.0`
 
 [create-catsrc-doc]: /docs/tasks/make-index-available-on-cluster
 [subscription-doc]: /docs/concepts/crds/subscription
-[channel-def]: /docs/glossary/#channel
+[channel-def]: /docs/glossary/_index#channel

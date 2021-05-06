@@ -109,7 +109,7 @@ spec:
 
 `deployments` is an array - your operator may be composed of several seperate components that should all be deployed and versioned together.
 
-It's also important to tell OLM the ways in which your operator can be deployed, or its `installModes`. InstallModes indicate if your operator can be configured to watch, one, some, or all namespaces. Please see the [document on install modes]() and `OperatorGroups` for more information.
+It's also important to tell OLM the ways in which your operator can be deployed, or its `installModes`. InstallModes indicate if your operator can be configured to watch, one, some, or all namespaces. Please see the [document on operator scoping with operatorgroups][operatorgroups-docs] for more information.
 
 ```yaml
 apiVersion: operators.coreos.com/v1alpha1
@@ -190,7 +190,7 @@ spec:
       kind: Memcached
 ```
 
-Dependency resolution and ownership is discussed more in depth in the [Concepts section](/docs/concepts/olm-architecture/dependency-resolution).
+Dependency resolution and ownership is discussed more in depth in the [here][dependency-resolution-doc].
 
 ```yaml
 apiVersion: operators.coreos.com/v1alpha1
@@ -267,10 +267,10 @@ However, the following is a suggested guideline to follow when including Priorit
 
 #### Extension apiservers and APIServices
 
-Please see the document on [extension apiservers]() if your operator does not rely on CRDs to provide its API.
+TODO: Document on extension apiservers for operators that do not rely on CRDs to provide its API.
 #### Advanced and Optional features
 
-Please see the documentation for [advanced operator configuration]() which includes additional suggestions for further integration with OLM.
+TODO: Documentation for advanced operator configuration which includes additional suggestions for further integration with OLM.
 
 ### Operator SDK
 
@@ -279,3 +279,5 @@ You can also generate the manifests for your bundle using the `operator-sdk` bin
 
 [operator-sdk-csv-generation]: https://sdk.operatorframework.io/docs/olm-integration/generation/
 [api-repo]: https://github.com/operator-framework/api
+[operatorgroups-docs]: /docs/advanced-tasks/operator-scoping-with-operatorgroups
+[dependency-resolution-doc]: /docs/concepts/olm-architecture/dependency-resolution
