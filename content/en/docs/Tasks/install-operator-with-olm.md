@@ -36,12 +36,12 @@ spec:
   name: <name-of-your-operator>
   source: <name-of-catalog-operator-is-part-of>
   sourceNamespace: <namespace-that-has-catalog>
-  approval: <Automatic/Manual>
+  installPlanApproval: <Automatic/Manual>
  ```
 
 You can read more about the `Subscription` object and what the different fields mean [here](/docs/concepts/crds/subscription).
 
-The `Subscription` object creates an [InstallPlan](/docs/concepts/crds/installplan), which is either automatically approved (if `sub.spec.approval: Automatic`), or needs to be approved (if `sub.spec.approval: Manual`), following which the operator is installed in the namespace you want.
+The `Subscription` object creates an [InstallPlan](/docs/concepts/crds/installplan), which is either automatically approved (if `sub.spec.installPlanApproval: Automatic`), or needs to be approved (if `sub.spec.installPlanApproval: Manual`), following which the operator is installed in the namespace you want.
 
 ## Example: Install the latest version of an Operator
 
