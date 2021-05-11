@@ -12,7 +12,7 @@ This is very similar to packaging software for a traditional operating system - 
 
 ## Writing your Operator Manifests
 
-OLM uses an api called `ClusterServiceVersion` (CSV) to describe a single instance of a version of an operator. This is the main entrypoint for packaging an operator for OLM.
+OLM uses a CRD called `ClusterServiceVersion` (CSV) to describe a single instance of a version of an operator. This is the main entry point for packaging an operator for OLM.
 
 There are two important ways to think about the CSV:
 
@@ -109,7 +109,7 @@ spec:
 
 `deployments` is an array - your operator may be composed of several seperate components that should all be deployed and versioned together.
 
-It's also important to tell OLM the ways in which your operator can be deployed, or its `installModes`. InstallModes indicate if your operator can be configured to watch, one, some, or all namespaces. Please see the [document on install modes]() and `OperatorGroups` for more information.
+It's also important to tell OLM the ways in which your operator can be deployed, or its `installModes`. InstallModes indicate if your operator can be configured to watch, one, some, or all namespaces. Please see the [document on operator scoping with operatorgroups][operatorgroups-docs] for more information.
 
 ```yaml
 apiVersion: operators.coreos.com/v1alpha1
@@ -190,7 +190,7 @@ spec:
       kind: Memcached
 ```
 
-Dependency resolution and ownership is discussed more in depth in the [Concepts section](/docs/concepts/olm-architecture/dependency-resolution).
+Dependency resolution and ownership is discussed more in depth in the [here][dependency-resolution-doc].
 
 ```yaml
 apiVersion: operators.coreos.com/v1alpha1
@@ -267,16 +267,17 @@ However, the following is a suggested guideline to follow when including Priorit
 
 #### Extension apiservers and APIServices
 
-Please see the document on [extension apiservers]() if your operator does not rely on CRDs to provide its API.
-
-#### Operator SDK
-
-TODO: link to SDK csv generation
-
+TODO: Document on extension apiservers for operators that do not rely on CRDs to provide its API.
 #### Advanced and Optional features
 
-Please see the documentation for [advanced operator configuration]() which includes additional suggestions for further integration with OLM.
+TODO: Documentation for advanced operator configuration which includes additional suggestions for further integration with OLM.
 
-```
-This is the final element on the page and there should be no margin below this.
-```
+### Operator SDK
+
+You can also generate the manifests for your bundle using the `operator-sdk` binary. Checkout the documentation for generating CSV using `operator-sdk` [here][operator-sdk-csv-generation]. 
+
+
+[operator-sdk-csv-generation]: https://sdk.operatorframework.io/docs/olm-integration/generation/
+[api-repo]: https://github.com/operator-framework/api
+[operatorgroups-docs]: /docs/advanced-tasks/operator-scoping-with-operatorgroups
+[dependency-resolution-doc]: /docs/concepts/olm-architecture/dependency-resolution

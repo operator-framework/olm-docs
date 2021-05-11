@@ -1,63 +1,81 @@
 ---
-title: "Getting Started"
-linkTitle: "Getting Started"
+title: "QuickStart"
+linkTitle: "QuickStart"
 weight: 1
 description: >
-  Install OLM in a kubernetes cluster.
+  Install OLM in a kubernetes cluster, then install an operator using OLM.
 ---
 
 ## Prerequisites
 
-- [git](https://git-scm.com/downloads)
-- [go](https://golang.org/dl/) version `v1.12+`.
-- [docker](https://docs.docker.com/install/) version `17.03`+ or [podman](https://github.com/containers/libpod/blob/master/install.md) `v1.2.0+` or [buildah](https://github.com/containers/buildah/blob/master/install.md) `v1.7+`.
-- [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) `v1.11.3+`.
 - Access to a Kubernetes `v1.11.3+` cluster.
+- [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) `v1.11.3+`.
 
 ## Installing OLM in your cluster
 
-### Install Released OLM
+The `operator-sdk` binary provides a command to easily install and uninstall OLM in a Kubernetes cluster. See the [SDK installation guide][sdk-installation-guide] on how to install `operator-sdk` tooling.
 
-For installing release versions of OLM, for example version 0.15.1, you can use the following command:
+Once you have the `operator-sdk` binary installed, you can easily install OLM on your cluster by running `operator-sdk olm install`. 
 
-```sh
-export olm_release=0.15.1
-kubectl apply -f https://github.com/operator-framework/operator-lifecycle-manager/releases/download/${olm_release}/crds.yaml
-kubectl apply -f https://github.com/operator-framework/operator-lifecycle-manager/releases/download/${olm_release}/olm.yaml
-```
+```bash 
+$ operator-sdk olm install 
+INFO[0000] Fetching CRDs for version "latest"           
+INFO[0000] Fetching resources for resolved version "latest" 
+I0428 10:07:00.985939 3850425 request.go:655] Throttling request took 1.046148019s, request: GET:https://127.0.0.1:45457/apis/storage.k8s.io/v1beta1?timeout=32s
+INFO[0008] Creating CRDs and resources                  
+INFO[0008]   Creating CustomResourceDefinition "catalogsources.operators.coreos.com" 
+INFO[0008]   Creating CustomResourceDefinition "clusterserviceversions.operators.coreos.com" 
+INFO[0008]   Creating CustomResourceDefinition "installplans.operators.coreos.com" 
+INFO[0008]   Creating CustomResourceDefinition "operatorconditions.operators.coreos.com" 
+INFO[0008]   Creating CustomResourceDefinition "operatorgroups.operators.coreos.com" 
+INFO[0008]   Creating CustomResourceDefinition "operators.operators.coreos.com" 
+INFO[0008]   Creating CustomResourceDefinition "subscriptions.operators.coreos.com" 
+INFO[0008]   Creating Namespace "olm"                   
+INFO[0008]   Creating Namespace "operators"             
+INFO[0008]   Creating ServiceAccount "olm/olm-operator-serviceaccount" 
+INFO[0008]   Creating ClusterRole "system:controller:operator-lifecycle-manager" 
+INFO[0008]   Creating ClusterRoleBinding "olm-operator-binding-olm" 
+INFO[0008]   Creating Deployment "olm/olm-operator"     
+INFO[0008]   Creating Deployment "olm/catalog-operator" 
+INFO[0008]   Creating ClusterRole "aggregate-olm-edit"  
+INFO[0008]   Creating ClusterRole "aggregate-olm-view"  
+INFO[0008]   Creating OperatorGroup "operators/global-operators" 
+INFO[0010]   Creating OperatorGroup "olm/olm-operators" 
+INFO[0010]   Creating ClusterServiceVersion "olm/packageserver" 
+INFO[0012]   Creating CatalogSource "olm/operatorhubio-catalog" 
+INFO[0012] Waiting for deployment/olm-operator rollout to complete 
+INFO[0012]   Waiting for Deployment "olm/olm-operator" to rollout: 0 of 1 updated replicas are available 
+INFO[0026]   Deployment "olm/olm-operator" successfully rolled out 
+INFO[0026] Waiting for deployment/catalog-operator rollout to complete 
+INFO[0026]   Waiting for Deployment "olm/catalog-operator" to rollout: 0 of 1 updated replicas are available 
+INFO[0031]   Deployment "olm/catalog-operator" successfully rolled out 
+INFO[0031] Waiting for deployment/packageserver rollout to complete 
+INFO[0031]   Waiting for Deployment "olm/packageserver" to rollout: 0 of 2 updated replicas are available 
+INFO[0037]   Deployment "olm/packageserver" successfully rolled out 
+INFO[0037] Successfully installed OLM version "latest"  
 
-Learn more about available releases [here](https://github.com/operator-framework/operator-lifecycle-manager/releases).
+NAME                                            NAMESPACE    KIND                        STATUS
+catalogsources.operators.coreos.com                          CustomResourceDefinition    Installed
+clusterserviceversions.operators.coreos.com                  CustomResourceDefinition    Installed
+installplans.operators.coreos.com                            CustomResourceDefinition    Installed
+operatorconditions.operators.coreos.com                      CustomResourceDefinition    Installed
+operatorgroups.operators.coreos.com                          CustomResourceDefinition    Installed
+operators.operators.coreos.com                               CustomResourceDefinition    Installed
+subscriptions.operators.coreos.com                           CustomResourceDefinition    Installed
+olm                                                          Namespace                   Installed
+operators                                                    Namespace                   Installed
+olm-operator-serviceaccount                     olm          ServiceAccount              Installed
+system:controller:operator-lifecycle-manager                 ClusterRole                 Installed
+olm-operator-binding-olm                                     ClusterRoleBinding          Installed
+olm-operator                                    olm          Deployment                  Installed
+catalog-operator                                olm          Deployment                  Installed
+aggregate-olm-edit                                           ClusterRole                 Installed
+aggregate-olm-view                                           ClusterRole                 Installed
+global-operators                                operators    OperatorGroup               Installed
+olm-operators                                   olm          OperatorGroup               Installed
+packageserver                                   olm          ClusterServiceVersion       Installed
+operatorhubio-catalog                           olm          CatalogSource               Installed
 
-To deploy OLM locally on a [minikube cluster](https://kubernetes.io/docs/tasks/tools/install-minikube/) for development work, use the `run-local` target in the [Makefile](https://github.com/operator-framework/operator-lifecycle-manager/blob/master/Makefile).
-
-```sh
-git clone https://github.com/operator-framework/operator-lifecycle-manager.git
-cd operator-lifecycle-manager
-make run-local
-```
-
-### Verify Installation
-
-You can verify your installation of OLM by first checking for all the necessary CRDs in the cluster:
-
-```sh
-$ kubectl get crd
-NAME                                          CREATED AT
-catalogsources.operators.coreos.com           2019-10-21T18:15:27Z
-clusterserviceversions.operators.coreos.com   2019-10-21T18:15:27Z
-installplans.operators.coreos.com             2019-10-21T18:15:27Z
-operatorgroups.operators.coreos.com           2019-10-21T18:15:27Z
-subscriptions.operators.coreos.com            2019-10-21T18:15:27Z
-```
-
-And then inspecting the deployments of OLM and it's related components:
-
-```sh
-$ kubectl get deploy -n olm
-NAME               READY   UP-TO-DATE   AVAILABLE   AGE
-catalog-operator   1/1     1            1           5m52s
-olm-operator       1/1     1            1           5m52s
-packageserver      2/2     2            2           5m43s
 ```
 
 ## Installing an Operator using OLM
@@ -129,4 +147,7 @@ NAME            READY   UP-TO-DATE   AVAILABLE   AGE
 etcd-operator   1/1     1            1           3m29s
 ```
 
-To learn more about packaging your operator for OLM, installing/uninstalling an operator etc, visit the [Core Tasks](/docs/tasks/) and the [Advanced Tasks](/docs/advanced-tasks/) section of this site.
+To learn more about packaging your operator for OLM, installing/uninstalling an operator etc, visit the [Core Tasks](/docs/tasks/) and the [Advanced Tasks](/docs/advanced-tasks/) sections of this site.
+
+
+[sdk-installation-guide]: https://sdk.operatorframework.io/docs/installation/

@@ -67,7 +67,7 @@ In the example above, member operators will be scoped to any namespaces with the
 
 >Note: In the case that both a selector and a list of namespaces are provided, the selector is ignored.
 
-#### TargetNamespaces and their realationship to InstallModes
+#### TargetNamespaces and their relationship to InstallModes
 
 When creating `OperatorGroups` it is important to keep in mind that an operator may not support all namespace configurations. For example, an operator that is designed to run at the cluster level shouldn't be expected to work in an `OperatorGroup` that defines a single targetNamespace.
 

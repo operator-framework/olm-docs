@@ -15,7 +15,7 @@ description: >
 
 An Operator Bundle is a container image that stores Kubernetes manifests and metadata associated with an operator. A bundle is meant to represent a specific version of an operator on cluster. Once you have the [ClusterServiceVersion(CSV) for your operator](/docs/tasks/creating-operator-manifests), you can create an operator bundle using the CSV and the CRDs for your operator. 
 
-We refer to a directory of files with one ClusterServiceVersion as a `bundle` that includes a CSV and the CRDs in its manifest directory, though additional kubernetes objects may be included. The directory also includes an annotations file in its metadata folder which defines some higher level aggregate data that helps to describe the format and package information about how the bundle should be added into an [index of bundles](). Finally, a Dockerfile can be built from the information in the directory to build the operator bundle image. 
+We refer to a directory of files with one ClusterServiceVersion as a `bundle` that includes a CSV and the CRDs in its manifest directory, though additional kubernetes objects may be included. The directory also includes an annotations file in its metadata folder which defines some higher level aggregate data that helps to describe the format and package information about how the bundle should be added into an index of bundles. Finally, a Dockerfile can be built from the information in the directory to build the operator bundle image. 
 
 ```
  # example bundle
@@ -131,3 +131,67 @@ $ podman push quay.io/my-container-registry-namespace/my-manifest-bundle:latest
 ```
 
 Of course, this build step can be done with any other OCI spec container tools like `docker`, `buildah`, `libpod`, etc
+
+## Validating your bundle
+
+Once you've created your bundle, you will want to ensure that your bundle is valid and in the correct format. The [api][api-repo] library contains a validation library that is used by operator-framework tools like `operator-sdk` and `opm` to validate operator bundles. For more information on validating via the `operator-sdk` see the [`operator-sdk bundle validate` documentation][sdk-bundle-validate].
+
+The `opm alpha bundle validate` command will validate a bundle image from a remote registry to determine if its format and content information are accurate.
+The following validators will run by default on every invocation of the command.
+
+- CSV validator - validates the CSV name and replaces fields.
+- CRD validator - validates the CRDs OpenAPI V3 schema.
+- Bundle validator - validates the bundle format and annotations.yaml file as well as the optional dependencies.yaml file.
+
+For example:
+
+`$ opm alpha bundle validate --tag quay.io/test/test-operator:latest --image-builder docker`
+
+### Optional Validation
+
+Some validators are disabled by default and can be optionally enabled via the `--optional-validators` or `-o` flag.
+
+- Operatorhub validator - performs operatorhub.io validation. To validate a bundle using custom categories use the `OPERATOR_BUNDLE_CATEGORIES` environmental variable to point to a json-encoded categories file. Enable this option via `--optional-validators=operatorhub`.
+- Bundle objects validator - performs validation on resources like `PodDisruptionBudgets` and `PriorityClasses`. Enable this option via `--optional-validators=bundle-objects`.
+Multiple optional validators can be enabled at once, for example `--optional-validators=operatorhub,bundle-objects`.
+
+#### Custom bundle categories
+
+The operatorhub validator can verify against custom bundle categories by setting the `OPERATOR_BUNDLE_CATEGORIES` environment variable.
+Setting the `OPERATOR_BUNDLE_CATEGORIES` environment variable to the path to a json file containing a list of categories will enable those categories to be used when comparing CSV categories for operatorhub validation. The json file should be in the following format:
+
+```json
+{
+   "categories":[
+      "Cloud Pak",
+      "Registry",
+      "MyCoolThing",
+   ]
+}
+```
+
+For example:
+
+`$ OPERATOR_BUNDLE_CATEGORIES=./validate/categories.json ./bin/opm alpha bundle validate --tag <bundle-tag> --image-builder docker -o operatorhub`
+will validate the bundle using the provided categories file.
+
+If `OPERATOR_BUNDLE_CATEGORIES` is not set, and operatorhub validation is enabled, the default categories will be used when performing operatorhub validation. The default categories are the following:
+
+- AI/Machine Learning
+- Application Runtime
+- Big Data
+- Cloud Provider
+- Developer Tools
+- Database
+- Integration & Delivery
+- Logging & Tracing
+- Monitoring
+- Networking
+- OpenShift Optional
+- Security
+- Storage
+- Streaming & Messaging
+
+
+[api-repo]: https://github.com/operator-framework/api/tree/master/pkg/validation
+[sdk-bundle-validate]: https://sdk.operatorframework.io/docs/cli/operator-sdk_bundle_validate/#operator-sdk-bundle-validate

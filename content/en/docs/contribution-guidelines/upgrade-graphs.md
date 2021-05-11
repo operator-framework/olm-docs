@@ -236,6 +236,6 @@ flowchart TB
 {{</mermaid>}} |
 
 [csv-definition]:/docs/concepts/crds/clusterserviceversion/
-[upgrade-path-replaces]:/docs/tasks/creating-an-update-graph/#replaces
-[upgrade-path-skips]:/docs/tasks/creating-an-update-graph/#skips
-[upgrade-path-skiprange]:/docs/tasks/creating-an-update-graph/#skiprange
+[upgrade-path-replaces]:/docs/concepts/olm-architecture/operator-catalog/creating-an-update-graph/#replaces
+[upgrade-path-skips]:/docs/concepts/olm-architecture/operator-catalog/creating-an-update-graph/#skips
+[upgrade-path-skiprange]:/docs/concepts/olm-architecture/operator-catalog/creating-an-update-graph/#skiprange
