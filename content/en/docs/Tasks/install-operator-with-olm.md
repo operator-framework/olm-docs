@@ -6,7 +6,7 @@ description: >
     Install your operator from a catalog of operators
 ---
 
-[Once you have a catalog of operators loaded onto the cluster via a `CatalogSource`] [create-catsrc-doc], you can install your operator by creating a [`Subscription`][subscription-doc] to a specific [channel](channel-def).
+[Once you have a catalog of operators loaded onto the cluster via a `CatalogSource`][create-catsrc-doc], you can install your operator by creating a [`Subscription`][subscription-doc] to a specific [channel][channel-def].
 
 ## Prerequisites
 
@@ -138,4 +138,4 @@ If your intent is to pin an installed Operator to the particular version `1.1.0`
 
 [create-catsrc-doc]: /docs/tasks/make-index-available-on-cluster
 [subscription-doc]: /docs/concepts/crds/subscription
-[channel-def]: /docs/glossary/_index#channel
+[channel-def]: /docs/glossary/#channel
