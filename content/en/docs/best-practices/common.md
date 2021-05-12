@@ -17,6 +17,12 @@ Check and test your operator bundle before you publish it. Note that the [`opera
 operator-sdk bundle validate ./bundle --select-optional suite=operatorframework
 ```
 
+The `OperatorHub.io` validator in the `operatorframework` optional suite allows you to validate that your manifests can work with a Kubernetes cluster of a particular version using the `k8s-version` optional key value:
+
+```sh 
+operator-sdk bundle validate ./bundle --select-optional suite=operatorframework --optional-values=k8s-version=1.22
+```
+
 Also, you can validate a bundle via [`operator-sdk scorecard`][sdk-cli-scorecard-bundle] to insure it against a suite of tests:
 
 ```sh
