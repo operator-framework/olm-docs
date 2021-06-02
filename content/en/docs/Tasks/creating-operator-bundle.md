@@ -151,9 +151,10 @@ For example:
 
 Some validators are disabled by default and can be optionally enabled via the `--optional-validators` or `-o` flag.
 
-- Operatorhub validator - performs operatorhub.io validation. To validate a bundle using custom categories use the `OPERATOR_BUNDLE_CATEGORIES` environmental variable to point to a json-encoded categories file. Enable this option via `--optional-validators=operatorhub`.
+- Operatorhub validator - performs operatorhub.io validation which will check your bundle against the common criteria to distributed with OLM. To validate a bundle using custom categories use the `OPERATOR_BUNDLE_CATEGORIES` environmental variable to point to a json-encoded categories file. Enable this option via `--optional-validators=operatorhub`. This validator allows you to validate that your manifests can work with a Kubernetes cluster of a particular version using the `k8s-version` optional key value. (e.g. `--optional-values=k8s-version=1.22`) 
 - Bundle objects validator - performs validation on resources like `PodDisruptionBudgets` and `PriorityClasses`. Enable this option via `--optional-validators=bundle-objects`.
 Multiple optional validators can be enabled at once, for example `--optional-validators=operatorhub,bundle-objects`.
+- Community validator - performs community operator bundle validation which will check your bundle against the criteria to distribute your project on the [Community Catalogs](https://github.com/operator-framework/community-operators). For further information see its [docs](https://operator-framework.github.io/community-operators/). This validator allows you to validate the required labels in the index image by using the `index-path` optional key value. (e.g. `--optional-values=index-path=bundle.Dockerfile`). 
 
 #### Custom bundle categories
 
@@ -191,7 +192,6 @@ If `OPERATOR_BUNDLE_CATEGORIES` is not set, and operatorhub validation is enable
 - Security
 - Storage
 - Streaming & Messaging
-
 
 [api-repo]: https://github.com/operator-framework/api/tree/master/pkg/validation
 [sdk-bundle-validate]: https://sdk.operatorframework.io/docs/cli/operator-sdk_bundle_validate/#operator-sdk-bundle-validate
