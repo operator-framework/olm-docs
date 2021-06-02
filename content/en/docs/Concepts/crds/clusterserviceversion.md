@@ -93,12 +93,10 @@ spec:
     owned:
     # a list of CRDs that this operator owns
     # name is the metadata.name of the CRD (which is of the form <plural>.<group>)
-    # version is the spec.versions[].name value defined in the CRD
-    # kind is the CamelCased singular value defined in spec.names.kind of the CRD.
     - name: memcacheds.cache.example.com
-      # version is the version of the CRD (one per entry)
+      # version is the spec.versions[].name value defined in the CRD
       version: v1alpha1
-      # spec.names.kind from the CRD
+      # kind is the CamelCased singular value defined in spec.names.kind of the CRD.
       kind: Memcached
     required:
     # a list of CRDs that this operator requires
