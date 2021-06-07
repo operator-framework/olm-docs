@@ -59,8 +59,7 @@ git clone --recurse-submodules --depth 1 https://github.com/google/docsy-example
 ```
 
 1. Run `hugo server` in the site root directory. By default your site will be available at http://localhost:1313. Now that you're serving your site locally, Hugo will watch for changes to the content and automatically refresh your site.
-1. Continue with the usual GitHub workflow to edit files, commit them, push the
-  changes up to your fork, and create a pull request.
+1. Continue with the usual GitHub workflow to edit files, commit them, push the changes up to your fork, and create a pull request.
 
 ## Creating an issue
 
@@ -68,5 +67,5 @@ If you've found a problem in the docs, but you're not sure how to fix it yoursel
 
 ## Useful resources
 
-* [Docsy user guide](wherever it goes): All about Docsy, including how it manages navigation, look and feel, and multi-language support.
+* [Docsy user guide](https://www.docsy.dev/docs/): All about Docsy, including how it manages navigation, look and feel, and multi-language support.
 * [Hugo documentation](https://gohugo.io/documentation/): Comprehensive reference for Hugo.
