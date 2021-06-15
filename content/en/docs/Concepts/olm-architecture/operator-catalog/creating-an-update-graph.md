@@ -88,10 +88,30 @@ such as `<1.0.3`.
 
 **Warning:** Adding a bundle that only specifies skipRange to a given channel will wipe out all
 the previous content in that channel. This means directly installing past versions by editing
-the `startingCSV` field of the subscription is not possible when using skiprange only.
+the `startingCSV` field of the subscription is not possible when using skiprange only. In order
+for past versions to be installable by `startingCSV` while also benefitting from the `skipRange`
+feature, you will need to also connect past edges by setting a `replaces` field in addition to
+the `olm.skipRange`. For example, assuming the above update graph:
 
-The above warning means that skiprange by itself is useful for teams who are not interested in
-supporting directly installing versions within a given range.
+```txt
+myoperator.v1.0.0 -> myoperator.v1.0.1 -> myoperator.v1.0.2
+```
+
+In order to keep these versions installable by `startingCSV` when `myoperator.v1.0.3` is added,
+the CSV for `myoperator.v1.0.3` needs to have the following:
+
+```yaml
+metadata:
+   name: myoperator.v1.0.3
+   annotations:
+      olm.skipRange: ">=1.0.0 <1.0.3"
+spec:
+   replaces: myoperator.v1.0.2
+```
+
+SkipRange by itself is useful for teams who are not interested in supporting directly installing
+versions within a given range or for whom consumers of the operator are always on the latest
+version.
 
 ## Channel Guidelines
 
