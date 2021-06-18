@@ -16,7 +16,7 @@ The cluster admin should first understand which types (CRDs and APIServices) are
 
 ## Step 2: Unsubscribe from the Operator
 
-OLM uses the subscription resource to convey a user's intent to subscribe to the latest version of an operator. If the operator was installed with Automatic Updates (spec.Approval: `Automatic`), OLM will reinstall a new version of the operator even if the operator's CSV was deleted earlier. In effect, you must tell OLM that you do not want new versions of the operator to be installed by deleting the subscription associated with the operator.
+OLM uses the subscription resource to convey a user's intent to subscribe to the latest version of an operator. If the operator was installed with Automatic Updates (spec.InstallPlanApproval: `Automatic`), OLM will reinstall a new version of the operator even if the operator's CSV was deleted earlier. In effect, you must tell OLM that you do not want new versions of the operator to be installed by deleting the subscription associated with the operator.
 
 You can list existing `Subscription` in a specific namespace with the following `kubectl` command:
 

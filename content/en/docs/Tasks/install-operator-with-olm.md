@@ -77,13 +77,13 @@ spec:
   name: my-operator
   source: my-catalog
   sourceNamespace: olm
-  approval: Manual
+  installPlanApproval: Manual
 
 $ kubectl apply -f sub.yaml
 subscription.operators.coreos.com/sub-to-my-operator created
  ```
 
-Since the `approval` is `Manual`, we need to manually go in and approve the `InstallPlan`
+Since `installPlanApproval` is set to `Manual`, we need to manually go in and approve the `InstallPlan`
 
 ```bash
 $ kubectl get ip -n foo
