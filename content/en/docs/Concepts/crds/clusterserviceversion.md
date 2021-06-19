@@ -43,6 +43,7 @@ spec:
     name: Example
     url: www.example.com
   version: 0.10.0
+  minKubeVersion: 1.16.0
 
   # operator scope
   installModes:
