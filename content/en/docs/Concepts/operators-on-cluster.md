@@ -41,7 +41,7 @@ spec:
   name: my-operator
   source: my-catalog
   sourceNamespace: olm
-  approval: Manual
+  installPlanApproval: Manual
 
 $ kubectl apply -f sub.yaml
 subscription.operators.coreos.com/sub-to-my-operator created
