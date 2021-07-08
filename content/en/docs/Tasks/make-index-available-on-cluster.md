@@ -27,6 +27,11 @@ spec:
       interval: 10m
 ```
 
+### Catalog scoping
+By default, a CatalogSource is scoped to the namespace in which it is created in. For example, a CatalogSource in namespace `A` can only be used in dependency resolution for subscriptions that originate in namespace `A` as well. A subscription in another namespace that references the CatalogSource in `A` will not be able to use the catalog contents for dependency resolution. This provides some basic multitenancy: CatalogSource in one namespace do not interfere with CatalogSource in another. 
+
+However, there is one special namespace, by default the `olm` namespace, which acts as a global catalog namespace. CatalogSources in this namespace can be used for dependency resolution in any other namespace. Installing a catalog in the `olm` namespace will make it available as a subscription target for any namespace on the cluster. The global namespace is configurable via the `OPERATOR_NAMESPACE` environment variable on the OLM operator deployment spec. 
+
 ### Explanation of spec.updateStrategy
 
 It is possible to configure the `CatalogSource` to poll a source, such as an image registry, to check whether the catalog source pod should be updated. A common use case would be pushing new bundles to the same catalog source tag, and seeing updated operators from those bundles being installed in the cluster. Currently polling is only implemented for image-based catalogs that serve bundles over gRPC.
