@@ -241,6 +241,12 @@ Operators can include additional objects alongside their `CSV` in the `/manifest
 - ConfigMaps
 - Secrets
 - Services
+- (Cluster)Role
+- (Cluster)RoleBinding
+- ServiceAccount
+- PrometheusRule
+- ServiceMonitor
+- ConsoleYamlSample
 - [PodDisruptionBudgets](https://github.com/operator-framework/operator-lifecycle-manager/blob/master/doc/design/adding-pod-disruption-budgets.md)
 - [PriorityClasses](https://github.com/operator-framework/operator-lifecycle-manager/blob/master/doc/design/adding-priority-classes.md)
 - [VerticalPodAutoscalers](https://github.com/operator-framework/operator-lifecycle-manager/blob/master/doc/design/adding-vertical-pod-autoscaler.md)
