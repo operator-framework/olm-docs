@@ -236,11 +236,20 @@ TODO: example status
 
 ## Packaging Additional Objects Alongside an Operator
 
-Operators can include additional objects alongside their `CSV` in the `/manifests` directory. These objects should be YAML files and valid kubernetes objects. The following objects are supported as of OLM 0.16.0:
+Operators can include additional objects alongside their `CSV` in the `/manifests` directory. These objects should be YAML files and valid kubernetes objects. The [following objects are supported](https://github.com/operator-framework/operator-registry/blob/master/pkg/lib/bundle/supported_resources.go#L3-L20) as of OLM 0.16.0:
 
+- CustomResourceDefinitions
+- Roles
+- RoleBindings
+- ClusterRoles
+- ClusterRoleBindings
 - ConfigMaps
 - Secrets
 - Services
+- ServiceAccounts
+- PrometheusRules
+- ServiceMonitors
+- ConsoleYAMLSample
 - [PodDisruptionBudgets](https://github.com/operator-framework/operator-lifecycle-manager/blob/master/doc/design/adding-pod-disruption-budgets.md)
 - [PriorityClasses](https://github.com/operator-framework/operator-lifecycle-manager/blob/master/doc/design/adding-priority-classes.md)
 - [VerticalPodAutoscalers](https://github.com/operator-framework/operator-lifecycle-manager/blob/master/doc/design/adding-vertical-pod-autoscaler.md)
@@ -274,7 +283,7 @@ TODO: Documentation for advanced operator configuration which includes additiona
 
 ### Operator SDK
 
-You can also generate the manifests for your bundle using the `operator-sdk` binary. Checkout the documentation for generating CSV using `operator-sdk` [here][operator-sdk-csv-generation]. 
+You can also generate the manifests for your bundle using the `operator-sdk` binary. Checkout the documentation for generating CSV using `operator-sdk` [here][operator-sdk-csv-generation].
 
 
 [operator-sdk-csv-generation]: https://sdk.operatorframework.io/docs/olm-integration/generation/
