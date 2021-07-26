@@ -163,11 +163,11 @@ spec:
   customresourcedefinitions:
     owned:
     # a list of CRDs that this operator owns
-      # name is the metadata.name of the CRD
-    - name: cache.example.com
-      # version is the version of the CRD (one per entry)
+    # name is the metadata.name of the CRD (which is of the form <plural>.<group>)
+    - name: memcacheds.cache.example.com
+      # version is the spec.versions[].name value defined in the CRD
       version: v1alpha1
-      # spec.names.kind from the CRD
+      # kind is the CamelCased singular value defined in spec.names.kind of the CRD.
       kind: Memcached
 ```
 
@@ -185,9 +185,12 @@ spec:
   customresourcedefinitions:
     required:
     # a list of CRDs that this operator requires
-    - name: cache.example.com
+    # name is the metadata.name of the CRD (which is of the form <plural>.<group>)
+    - name: others.example.com
+      # version is the spec.versions[].name value defined in the CRD
       version: v1alpha1
-      kind: Memcached
+      # kind is the CamelCased singular value defined in spec.names.kind of the CRD.
+      kind: Other
 ```
 
 Dependency resolution and ownership is discussed more in depth in the [here][dependency-resolution-doc].
@@ -202,11 +205,11 @@ spec:
   customresourcedefinitions:
     owned:
     # a list of CRDs that this operator owns
-      # name is the metadata.name of the CRD
-    - name: cache.example.com
-      # version is the version of the CRD (one per entry)
+    # name is the metadata.name of the CRD (which is of the form <plural>.<group>)
+    - name: memcacheds.cache.example.com
+      # version is the spec.versions[].name value defined in the CRD
       version: v1alpha1
-      # spec.names.kind from the CRD
+      # kind is the CamelCased singular value defined in spec.names.kind of the CRD.
       kind: Memcached
 ```
 
