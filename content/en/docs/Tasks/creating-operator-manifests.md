@@ -57,6 +57,7 @@ spec:
     name: Example
     url: www.example.com
   version: 0.10.0
+  minKubeVersion: 1.20.0
 ```
 
 Most of these fields are optional, but they provide an opportunity to describe your operator to potential or current users.
