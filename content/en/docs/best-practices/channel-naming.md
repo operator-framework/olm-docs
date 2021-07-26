@@ -106,13 +106,14 @@ Channel names are used to imply what form of upgrade you want to offer for your 
 
 The names you choose are notional and up to you to decide, however, picking good channel names requires some basic guidance.  What is described below are different channel naming conventions that are commonly used by the operator community to denote different operator upgrade use cases.
 
-### Naming Convention Rules
+### Naming Conventions
 
 * Channel names are chosen by operator authors as they see fit to meet their upgrade strategies.
 * Channel names are unique to your operator and do not collide with channel names used by other operator providers.
 * Seldom is there a situation where your channel names need to contain information about the Kubernetes or Openshift cluster version they run on.  Only in the case where your operator versions have a dependency on the Kubernetes/Openshift version would you include the cluster version in your channel name.
 * You typically would not include product names in your channels since the channels are unique to your product and will not collide with other channel names used by other operators.
 * You could include or have an operand version in your channel name to advertise to consumers the version of operand they can subscribe to.
+* If you do choose to include some version in your channel name, it is important to include an additional identifier, to clarify what that the version number is referring to. A version number could equally be referring to product version (operand version), or operator version - these two don't always match: the operator itself can have different versioning than the product it is managing. 
 
 
 ### Recommended Channel Naming
