@@ -7,6 +7,8 @@ jobs:
     steps:
     - name: Checkout repo
       uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.pull_request.head.sha }}
 
     - name: Checkout submodules
       run: git submodule update --init --recursive
