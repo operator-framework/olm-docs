@@ -7,9 +7,8 @@ jobs:
     steps:
     - name: Checkout repo
       uses: actions/checkout@v2
-
-    - name: Checkout submodules
-      run: git submodule update --init --recursive
+      with:
+        submodules: recursive
 
     - name: Run linting script
       run: ${PWD}/hack/ci/link-check.sh
