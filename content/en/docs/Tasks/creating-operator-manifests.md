@@ -170,6 +170,10 @@ spec:
       version: v1alpha1
       # kind is the CamelCased singular value defined in spec.names.kind of the CRD.
       kind: Memcached
+      # human-friendly display name of the CRD for rendering in graphical consoles (optional)
+      displayName: Memcached Cluster
+      # a short description of the CRDs purpose for rendering in graphical consoles (optional)
+      description: Represents a memcached cluster
 ```
 
 ##### Required APIs
