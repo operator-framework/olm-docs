@@ -8,13 +8,13 @@ date: 2021-07-29
 Declarative Config (DC) is the latest iteration of OLM's index format. It is a fully plaintext-based (JSON or YAML) evolution of the previous sqlite database format that is fully backwards compatible.
 
 ## Motivation
-The primary motivations for this new format are to enable index editting, composability, and extensibility. 
+The primary motivations for this new format are to enable index editing, composability, and extensibility. 
 
 ### Editting
 
 With DC, users interacting with the contents of an index are able to make direct changes to the index format and verify that their changes are valid. 
 
-Because the index is now stored in plaintext rather than an sqlite database, index maintainers can update an index without the use of a custom index-aware tool, like `opm`.
+Because the index is now stored in plaintext rather than a sqlite database, index maintainers can update an index without the use of a custom index-aware tool, like `opm`.
 
 This editability opens the door for new features and extensions that were otherwise difficult to implement and maintain in a single tool. For example:
 - Promoting an existing bundle to a new channel
@@ -26,6 +26,8 @@ This editability opens the door for new features and extensions that were otherw
 Declarative Configs are stored in an arbitrary directory hierarchy, which enables index composition. If I have two separate DC directories, `indexA` and `indexB`, I can make a new combined index by making a new directory `indexC` and copying `indexA` and `indexB` into it.
 
 This composability enables decentralized indexes. The format permits operator authors to maintain operator-specific indexes and index maintainers to trivially build an index composed of individual operator indexes.
+
+> NOTE: Duplicate packages and duplicate bundles within a package are not permitted. The `opm validate` command will return an error if any duplicates are found.
 
 One of the major benefits is that those who are most familiar with an operator, its dependencies, and its upgrade compatibility (i.e. the operator authors) are able to maintain their own operator-specific index and have direct control over its contents. DC moves the task of building and maintaining indexes more towards operator authors, thus giving composite index maintainers more time to build value around their compositions.
 
@@ -76,7 +78,7 @@ This layout has the property that each sub-directoriy in the directory hierarchy
 >     └── index.json
 > ```
 
-This `index` could also be trivially included in a parent index by somply copying it into the parent index's root directory.
+This `index` could also be trivially included in a parent index by simply copying it into the parent index's root directory.
 
 ### Schema
 
@@ -327,15 +329,308 @@ The `olm.bundle.object` property [cue][cuelang-spec] schema is:
 ## CLI
 
 ### `opm init`
+
+```
+Generate an olm.package declarative config blob
+
+Usage:
+  opm init <packageName> [flags]
+
+Flags:
+  -c, --default-channel string   The channel that subscriptions will default to if unspecified
+  -d, --description string       Path to the operator's README.md (or other documentation)
+  -h, --help                     help for init
+  -i, --icon string              Path to package's icon
+  -o, --output string            Output format (json|yaml) (default "json")
+
+Global Flags:
+      --skip-tls   skip TLS certificate verification for container image registries while pulling bundles or index
+```
+
 ### `opm render`
+
+```
+Generate a declarative config blob from the provided index images, bundle images, and sqlite database files
+
+Usage:
+  opm render [index-image | bundle-image | sqlite-file]... [flags]
+
+Flags:
+  -h, --help            help for render
+  -o, --output string   Output format (json|yaml) (default "json")
+
+Global Flags:
+      --skip-tls   skip TLS certificate verification for container image registries while pulling bundles or index
+```
+
 ### `opm validate`
+
+```
+Validate the declarative config JSON file(s) in a given directory
+
+Usage:
+  opm validate <directory> [flags]
+
+Flags:
+  -h, --help   help for validate
+
+Global Flags:
+      --skip-tls   skip TLS certificate verification for container image registries while pulling bundles or index
+```
+
 ### `opm serve`
+
+```
+serve declarative configs via grpc
+
+Usage:
+  opm serve <source_path> [flags]
+
+Flags:
+      --debug                    enable debug logging
+  -h, --help                     help for serve
+  -p, --port string              port number to serve on (default "50051")
+  -t, --termination-log string   path to a container termination log file (default "/dev/termination-log")
+
+Global Flags:
+      --skip-tls   skip TLS certificate verification for container image registries while pulling bundles or index
+```
+
 ### `opm alpha diff`
+
+```
+Diff a set of old and new catalog references ("refs") to produce a declarative config containing only packages channels, and versions not present in the old set, and versions that differ between the old and new sets. This is known as "latest" mode. These references are passed through 'opm render' to produce a single declarative config.
+
+ This command has special behavior when old-refs are omitted, called "heads-only" mode: instead of the output being that of 'opm render refs...' (which would be the case given the preceding behavior description), only the channel heads of all channels in all packages are included in the output, and dependencies. Dependencies are assumed to be provided by either an old ref, in which case they are not included in the diff, or a new ref, in which case they are included. Dependencies provided by some catalog unknown to 'opm alpha diff' will not cause the command to error, but an error will occur if that catalog is not serving these dependencies at runtime.
+
+Usage:
+  opm alpha diff [old-refs]... new-refs... [flags]
+
+Examples:
+  # Diff a catalog at some old state and latest state into a declarative config index.
+  mkdir -p catalog-index
+  opm alpha diff registry.org/my-catalog:abc123 registry.org/my-catalog:def456 -o yaml > ./my-catalog-index/index.yaml
+  
+  # Build and push this index into an index image.
+  opm alpha generate dockerfile ./my-catalog-index
+  docker build -t registry.org/my-catalog:latest-abc123-def456 -f index.Dockerfile .
+  docker push registry.org/my-catalog:latest-abc123-def456
+  
+  # Create a new catalog from the heads of an existing catalog, then build and push the image like above.
+  opm alpha diff registry.org/my-catalog:def456 -o yaml > my-catalog-index/index.yaml
+  docker build -t registry.org/my-catalog:headsonly-def456 -f index.Dockerfile .
+  docker push registry.org/my-catalog:headsonly-def456
+
+Flags:
+      --ca-file string   the root Certificates to use with this command
+      --debug            enable debug logging
+  -h, --help             help for diff
+  -o, --output string    Output format (json|yaml) (default "yaml")
+
+Global Flags:
+      --skip-tls   skip TLS certificate verification for container image registries while pulling bundles or index
+```
+
 ### `opm alpha generate dockerfile`
+
+```
+Generate a Dockerfile for a declarative config index.
+
+This command creates a Dockerfile in the same directory as the <dcRootDir>
+(named <dcDirName>.Dockerfile) that can be used to build the index. If a
+Dockerfile with the same name already exists, this command will fail.
+
+When specifying extra labels, note that if duplicate keys exist, only the last
+value of each duplicate key will be added to the generated Dockerfile.
+
+Usage:
+  opm alpha generate dockerfile <dcRootDir> [flags]
+
+Flags:
+  -i, --binary-image string    Image in which to build catalog. (default "quay.io/operator-framework/upstream-opm-builder")
+  -l, --extra-labels strings   Extra labels to include in the generated Dockerfile. Labels should be of the form 'key=value'.
+  -h, --help                   help for dockerfile
+
+Global Flags:
+      --skip-tls   skip TLS certificate verification for container image registries while pulling bundles or index
+```
 
 ## Workflows
 
 ### Operator authors & package maintainers
-### Index maintainers
+
+Declarative config moves ownership and maintenance of the index into the hands of individual operator authors and package maintainers, giving them much more control over the contents of their index.
+They no longer have to rely on the specific APIs available via an `opm` command that modifies an opaque database.
+Instead, they can use whatever tools fit their workflows to create and manipulate their declarative configs.
+
+The general workflow for operator authors is:
+1. Initialize Package (once) 
+   ```
+   mkdir index
+   opm init my-package --default-channel=alpha -o yaml > index/index.yaml
+   ```
+2. Generate dockerfile (once)
+   ```
+   opm alpha generate dockerfile index
+   ```
+3. Add bundle to index (as new bundles are released)
+   ```
+   opm render my-org/my-bundle:<version> >> index/index.yaml
+   ./idempotent-post-process.sh
+   docker build -t my-org/my-index:<tag> . -f index.Dockerfile
+   docker push my-org/my-index:<tag>
+   ```
+4. Custom edits to the `index/index.yaml` only as necessary to resolve issues in index metadata of already released bundles.
+
+#### A few notes
+
+**In step 3**, `./idempotent-post-process.sh` could be a collection of post-processing steps that, for example:
+  - Ensures the added bundle is correctly added into the existing upgrade graph(s) of your package channels.
+  - Ensures channel heads have `olm.bundle.object` properties.
+  - Runs `opm validate` to verify the index can be served.
+  - Produces a visualization of the upgrade graphs for each channel. 
+
+Operator authors can use any tooling that works for their process and produces an index that validates with `opm validate`. Some examples of post-processing tools include:
+  - `jq` or `yq` for arbitrary JSON or YAML manipulations.
+  - `declcfg` for similar functionality provided by `opm index add`.
+  - `vim` -- hand-editing DC is completely acceptable if that fits your workflow
+
+**For step 4**, OLM's general advice is that bundle images and their metadata should be treated as immutable.
+If a broken bundle has been pushed to an index, you must assume that at least one of your users has upgraded to that bundle.
+Based on that assumption, you must release another bundle with an upgrade edge from the broken bundle to ensure users with the broken bundle installed receive an upgrade.
+OLM will not upgrade an installed bundle if the contents of that bundle are updated in the index.
+
+However, there are some cases where a change in the index metadata is preferred. For example:
+- Channel promotion - if you already released a bundle and later decide that you'd like to add it to another channel, simply add an `olm.channel` property to the `olm.bundle`
+- New upgrade edges - if you release a new 1.2.z (e.g. 1.2.4), but 1.3.0 is already released, you can update the index metadata for 1.3.0 to skip 1.2.4.
+
+OLM highly recommends storing index metadata in source control and treating the source-controlled metadata as the source of truth. Updates to index images should:
+1. Update the source-controlled index directory with a new commit.
+2. Build and push the index image. OLM suggests using a consistent tagging taxonomy (e.g. `:latest` or `:<targetClusterVersion>` so that users can receive updates to an index as they become available. 
+
+### Catalog maintainers
+
+With declarative config, catalog maintainers can focus on operator curation and compatibility.
+Since operator authors have already produced operator-specific indexes for their operators, catalog
+maintainers can build their catalog simply by rendering each operator index into a subdirectory of the
+catalog's root index directory.
+
+#### Example
+
+There are many possible ways to build a catalog, but an extremely simple approach would be to:
+
+1. Maintain a single configuration file containing image references for each operator in the catalog
+   ```yaml
+   name: community-operators
+   repo: quay.io/community-operators/catalog
+   tag: latest
+   references:
+   - name: etcd-operator
+     image: quay.io/etcd-operator/index@sha256:5891b5b522d5df086d0ff0b110fbd9d21bb4fc7163af34d08286a2e846f6be03
+   - name: prometheus-operator
+     image: quay.io/prometheus-operator/index@sha256:e258d248fda94c63753607f7c4494ee0fcbe92f1a76bfdac795c9d84101eb317
+   ```
+
+2. Run a simple script that parses this file and creates a new catalog from its references
+   ```bash
+   name=$(yq eval '.name' catalog.yaml)
+   mkdir "$name" 
+   yq eval '.name + "/" + .references[].name' catalog.yaml | xargs mkdir
+   for l in $(yq e '.name as $catalog | .references[] | .image + "|" + $catalog + "/" + .name + "/index.yaml"' catalog.yaml); do
+     image=$(echo $l | cut -d'|' -f1)
+     file=$(echo $l | cut -d'|' -f2)
+     opm render "$image" > "$file"
+   done
+   opm alpha generate dockerfile "$name"
+   indexImage=$(yq eval '.repo + ":" + .tag' catalog.yaml)
+   docker build -t "$indexImage" -f "$name.Dockerfile" .
+   docker push "$indexImage"
+   ```
+
 ### Cluster administrators
 
+For cluster administrators, declarative config-based indexes are largely the same as sqlite-based indexes.
+Both index types serve the exact same GRPC interface required by OLM's on-cluster components.
+
+One benefit of declarative config is that it is possible to build an index entirely with Kubernetes APIs:
+1. Populate a `ConfigMap` with a declarative config index file:
+
+   ```sh
+   cat <<EOF | kubectl apply -f -
+   apiVersion: v1
+   kind: ConfigMap
+   metadata:
+      name: my-operator-index
+   data:
+     .indexignore: |
+       /..data
+     index.yaml: |
+       ---
+       schema: olm.package  
+       name: my-operator
+       defaultChannel: stable
+       ---
+       schema: olm.bundle    
+       package: my-operator
+       name: my-operator.v0.1.0
+       image: quay.io/my-org/my-operator-bundle:v0.1.0
+       properties:
+       - type: olm.channel
+         value:
+           name: alpha
+       - type: olm.gvk
+         value:
+           group: example.my.domain
+           kind: Operator
+           version: v1alpha1
+       - type: olm.package
+         value:
+           packageName: my-operator
+           version: 0.1.0
+   EOF
+   ```
+
+2. Create a `Pod` that mounts the DC `ConfigMap` and runs `opm serve`:
+
+   ```sh
+   cat <<EOF | kubectl apply -f -
+   apiVersion: v1
+   kind: Pod
+   metadata:
+     name: my-operator-registry
+   spec:
+     containers:
+     - image: quay.io/operator-framework/opm:v1.18.0
+       args:
+       - serve
+       - /configs
+       name: opm
+       volumeMounts:
+       - name: configs
+         readOnly: true
+         mountPath: /configs
+     volumes:
+     - name: configs
+       configMap:
+         name: my-operator-index
+         defaultMode: 0444
+   EOF
+   ```
+
+3. Create a `CatalogSource` that registers the custom DC as a catalog for OLM:
+
+   ```sh
+   export POD_IP=$(kubectl get pod my-operator-registry -o json | jq -r '.status.podIP')
+   
+   cat <<EOF | kubectl apply -f -
+   apiVersion: operators.coreos.com/v1alpha1
+   kind: CatalogSource
+   metadata:
+     name: my-operator
+   spec:
+     address: ${POD_IP}:50051
+     displayName: My Operator
+     publisher: My Organization
+     sourceType: grpc 
+   EOF
+   ```
