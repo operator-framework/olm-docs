@@ -10,7 +10,7 @@ Declarative Config (DC) is the latest iteration of OLM's index format. It is a f
 ## Motivation
 The primary motivations for this new format are to enable index editing, composability, and extensibility. 
 
-### Editting
+### Editing
 
 With DC, users interacting with the contents of an index are able to make direct changes to the index format and verify that their changes are valid. 
 
@@ -381,7 +381,11 @@ Global Flags:
 ### `opm serve`
 
 ```
-serve declarative configs via grpc
+This command serves declarative configs via a GRPC server.
+
+NOTE: The declarative config directory is loaded by the serve command at
+startup. Changes made to the declarative config after the this command starts
+will not be reflected in the served content.
 
 Usage:
   opm serve <source_path> [flags]
@@ -498,7 +502,7 @@ Operator authors can use any tooling that works for their process and produces a
 **For step 4**, OLM's general advice is that bundle images and their metadata should be treated as immutable.
 If a broken bundle has been pushed to an index, you must assume that at least one of your users has upgraded to that bundle.
 Based on that assumption, you must release another bundle with an upgrade edge from the broken bundle to ensure users with the broken bundle installed receive an upgrade.
-OLM will not upgrade an installed bundle if the contents of that bundle are updated in the index.
+OLM will not reinstall an installed bundle if the contents of that bundle are updated in the index.
 
 However, there are some cases where a change in the index metadata is preferred. For example:
 - Channel promotion - if you already released a bundle and later decide that you'd like to add it to another channel, simply add an `olm.channel` property to the `olm.bundle`
@@ -552,85 +556,5 @@ There are many possible ways to build a catalog, but an extremely simple approac
 For cluster administrators, declarative config-based indexes are largely the same as sqlite-based indexes.
 Both index types serve the exact same GRPC interface required by OLM's on-cluster components.
 
-One benefit of declarative config is that it is possible to build an index entirely with Kubernetes APIs:
-1. Populate a `ConfigMap` with a declarative config index file:
-
-   ```sh
-   cat <<EOF | kubectl apply -f -
-   apiVersion: v1
-   kind: ConfigMap
-   metadata:
-      name: my-operator-index
-   data:
-     .indexignore: |
-       /..data
-     index.yaml: |
-       ---
-       schema: olm.package  
-       name: my-operator
-       defaultChannel: stable
-       ---
-       schema: olm.bundle    
-       package: my-operator
-       name: my-operator.v0.1.0
-       image: quay.io/my-org/my-operator-bundle:v0.1.0
-       properties:
-       - type: olm.channel
-         value:
-           name: alpha
-       - type: olm.gvk
-         value:
-           group: example.my.domain
-           kind: Operator
-           version: v1alpha1
-       - type: olm.package
-         value:
-           packageName: my-operator
-           version: 0.1.0
-   EOF
-   ```
-
-2. Create a `Pod` that mounts the DC `ConfigMap` and runs `opm serve`:
-
-   ```sh
-   cat <<EOF | kubectl apply -f -
-   apiVersion: v1
-   kind: Pod
-   metadata:
-     name: my-operator-registry
-   spec:
-     containers:
-     - image: quay.io/operator-framework/opm:v1.18.0
-       args:
-       - serve
-       - /configs
-       name: opm
-       volumeMounts:
-       - name: configs
-         readOnly: true
-         mountPath: /configs
-     volumes:
-     - name: configs
-       configMap:
-         name: my-operator-index
-         defaultMode: 0444
-   EOF
-   ```
-
-3. Create a `CatalogSource` that registers the custom DC as a catalog for OLM:
-
-   ```sh
-   export POD_IP=$(kubectl get pod my-operator-registry -o json | jq -r '.status.podIP')
-   
-   cat <<EOF | kubectl apply -f -
-   apiVersion: operators.coreos.com/v1alpha1
-   kind: CatalogSource
-   metadata:
-     name: my-operator
-   spec:
-     address: ${POD_IP}:50051
-     displayName: My Operator
-     publisher: My Organization
-     sourceType: grpc 
-   EOF
-   ```
+Cluster administrators are not required to make any changes to their clusters to support declarative
+config-based indexes.
