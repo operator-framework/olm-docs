@@ -1,18 +1,18 @@
 ---
-title: "Declarative Config"
-linkTitle: "Declarative Config"
+title: "File-based Catalogs"
+linkTitle: "File-based Catalogs"
 weight: 4
 date: 2021-07-29
 ---
 
-Declarative Config (DC) is the latest iteration of OLM's index format. It is a fully plaintext-based (JSON or YAML) evolution of the previous sqlite database format that is fully backwards compatible.
+File-based catalogs are the latest iteration of OLM's index format. It is a fully plaintext-based (JSON or YAML) evolution of the previous sqlite database format that is fully backwards compatible.
 
 ## Motivation
 The primary motivations for this new format are to enable index editing, composability, and extensibility. 
 
 ### Editing
 
-With DC, users interacting with the contents of an index are able to make direct changes to the index format and verify that their changes are valid. 
+With file-based catalogs, users interacting with the contents of an index are able to make direct changes to the index format and verify that their changes are valid. 
 
 Because the index is now stored in plaintext rather than a sqlite database, index maintainers can update an index without the use of a custom index-aware tool, like `opm`.
 
@@ -23,19 +23,19 @@ This editability opens the door for new features and extensions that were otherw
 
 ### Composability
 
-Declarative Configs are stored in an arbitrary directory hierarchy, which enables index composition. If I have two separate DC directories, `indexA` and `indexB`, I can make a new combined index by making a new directory `indexC` and copying `indexA` and `indexB` into it.
+File-based catalogs are stored in an arbitrary directory hierarchy, which enables index composition. If I have two separate file-based catalog directories, `indexA` and `indexB`, I can make a new combined index by making a new directory `indexC` and copying `indexA` and `indexB` into it.
 
 This composability enables decentralized indexes. The format permits operator authors to maintain operator-specific indexes and index maintainers to trivially build an index composed of individual operator indexes.
 
 > NOTE: Duplicate packages and duplicate bundles within a package are not permitted. The `opm validate` command will return an error if any duplicates are found.
 
-One of the major benefits is that those who are most familiar with an operator, its dependencies, and its upgrade compatibility (i.e. the operator authors) are able to maintain their own operator-specific index and have direct control over its contents. DC moves the task of building and maintaining indexes more towards operator authors, thus giving composite index maintainers more time to build value around their compositions.
+One of the major benefits is that those who are most familiar with an operator, its dependencies, and its upgrade compatibility (i.e. the operator authors) are able to maintain their own operator-specific index and have direct control over its contents. File-based catalogs move the task of building and maintaining indexes more towards operator authors, thus giving composite index maintainers more time to build value around their compositions.
 
 Another benefit is that the format enables composite index maintainers to build their index without the knowledge or coordination of the maintainers of the sub-indexes. Indexes like this can be composed by combining multiple other indexes or by extracting only necessary subsets of one index, or a combination of both of these.
 
 ### Extensibility
 
-Another motivation is to enable more extensibility around indexes. DC is a low-level representation of an index. While it can be maintained directly in its low-level form, we expect many index maintainers to build interesting extensions on top that can be used by their own custom tooling to make all sorts of mutations. For example, one could imagine a tool that translates a high-level API like (mode=semver) down to the low-level DC format for upgrade edges. Or perhaps an index maintainer needs to customize all of the bundle metadata by adding a new property to bundles that meet a certain criteria.
+Another motivation is to enable more extensibility around indexes. The file-based catalog spec is a low-level representation of an index. While it can be maintained directly in its low-level form, we expect many index maintainers to build interesting extensions on top that can be used by their own custom tooling to make all sorts of mutations. For example, one could imagine a tool that translates a high-level API like (mode=semver) down to the low-level file-based catalog format for upgrade edges. Or perhaps an index maintainer needs to customize all of the bundle metadata by adding a new property to bundles that meet a certain criteria.
 
 The OLM developer community will be making use of this extensibility to build more official tooling on top of the low-level APIs, but the major benefit is that index maintainers have this capability as well.
 
@@ -43,11 +43,11 @@ The OLM developer community will be making use of this extensibility to build mo
 
 ### Structure
 
-Declarative config can be stored and loaded from directory-based filesystems.
+File-based catalogs can be stored and loaded from directory-based filesystems.
 
-`opm` loads declarative config by walking the root directory and recursing into subdirectories. It attempts to load every file it finds as declarative config and fails if any errors occur.
+`opm` loads the catalog by walking the root directory and recursing into subdirectories. It attempts to load every file it finds and fails if any errors occur.
 
-Non-DC files can be ignored using `.indexignore` files, which behave identically to `.gitignore` files. That is, they have the same rules for [patterns](https://git-scm.com/docs/gitignore#_pattern_format) and precedence.
+Non-catalog files can be ignored using `.indexignore` files, which behave identically to `.gitignore` files. That is, they have the same rules for [patterns](https://git-scm.com/docs/gitignore#_pattern_format) and precedence.
 
 > #### Example `.gitignore` file
 > ```gitignore
@@ -60,7 +60,7 @@ Non-DC files can be ignored using `.indexignore` files, which behave identically
 > ```
 
 
-Index maintainers have flexibility to chose their desired layout, but the OLM team recommends storing each package's DC blobs in separate sub-directories. Each individual DC file can be either JSON or YAML -- it is not necessary for every file in an index to use the same format. 
+Index maintainers have flexibility to chose their desired layout, but the OLM team recommends storing each package's file-based catalog blobs in separate sub-directories. Each individual file can be either JSON or YAML -- it is not necessary for every file in an index to use the same format. 
 
 This layout has the property that each sub-directoriy in the directory hierarchy is a self-contained index, which makes index composition, discovery, and navigation as simple as trivial filesystem operations.
 
@@ -82,7 +82,7 @@ This `index` could also be trivially included in a parent index by simply copyin
 
 ### Schema
 
-At its core, declarative config is a simple format that can be extended with arbitrary schemas. The format that all DC blobs must adhere to is the `Meta` schema. The below [cue][cuelang-spec] `_Meta` schema defines all DC blobs.
+At its core, file-based catalogs use a simple format that can be extended with arbitrary schemas. The format that all file-based catalog blobs must adhere to is the `Meta` schema. The below [cue][cuelang-spec] `_Meta` schema defines all file-based catalog blobs.
 
 > **NOTE**: No cue schemas listed in this specification should be considered exhaustive. The `opm validate` command has additional validations that are difficult/impossible to express concisely in cue.
 
@@ -178,7 +178,7 @@ The `olm.bundle` cue schema is:
 
 ### Properties
 
-Properties are arbitrary pieces of metadata that can be attached to DC schemas. The type field is a string that effectively specifies the semantic and syntactic meaning of the value field. The value can be any arbitrary JSON/YAML.
+Properties are arbitrary pieces of metadata that can be attached to file-based catalog schemas. The type field is a string that effectively specifies the semantic and syntactic meaning of the value field. The value can be any arbitrary JSON/YAML.
 
 
 OLM defines a handful of property types, again using the reserved `olm.*` prefix.
@@ -303,7 +303,7 @@ The `olm.gvk.required` property [cue][cuelang-spec] schema is:
 
 A bundle object property can contain inlined data using the `value.data` field, which must the base64-encoded string of that manifest
 
-Alternately, a bundle object property can be a reference to a file relative to the location of file in which the bundle is declared. Any referenced files must be within the declarative config root.
+Alternately, a bundle object property can be a reference to a file relative to the location of file in which the bundle is declared. Any referenced files must be within the catalog root.
 
 The `olm.bundle.object` property [cue][cuelang-spec] schema is:
 ```cue
@@ -463,9 +463,9 @@ Global Flags:
 
 ### Operator authors & package maintainers
 
-Declarative config moves ownership and maintenance of the index into the hands of individual operator authors and package maintainers, giving them much more control over the contents of their index.
+File-based catalogs move ownership and maintenance of the index into the hands of individual operator authors and package maintainers, giving them much more control over the contents of their index.
 They no longer have to rely on the specific APIs available via an `opm` command that modifies an opaque database.
-Instead, they can use whatever tools fit their workflows to create and manipulate their declarative configs.
+Instead, they can use whatever tools fit their workflows to create and manipulate their catalogs.
 
 The general workflow for operator authors is:
 1. Initialize Package (once) 
@@ -497,7 +497,7 @@ The general workflow for operator authors is:
 Operator authors can use any tooling that works for their process and produces an index that validates with `opm validate`. Some examples of post-processing tools include:
   - `jq` or `yq` for arbitrary JSON or YAML manipulations.
   - `declcfg` for similar functionality provided by `opm index add`.
-  - `vim` -- hand-editing DC is completely acceptable if that fits your workflow
+  - `vim` -- hand-editing file-based catalogs is completely acceptable if that fits your workflow
 
 **For step 4**, OLM's general advice is that bundle images and their metadata should be treated as immutable.
 If a broken bundle has been pushed to an index, you must assume that at least one of your users has upgraded to that bundle.
@@ -514,7 +514,7 @@ OLM highly recommends storing index metadata in source control and treating the 
 
 ### Catalog maintainers
 
-With declarative config, catalog maintainers can focus on operator curation and compatibility.
+With file-based catalogs, catalog maintainers can focus on operator curation and compatibility.
 Since operator authors have already produced operator-specific indexes for their operators, catalog
 maintainers can build their catalog simply by rendering each operator index into a subdirectory of the
 catalog's root index directory.
@@ -553,8 +553,7 @@ There are many possible ways to build a catalog, but an extremely simple approac
 
 ### Cluster administrators
 
-For cluster administrators, declarative config-based indexes are largely the same as sqlite-based indexes.
+For cluster administrators, file-based catalogs are largely the same as sqlite-based catalogs.
 Both index types serve the exact same GRPC interface required by OLM's on-cluster components.
 
-Cluster administrators are not required to make any changes to their clusters to support declarative
-config-based indexes.
+Cluster administrators are not required to make any changes to their clusters to support file-based catalogs.
