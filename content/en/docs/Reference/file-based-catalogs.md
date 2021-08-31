@@ -5,39 +5,57 @@ weight: 4
 date: 2021-07-29
 ---
 
-File-based catalogs are the latest iteration of OLM's index format. It is a fully plaintext-based (JSON or YAML) evolution of the previous sqlite database format that is fully backwards compatible.
+File-based catalogs are the latest iteration of OLM's index format. It is a fully plaintext-based (JSON or YAML)
+evolution of the previous sqlite database format that is fully backwards compatible.
 
-## Motivation
-The primary motivations for this new format are to enable index editing, composability, and extensibility. 
+## Design
+The primary design goal for this format is to enable index editing, composability, and extensibility. 
 
 ### Editing
 
-With file-based catalogs, users interacting with the contents of an index are able to make direct changes to the index format and verify that their changes are valid. 
+With file-based catalogs, users interacting with the contents of an index are able to make direct changes to the index
+format and verify that their changes are valid. 
 
-Because the index is now stored in plaintext rather than a sqlite database, index maintainers can update an index without the use of a custom index-aware tool, like `opm`.
+Because this format is plaintext JSON or YAML, index maintainers can easily manipulate index metadata by hand or with
+widely known and supported JSON or YAML tooling (e.g. `jq`).
 
-This editability opens the door for new features and extensions that were otherwise difficult to implement and maintain in a single tool. For example:
+This editability enables features and user-defined extensions, such as:
 - Promoting an existing bundle to a new channel
 - Changing the default channel of a package
-- Adding, updating, or removing upgrade edges
+- Custom algorithms for adding, updating, adding removing upgrade edges.
 
 ### Composability
 
-File-based catalogs are stored in an arbitrary directory hierarchy, which enables index composition. If I have two separate file-based catalog directories, `indexA` and `indexB`, I can make a new combined index by making a new directory `indexC` and copying `indexA` and `indexB` into it.
+File-based catalogs are stored in an arbitrary directory hierarchy, which enables index composition. If I have two
+separate file-based catalog directories, `indexA` and `indexB`, I can make a new combined index by making a new
+directory `indexC` and copying `indexA` and `indexB` into it.
 
-This composability enables decentralized indexes. The format permits operator authors to maintain operator-specific indexes and index maintainers to trivially build an index composed of individual operator indexes.
+This composability enables decentralized indexes. The format permits operator authors to maintain operator-specific
+indexes and index maintainers to trivially build an index composed of individual operator indexes.
 
-> NOTE: Duplicate packages and duplicate bundles within a package are not permitted. The `opm validate` command will return an error if any duplicates are found.
+> NOTE: Duplicate packages and duplicate bundles within a package are not permitted. The `opm validate` command will
+> return an error if any duplicates are found.
 
-One of the major benefits is that those who are most familiar with an operator, its dependencies, and its upgrade compatibility (i.e. the operator authors) are able to maintain their own operator-specific index and have direct control over its contents. File-based catalogs move the task of building and maintaining indexes more towards operator authors, thus giving composite index maintainers more time to build value around their compositions.
+Since operator authors are most familiar with their operator, its dependencies, and its upgrade compatibility, they are
+able to maintain their own operator-specific index and have direct control over its contents. With file-based catalogs,
+operator authors own the task of building and maintaining their packages in an index. Composite index maintainers treat
+packages as a black box; they own the task of curating the packages in their catalog and publishing the catalog to
+users. 
 
-Another benefit is that the format enables composite index maintainers to build their index without the knowledge or coordination of the maintainers of the sub-indexes. Indexes like this can be composed by combining multiple other indexes or by extracting only necessary subsets of one index, or a combination of both of these.
+File-based catalogs can be composed by combining multiple other catalogs or by extracting subsets of one catalog, or a
+combination of both of these.
 
 ### Extensibility
 
-Another motivation is to enable more extensibility around indexes. The file-based catalog spec is a low-level representation of an index. While it can be maintained directly in its low-level form, we expect many index maintainers to build interesting extensions on top that can be used by their own custom tooling to make all sorts of mutations. For example, one could imagine a tool that translates a high-level API like (mode=semver) down to the low-level file-based catalog format for upgrade edges. Or perhaps an index maintainer needs to customize all of the bundle metadata by adding a new property to bundles that meet a certain criteria.
+The final design goal is to provide extensibility around indexes. The file-based catalog spec is a low-level
+representation of an index. While it can be maintained directly in its low-level form, we expect many index maintainers
+to build interesting extensions on top that can be used by their own custom tooling to make all sorts of mutations. For
+example, one could imagine a tool that translates a high-level API like (mode=semver) down to the low-level file-based
+catalog format for upgrade edges. Or perhaps an index maintainer needs to customize all of the bundle metadata by adding
+a new property to bundles that meet a certain criteria.
 
-The OLM developer community will be making use of this extensibility to build more official tooling on top of the low-level APIs, but the major benefit is that index maintainers have this capability as well.
+The OLM developer community will be making use of this extensibility to build more official tooling on top of the
+low-level APIs, but the major benefit is that index maintainers have this capability as well.
 
 ## Specification
 
@@ -45,9 +63,11 @@ The OLM developer community will be making use of this extensibility to build mo
 
 File-based catalogs can be stored and loaded from directory-based filesystems.
 
-`opm` loads the catalog by walking the root directory and recursing into subdirectories. It attempts to load every file it finds and fails if any errors occur.
+`opm` loads the catalog by walking the root directory and recursing into subdirectories. It attempts to load every file
+it finds and fails if any errors occur.
 
-Non-catalog files can be ignored using `.indexignore` files, which behave identically to `.gitignore` files. That is, they have the same rules for [patterns](https://git-scm.com/docs/gitignore#_pattern_format) and precedence.
+Non-catalog files can be ignored using `.indexignore` files, which behave identically to `.gitignore` files. That is,
+they have the same rules for [patterns](https://git-scm.com/docs/gitignore#_pattern_format) and precedence.
 
 > #### Example `.gitignore` file
 > ```gitignore
@@ -60,9 +80,12 @@ Non-catalog files can be ignored using `.indexignore` files, which behave identi
 > ```
 
 
-Index maintainers have flexibility to chose their desired layout, but the OLM team recommends storing each package's file-based catalog blobs in separate sub-directories. Each individual file can be either JSON or YAML -- it is not necessary for every file in an index to use the same format. 
+Index maintainers have flexibility to chose their desired layout, but the OLM team recommends storing each package's
+file-based catalog blobs in separate sub-directories. Each individual file can be either JSON or YAML -- it is not
+necessary for every file in an index to use the same format. 
 
-This layout has the property that each sub-directoriy in the directory hierarchy is a self-contained index, which makes index composition, discovery, and navigation as simple as trivial filesystem operations.
+This layout has the property that each sub-directoriy in the directory hierarchy is a self-contained index, which makes
+index composition, discovery, and navigation as simple as trivial filesystem operations.
 
 > #### Basic recommended structure
 > ```
@@ -78,13 +101,17 @@ This layout has the property that each sub-directoriy in the directory hierarchy
 >     └── index.json
 > ```
 
-This `index` could also be trivially included in a parent index by simply copying it into the parent index's root directory.
+This `index` could also be trivially included in a parent index by simply copying it into the parent index's root
+directory.
 
 ### Schema
 
-At its core, file-based catalogs use a simple format that can be extended with arbitrary schemas. The format that all file-based catalog blobs must adhere to is the `Meta` schema. The below [cue][cuelang-spec] `_Meta` schema defines all file-based catalog blobs.
+At its core, file-based catalogs use a simple format that can be extended with arbitrary schemas. The format that all
+file-based catalog blobs must adhere to is the `Meta` schema. The below [cue][cuelang-spec] `_Meta` schema defines all
+file-based catalog blobs.
 
-> **NOTE**: No cue schemas listed in this specification should be considered exhaustive. The `opm validate` command has additional validations that are difficult/impossible to express concisely in cue.
+> **NOTE**: No cue schemas listed in this specification should be considered exhaustive. The `opm validate` command has
+> additional validations that are difficult/impossible to express concisely in cue.
 
 ```cue
 _Meta: {
@@ -109,15 +136,18 @@ _Meta: {
 
 ### OLM-defined schemas
 
-An OLM index currently uses two schemas: `olm.package` and `olm.bundle`, which correspond to OLM's existing package and bundle concepts.
+An OLM index currently uses two schemas: `olm.package` and `olm.bundle`, which correspond to OLM's existing package and
+bundle concepts.
 
 Each operator package in an index requires exactly one `olm.package` blob and one or more `olm.bundle` blobs.
 
-> **NOTE**: All `olm.*` schemas are reserved for OLM-defined schemas. Custom schemas must use a unique prefix (e.g. a domain that you own).
+> **NOTE**: All `olm.*` schemas are reserved for OLM-defined schemas. Custom schemas must use a unique prefix (e.g. a
+> domain that you own).
 
 #### `olm.package`
 
-An `olm.package` defines package-level metadata for an operator. This includes its name, description, default channel and icon.
+An `olm.package` defines package-level metadata for an operator. This includes its name, description, default channel
+and icon.
 
 The `olm.package` [cue][cuelang-spec] schema is:
 ```cue
@@ -178,14 +208,18 @@ The `olm.bundle` cue schema is:
 
 ### Properties
 
-Properties are arbitrary pieces of metadata that can be attached to file-based catalog schemas. The type field is a string that effectively specifies the semantic and syntactic meaning of the value field. The value can be any arbitrary JSON/YAML.
+Properties are arbitrary pieces of metadata that can be attached to file-based catalog schemas. The type field is a
+string that effectively specifies the semantic and syntactic meaning of the value field. The value can be any arbitrary
+JSON/YAML.
 
 
 OLM defines a handful of property types, again using the reserved `olm.*` prefix.
 
 #### `olm.package`
 
-An `olm.package` property defines the package name and version. This is a required property on bundles, and there must be exactly one of these properties. The `packageName` must match the bundle's first-class `package` field, and the `version` must be a valid [semantic version][semver]
+An `olm.package` property defines the package name and version. This is a required property on bundles, and there must
+be exactly one of these properties. The `packageName` must match the bundle's first-class `package` field, and the
+`version` must be a valid [semantic version][semver]
 
 The `olm.package` property [cue][cuelang-spec] schema is:
 ```cue
@@ -200,7 +234,9 @@ The `olm.package` property [cue][cuelang-spec] schema is:
 
 #### `olm.gvk`
 
-An `olm.gvk` property defines the group, version, and kind (GVK) of a Kubernetes API that is provided by this bundle. This property is used by OLM to resolve a bundle with this property as a dependency for other bundles that list the same GVK as a required API. The GVK must adhere to Kubernetes GVK validations.
+An `olm.gvk` property defines the group, version, and kind (GVK) of a Kubernetes API that is provided by this bundle.
+This property is used by OLM to resolve a bundle with this property as a dependency for other bundles that list the same
+GVK as a required API. The GVK must adhere to Kubernetes GVK validations.
 
 The `olm.gvk` property [cue][cuelang-spec] schema is:
 ```cue
@@ -216,11 +252,14 @@ The `olm.gvk` property [cue][cuelang-spec] schema is:
 
 #### `olm.channel`
 
-An `olm.channel` property defines a channel that a bundle is in, and optionally, the name of another bundle that it replaces in that channel.
+An `olm.channel` property defines a channel that a bundle is in, and optionally, the name of another bundle that it
+replaces in that channel.
 
-A bundle can include multiple `olm.channel` properties, but it is invalid to define multiple `olm.channel` properties for the same channel name.
+A bundle can include multiple `olm.channel` properties, but it is invalid to define multiple `olm.channel` properties
+for the same channel name.
 
-Lastly, it is valid for an `olm.channel`'s replaces value to reference another bundle that cannot be found in this index (or even another index) as long as other channel invariants still hold (e.g. a channel cannot have multiple heads).
+Lastly, it is valid for an `olm.channel`'s replaces value to reference another bundle that cannot be found in this index
+(or even another index) as long as other channel invariants still hold (e.g. a channel cannot have multiple heads).
 
 The `olm.channel` property [cue][cuelang-spec] schema is:
 ```cue
@@ -249,7 +288,8 @@ The `olm.skips` property [cue][cuelang-spec] schema is:
 
 #### `olm.skipRange`
 
-An `olm.skipRange` property defines a [range of semver versions][semver-range] of other bundles that this bundle skips. This property applies to all channels.
+An `olm.skipRange` property defines a [range of semver versions][semver-range] of other bundles that this bundle skips.
+This property applies to all channels.
 
 It is invalid to include multiple `olm.skipRange` properties on a bundle.
 
@@ -263,7 +303,10 @@ The `olm.skipRange` property [cue][cuelang-spec] schema is:
 
 #### `olm.package.required`
 
-An `olm.package.required` property defines the package name and version range of another package that this bundle requires. For every required package property a bundle lists, OLM will ensure there is an operator installed on the cluster for the listed package and in the required version range. The `versionRange` field must be a valid [semver range][semver-range].
+An `olm.package.required` property defines the package name and version range of another package that this bundle
+requires. For every required package property a bundle lists, OLM will ensure there is an operator installed on the
+cluster for the listed package and in the required version range. The `versionRange` field must be a valid
+[semver range][semver-range].
 
 The `olm.package.required` property [cue][cuelang-spec] schema is:
 ```cue
@@ -279,7 +322,9 @@ The `olm.package.required` property [cue][cuelang-spec] schema is:
 
 #### `olm.gvk.required`
 
-An `olm.gvk.required` property defines the group, version, and kind (GVK) of a Kubernetes API that this bundle requires. For every required GVK property a bundle lists, OLM will ensure there is an operator installed on the cluster that provides it. The GVK must adhere to Kubernetes GVK validations.
+An `olm.gvk.required` property defines the group, version, and kind (GVK) of a Kubernetes API that this bundle requires.
+For every required GVK property a bundle lists, OLM will ensure there is an operator installed on the cluster that
+provides it. The GVK must adhere to Kubernetes GVK validations.
 
 The `olm.gvk.required` property [cue][cuelang-spec] schema is:
 ```cue
@@ -297,13 +342,18 @@ The `olm.gvk.required` property [cue][cuelang-spec] schema is:
 
 `olm.bundle.object` properties are used to inline (or reference) a bundle's manifests directly in the index.
 
-> **NOTE**: Core OLM does not require `olm.bundle.object` properties to be included on bundles. However, the OLM Package Server (used by tooling such as the kubectl operator plugin and the OpenShift console) does require these properties to be able to serve metadata about the packages in an index.
+> **NOTE**: Core OLM does not require `olm.bundle.object` properties to be included on bundles. However, the OLM Package
+> Server (used by tooling such as the kubectl operator plugin and the OpenShift console) does require these properties
+> to be able to serve metadata about the packages in an index.
 > 
-> This property is in _alpha_ because it will likely be rendered obsolete when updates can be made to the OLM Package Server to no longer require manifests in the index.
+> This property is in _alpha_ because it will likely be rendered obsolete when updates can be made to the OLM Package
+> Server to no longer require manifests in the index.
 
-A bundle object property can contain inlined data using the `value.data` field, which must the base64-encoded string of that manifest
+A bundle object property can contain inlined data using the `value.data` field, which must the base64-encoded string of
+that manifest.
 
-Alternately, a bundle object property can be a reference to a file relative to the location of file in which the bundle is declared. Any referenced files must be within the catalog root.
+Alternately, a bundle object property can be a reference to a file relative to the location of file in which the bundle
+is declared. Any referenced files must be within the catalog root.
 
 The `olm.bundle.object` property [cue][cuelang-spec] schema is:
 ```cue
@@ -327,6 +377,10 @@ The `olm.bundle.object` property [cue][cuelang-spec] schema is:
 [semver-range]: https://github.com/blang/semver/blob/master/README.md#ranges
 
 ## CLI
+
+<!--
+TODO(joelanford): We should auto-generate this from cobra CLI doc tooling.
+-->
 
 ### `opm init`
 
@@ -459,67 +513,36 @@ Global Flags:
       --skip-tls   skip TLS certificate verification for container image registries while pulling bundles or index
 ```
 
-## Workflows
+## Guidelines
 
-### Operator authors & package maintainers
+### Immutable bundles
 
-File-based catalogs move ownership and maintenance of the index into the hands of individual operator authors and package maintainers, giving them much more control over the contents of their index.
-They no longer have to rely on the specific APIs available via an `opm` command that modifies an opaque database.
-Instead, they can use whatever tools fit their workflows to create and manipulate their catalogs.
-
-The general workflow for operator authors is:
-1. Initialize Package (once) 
-   ```
-   mkdir index
-   opm init my-package --default-channel=alpha -o yaml > index/index.yaml
-   ```
-2. Generate dockerfile (once)
-   ```
-   opm alpha generate dockerfile index
-   ```
-3. Add bundle to index (as new bundles are released)
-   ```
-   opm render my-org/my-bundle:<version> >> index/index.yaml
-   ./idempotent-post-process.sh
-   docker build -t my-org/my-index:<tag> . -f index.Dockerfile
-   docker push my-org/my-index:<tag>
-   ```
-4. Custom edits to the `index/index.yaml` only as necessary to resolve issues in index metadata of already released bundles.
-
-#### A few notes
-
-**In step 3**, `./idempotent-post-process.sh` could be a collection of post-processing steps that, for example:
-  - Ensures the added bundle is correctly added into the existing upgrade graph(s) of your package channels.
-  - Ensures channel heads have `olm.bundle.object` properties.
-  - Runs `opm validate` to verify the index can be served.
-  - Produces a visualization of the upgrade graphs for each channel. 
-
-Operator authors can use any tooling that works for their process and produces an index that validates with `opm validate`. Some examples of post-processing tools include:
-  - `jq` or `yq` for arbitrary JSON or YAML manipulations.
-  - `declcfg` for similar functionality provided by `opm index add`.
-  - `vim` -- hand-editing file-based catalogs is completely acceptable if that fits your workflow
-
-**For step 4**, OLM's general advice is that bundle images and their metadata should be treated as immutable.
-If a broken bundle has been pushed to an index, you must assume that at least one of your users has upgraded to that bundle.
-Based on that assumption, you must release another bundle with an upgrade edge from the broken bundle to ensure users with the broken bundle installed receive an upgrade.
-OLM will not reinstall an installed bundle if the contents of that bundle are updated in the index.
+OLM's general advice is that bundle images and their metadata should be treated as immutable. If a broken bundle has 
+been pushed to an index, you must assume that at least one of your users has upgraded to that bundle. Based on that
+assumption, you must release another bundle with an upgrade edge from the broken bundle to ensure users with the broken
+bundle installed receive an upgrade. OLM will not reinstall an installed bundle if the contents of that bundle are
+updated in the index.
 
 However, there are some cases where a change in the index metadata is preferred. For example:
-- Channel promotion - if you already released a bundle and later decide that you'd like to add it to another channel, simply add an `olm.channel` property to the `olm.bundle`
-- New upgrade edges - if you release a new 1.2.z (e.g. 1.2.4), but 1.3.0 is already released, you can update the index metadata for 1.3.0 to skip 1.2.4.
+- Channel promotion - if you already released a bundle and later decide that you'd like to add it to another channel,
+  simply add an `olm.channel` property to the `olm.bundle`
+- New upgrade edges - if you release a new 1.2.z (e.g. 1.2.4), but 1.3.0 is already released, you can update the index
+  metadata for 1.3.0 to skip 1.2.4.
+  
+### Use of source control
 
-OLM highly recommends storing index metadata in source control and treating the source-controlled metadata as the source of truth. Updates to index images should:
+OLM highly recommends storing index metadata in source control and treating the source-controlled metadata as the source
+of truth. Updates to index images should:
 1. Update the source-controlled index directory with a new commit.
-2. Build and push the index image. OLM suggests using a consistent tagging taxonomy (e.g. `:latest` or `:<targetClusterVersion>` so that users can receive updates to an index as they become available. 
+2. Build and push the index image. OLM suggests using a consistent tagging taxonomy (e.g. `:latest` or 
+   `:<targetClusterVersion>` so that users can receive updates to an index as they become available.
 
-### Catalog maintainers
+## Example: Building a composite catalog
 
 With file-based catalogs, catalog maintainers can focus on operator curation and compatibility.
 Since operator authors have already produced operator-specific indexes for their operators, catalog
 maintainers can build their catalog simply by rendering each operator index into a subdirectory of the
 catalog's root index directory.
-
-#### Example
 
 There are many possible ways to build a catalog, but an extremely simple approach would be to:
 
@@ -551,9 +574,13 @@ There are many possible ways to build a catalog, but an extremely simple approac
    docker push "$indexImage"
    ```
 
-### Cluster administrators
+## Automation
 
-For cluster administrators, file-based catalogs are largely the same as sqlite-based catalogs.
-Both index types serve the exact same GRPC interface required by OLM's on-cluster components.
-
-Cluster administrators are not required to make any changes to their clusters to support file-based catalogs.
+Operator authors and catalog maintainers are encouraged to automate their index maintenance with CI/CD workflows.
+Catalog maintainers could further improve on this by building Git-ops automation that:
+1. Checks that PR authors are permitted to make the requested changes (e.g. updating their package's image reference)
+2. Checks that the index updates pass `opm validate`
+3. Checks that the updated bundle and/or index image reference(s) exist, the index images run successfully in a cluster,
+   and operators from that package can be successfully installed.
+4. Automatically merges PRs that pass these checks.
+5. Automatically rebuilds and republishes the index image.
