@@ -22,7 +22,7 @@ widely known and supported JSON or YAML tooling (e.g. `jq`).
 This editability enables features and user-defined extensions, such as:
 - Promoting an existing bundle to a new channel
 - Changing the default channel of a package
-- Custom algorithms for adding, updating, adding removing upgrade edges.
+- Custom algorithms for adding, updating, adding removing upgrade edges
 
 ### Composability
 
@@ -44,6 +44,8 @@ users.
 
 File-based catalogs can be composed by combining multiple other catalogs or by extracting subsets of one catalog, or a
 combination of both of these.
+
+See the [Building a composite catalog](#building-a-composite-catalog) section for a simple example.
 
 ### Extensibility
 
@@ -80,11 +82,11 @@ they have the same rules for [patterns](https://git-scm.com/docs/gitignore#_patt
 > ```
 
 
-Index maintainers have flexibility to chose their desired layout, but the OLM team recommends storing each package's
+Index maintainers have the flexibility to chose their desired layout, but the OLM team recommends storing each package's
 file-based catalog blobs in separate sub-directories. Each individual file can be either JSON or YAML -- it is not
 necessary for every file in an index to use the same format.
 
-This layout has the property that each sub-directoriy in the directory hierarchy is a self-contained index, which makes
+This layout has the property that each sub-directory in the directory hierarchy is a self-contained index, which makes
 index composition, discovery, and navigation as simple as trivial filesystem operations.
 
 > #### Basic recommended structure
@@ -136,10 +138,11 @@ _Meta: {
 
 ### OLM-defined schemas
 
-An OLM index currently uses two schemas: `olm.package` and `olm.bundle`, which correspond to OLM's existing package and
-bundle concepts.
+An OLM index currently uses three schemas: `olm.package`, `olm.channel`, and `olm.bundle`, which correspond to OLM's
+existing package and bundle concepts.
 
-Each operator package in an index requires exactly one `olm.package` blob and one or more `olm.bundle` blobs.
+Each operator package in an index requires exactly one `olm.package` blob, at least one `olm.channel` blob, and one or
+more `olm.bundle` blobs.
 
 > **NOTE**: All `olm.*` schemas are reserved for OLM-defined schemas. Custom schemas must use a unique prefix (e.g. a
 > domain that you own).
@@ -341,11 +344,11 @@ The `olm.gvk.required` property [cue][cuelang-spec] schema is:
 > This property is in _alpha_ because it will likely be rendered obsolete when updates can be made to the OLM Package
 > Server to no longer require manifests in the index.
 
-A bundle object property can contain inlined data using the `value.data` field, which must the base64-encoded string of
-that manifest.
+A bundle object property can contain inlined data using the `value.data` field, which must be the base64-encoded string
+of that manifest.
 
-Alternately, a bundle object property can be a reference to a file relative to the location of file in which the bundle
-is declared. Any referenced files must be within the catalog root.
+Alternately, a bundle object property can be a reference to a file relative to the location of the file in which the
+bundle is declared. Any referenced files must be within the catalog root.
 
 The `olm.bundle.object` property [cue][cuelang-spec] schema is:
 ```cue
@@ -529,7 +532,12 @@ of truth. Updates to index images should:
 2. Build and push the index image. OLM suggests using a consistent tagging taxonomy (e.g. `:latest` or
    `:<targetClusterVersion>` so that users can receive updates to an index as they become available.
 
-## Example: Building a composite catalog
+<!--
+TODO(joelanford): Add a link to an file-based catalog repository when one exists in the future.
+-->
+
+## Examples
+### Building a composite catalog
 
 With file-based catalogs, catalog maintainers can focus on operator curation and compatibility.
 Since operator authors have already produced operator-specific indexes for their operators, catalog

@@ -7,7 +7,7 @@ description: >
 
 ## Prerequisites
 
-- [opm](https://github.com/operator-framework/operator-registry/releases) `v1.18.0+`
+- [opm](https://github.com/operator-framework/operator-registry/releases) `v1.19.0+`
 
 ## Creating an Index
 
