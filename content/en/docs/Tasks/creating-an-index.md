@@ -92,7 +92,7 @@ Lastly, we can build and push our index:
 ```sh
 $ docker build . \
     -f example-operator-index.Dockerfile \
-    -t quay.io/example-inc/example-operator-index:latest 
+    -t quay.io/example-inc/example-operator-index:latest
 $ docker push quay.io/example-inc/example-operator-index:latest
 ```
 
@@ -101,4 +101,4 @@ The resulting image is referred to as an `Index`. Now that image is available fo
 
 [catalogsource-crd]: /docs/concepts/crds/catalogsource
 [file-based-catalog-spec]: /docs/reference/file-based-catalogs
-[upgrade-graph-doc]: /docs/concepts/olm-architecture/operator-catalog/creating-an-update-graph 
+[upgrade-graph-doc]: /docs/concepts/olm-architecture/operator-catalog/creating-an-update-graph

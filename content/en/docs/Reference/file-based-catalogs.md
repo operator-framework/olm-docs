@@ -14,7 +14,7 @@ The primary design goal for this format is to enable index editing, composabilit
 ### Editing
 
 With file-based catalogs, users interacting with the contents of an index are able to make direct changes to the index
-format and verify that their changes are valid. 
+format and verify that their changes are valid.
 
 Because this format is plaintext JSON or YAML, index maintainers can easily manipulate index metadata by hand or with
 widely known and supported JSON or YAML tooling (e.g. `jq`).
@@ -40,7 +40,7 @@ Since operator authors are most familiar with their operator, its dependencies, 
 able to maintain their own operator-specific index and have direct control over its contents. With file-based catalogs,
 operator authors own the task of building and maintaining their packages in an index. Composite index maintainers treat
 packages as a black box; they own the task of curating the packages in their catalog and publishing the catalog to
-users. 
+users.
 
 File-based catalogs can be composed by combining multiple other catalogs or by extracting subsets of one catalog, or a
 combination of both of these.
@@ -82,7 +82,7 @@ they have the same rules for [patterns](https://git-scm.com/docs/gitignore#_patt
 
 Index maintainers have flexibility to chose their desired layout, but the OLM team recommends storing each package's
 file-based catalog blobs in separate sub-directories. Each individual file can be either JSON or YAML -- it is not
-necessary for every file in an index to use the same format. 
+necessary for every file in an index to use the same format.
 
 This layout has the property that each sub-directoriy in the directory hierarchy is a self-contained index, which makes
 index composition, discovery, and navigation as simple as trivial filesystem operations.
@@ -153,7 +153,7 @@ The `olm.package` [cue][cuelang-spec] schema is:
 ```cue
 #Package: {
   schema: "olm.package"
-  
+
   // Package name
   name: string & !=""
 
@@ -162,7 +162,7 @@ The `olm.package` [cue][cuelang-spec] schema is:
 
   // The package's default channel
   defaultChannel: string & !=""
-  
+
   // An optional icon
   icon?: {
     base64data: string
@@ -171,10 +171,53 @@ The `olm.package` [cue][cuelang-spec] schema is:
 }
 ```
 
+#### `olm.channel`
+
+An `olm.channel` defines a channel within a package, the bundle entries that are members
+of the channel, and the upgrade edges for those bundles.
+
+A bundle can included as an entry in multiple `olm.channel` blobs, but it can have only one entry per channel.
+
+Also, it is valid for an entry's replaces value to reference another bundle name that cannot be found in this index
+(or even another index) as long as other channel invariants still hold (e.g. a channel cannot have multiple heads).
+
+The `olm.channel` [cue][cuelang-spec] schema is:
+```cue
+#Channel: {
+  schema: "olm.channel"
+  package: string & !=""
+  name: string & !=""
+  entries: [...#ChannelEntry]
+}
+
+#ChannelEntry: {
+  // name is required. It is the name of an `olm.bundle` that
+  // is present in the channel.
+  name: string & !=""
+
+  // replaces is optional. It is the name of bundle that is replaced
+  // by this entry. It does not have to be present in the entry list.
+  replaces?: string & !=""
+
+  // skips is optional. It is a list of bundle names that are skipped by
+  // this entry. The skipped bundles do not have to be present in the
+  // entry list.
+  skips?: [...string & !=""]
+
+  // skipRange is optional. It is the semver range of bundle versions
+  // that are skipped by this entry.
+  skipRange?: string & !=""
+}
+```
+
+For more information about defining upgrade edges, see the [upgrade graph reference documentation][upgrade-graph-doc].
+
+[upgrade-graph-doc]: /docs/concepts/olm-architecture/operator-catalog/creating-an-update-graph
+
 #### `olm.bundle`
 
 <!--
-TODO(joelanford): Add a description of the `olm.bundle` schema here 
+TODO(joelanford): Add a description of the `olm.bundle` schema here
 -->
 
 The `olm.bundle` cue schema is:
@@ -199,7 +242,7 @@ The `olm.bundle` cue schema is:
 #RelatedImage: {
   // image is the image reference
   image: string & !=""
-  
+
   // name is an optional descriptive name for an image that
   // helps identify its purpose in the context of the bundle
   name?: string & !=""
@@ -250,57 +293,6 @@ The `olm.gvk` property [cue][cuelang-spec] schema is:
 }
 ```
 
-#### `olm.channel`
-
-An `olm.channel` property defines a channel that a bundle is in, and optionally, the name of another bundle that it
-replaces in that channel.
-
-A bundle can include multiple `olm.channel` properties, but it is invalid to define multiple `olm.channel` properties
-for the same channel name.
-
-Lastly, it is valid for an `olm.channel`'s replaces value to reference another bundle that cannot be found in this index
-(or even another index) as long as other channel invariants still hold (e.g. a channel cannot have multiple heads).
-
-The `olm.channel` property [cue][cuelang-spec] schema is:
-```cue
-#PropertyChannel: {
-  type: "olm.channel"
-  value: {
-    name: string & !=""
-    replaces?: string & !=""
-  }
-}
-```
-
-#### `olm.skips`
-
-An `olm.skips` property defines another bundle that this bundle skips. This property applies to all channels.
-
-Any number of skips properties can be set on a bundle.
-
-The `olm.skips` property [cue][cuelang-spec] schema is:
-```cue
-#PropertySkips: {
-  type: "olm.skips"
-  value: string & !=""
-}
-```
-
-#### `olm.skipRange`
-
-An `olm.skipRange` property defines a [range of semver versions][semver-range] of other bundles that this bundle skips.
-This property applies to all channels.
-
-It is invalid to include multiple `olm.skipRange` properties on a bundle.
-
-The `olm.skipRange` property [cue][cuelang-spec] schema is:
-```cue
-#PropertySkipRange: {
-  type: "olm.skipRange"
-  value: string & !=""
-}
-```
-
 #### `olm.package.required`
 
 An `olm.package.required` property defines the package name and version range of another package that this bundle
@@ -345,7 +337,7 @@ The `olm.gvk.required` property [cue][cuelang-spec] schema is:
 > **NOTE**: Core OLM does not require `olm.bundle.object` properties to be included on bundles. However, the OLM Package
 > Server (used by tooling such as the kubectl operator plugin and the OpenShift console) does require these properties
 > to be able to serve metadata about the packages in an index.
-> 
+>
 > This property is in _alpha_ because it will likely be rendered obsolete when updates can be made to the OLM Package
 > Server to no longer require manifests in the index.
 
@@ -361,7 +353,7 @@ The `olm.bundle.object` property [cue][cuelang-spec] schema is:
 #PropertyBundleObject: {
   type: "olm.bundle.object"
   value: #propertyBundleObjectRef | #propertyBundleObjectData
-} 
+}
 
 #propertyBundleObjectRef: {
     ref: string & !=""
@@ -468,12 +460,12 @@ Examples:
   # Diff a catalog at some old state and latest state into a declarative config index.
   mkdir -p catalog-index
   opm alpha diff registry.org/my-catalog:abc123 registry.org/my-catalog:def456 -o yaml > ./my-catalog-index/index.yaml
-  
+
   # Build and push this index into an index image.
   opm alpha generate dockerfile ./my-catalog-index
   docker build -t registry.org/my-catalog:latest-abc123-def456 -f index.Dockerfile .
   docker push registry.org/my-catalog:latest-abc123-def456
-  
+
   # Create a new catalog from the heads of an existing catalog, then build and push the image like above.
   opm alpha diff registry.org/my-catalog:def456 -o yaml > my-catalog-index/index.yaml
   docker build -t registry.org/my-catalog:headsonly-def456 -f index.Dockerfile .
@@ -517,7 +509,7 @@ Global Flags:
 
 ### Immutable bundles
 
-OLM's general advice is that bundle images and their metadata should be treated as immutable. If a broken bundle has 
+OLM's general advice is that bundle images and their metadata should be treated as immutable. If a broken bundle has
 been pushed to an index, you must assume that at least one of your users has upgraded to that bundle. Based on that
 assumption, you must release another bundle with an upgrade edge from the broken bundle to ensure users with the broken
 bundle installed receive an upgrade. OLM will not reinstall an installed bundle if the contents of that bundle are
@@ -525,16 +517,16 @@ updated in the index.
 
 However, there are some cases where a change in the index metadata is preferred. For example:
 - Channel promotion - if you already released a bundle and later decide that you'd like to add it to another channel,
-  simply add an `olm.channel` property to the `olm.bundle`
+  simply add an entry for your bundle in another `olm.channel` blob.
 - New upgrade edges - if you release a new 1.2.z (e.g. 1.2.4), but 1.3.0 is already released, you can update the index
   metadata for 1.3.0 to skip 1.2.4.
-  
+
 ### Use of source control
 
 OLM highly recommends storing index metadata in source control and treating the source-controlled metadata as the source
 of truth. Updates to index images should:
 1. Update the source-controlled index directory with a new commit.
-2. Build and push the index image. OLM suggests using a consistent tagging taxonomy (e.g. `:latest` or 
+2. Build and push the index image. OLM suggests using a consistent tagging taxonomy (e.g. `:latest` or
    `:<targetClusterVersion>` so that users can receive updates to an index as they become available.
 
 ## Example: Building a composite catalog
@@ -561,7 +553,7 @@ There are many possible ways to build a catalog, but an extremely simple approac
 2. Run a simple script that parses this file and creates a new catalog from its references
    ```bash
    name=$(yq eval '.name' catalog.yaml)
-   mkdir "$name" 
+   mkdir "$name"
    yq eval '.name + "/" + .references[].name' catalog.yaml | xargs mkdir
    for l in $(yq e '.name as $catalog | .references[] | .image + "|" + $catalog + "/" + .name + "/index.yaml"' catalog.yaml); do
      image=$(echo $l | cut -d'|' -f1)
