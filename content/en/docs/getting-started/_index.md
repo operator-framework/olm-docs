@@ -81,7 +81,7 @@ operatorhubio-catalog                           olm          CatalogSource      
 ## Installing an Operator using OLM
 
 When you install OLM, it comes packaged with a number of Operators developed by the community that you can install instantly.
-You can use the `pacakagemanifest` api to see the operators available for you to install in your cluster:
+You can use the `packagemanifest` api to see the operators available for you to install in your cluster:
 
 ```sh
 $ kubectl get packagemanifest -n olm
