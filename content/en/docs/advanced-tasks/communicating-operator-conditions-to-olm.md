@@ -22,7 +22,7 @@ OLM introduced a new [CustomResourceDefinition](https://kubernetes.io/docs/conce
 
 The `Upgradeable` "OLM Supported Condition" prevents the existing CSV from being replaced by a newer version of the CSV. When the `Upgradeable` condition is set to `False`, OLM will:
 
-* Prevent a CSV that replaces the operator's existing CSV from leaving the PendingPhase.
+* Prevent a channel entry in a subscribed package that replaces the operator's existing CSV from leaving the PendingPhase.
 
 The `Upgradeable` condition might be useful when:
 

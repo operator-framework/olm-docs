@@ -56,21 +56,21 @@ flowchart TB
    classDef installed fill:#34ebba;
    
    A(v0.0.1) --> B(v0.0.4)
-{{</mermaid>}} | An upgrade path to replace one operator bundle version for another using the [CSV][csv-definition] `replaces spec. (eg.`spec.replaces: exampleoperator.v0.0.1`). More info: [here][upgrade-path-replaces].
+{{</mermaid>}} | An upgrade path to replace one operator bundle version for another using the [`olm.channel`][olm-channel] `replaces` field. More info: [here][upgrade-path-replaces].
 | {{<mermaid>}}
 flowchart TB
    classDef head fill:#ffbfcf;
    classDef installed fill:#34ebba;
    
    A(v0.0.1) x--x |v0.0.2,v0.0.3| B(v0.0.4)
-{{</mermaid>}}  | An upgrade path to skip versions in the upgrade path using the [CSV][csv-definition] `skips` spec. (eg.`spec.skips: exampleoperator.v0.0.2, exampleoperator.v0.0.3`). More info: [here][upgrade-path-skips]. |
+{{</mermaid>}}  | An upgrade path to skip versions in the upgrade path using the [`olm.channel`][olm-channel] `skips` field. More info: [here][upgrade-path-skips]. |
 | {{<mermaid>}}
 flowchart TB
    classDef head fill:#ffbfcf;
    classDef installed fill:#34ebba;
    
    C(v2.0.3) o--o |>= 2.0.4 < 3.0.0| D(v3.0.1)
-{{</mermaid>}} | An upgrade path to skip a range of operator bundle versions using the [CSV][csv-definition] `olm.skipRange` annotation. (E.g `annotations.olm.skipRange: '>= 2.0.4 < 3.0.0'`) More info: [here][upgrade-path-skiprange]. |
+{{</mermaid>}} | An upgrade path to skip a range of operator bundle versions using the [`olm.channel`][olm-channel] `skipRange` field. More info: [here][upgrade-path-skiprange]. |
 | {{<mermaid>}}
 flowchart TB
    classDef head fill:#ffbfcf;
@@ -235,7 +235,7 @@ flowchart TB
    E(v0.0.2 \n fa:fa-tag label=value)
 {{</mermaid>}} |
 
-[csv-definition]:/docs/concepts/crds/clusterserviceversion/
+[olm-channel]:/docs/reference/file-based-catalogs/#olmchannel
 [upgrade-path-replaces]:/docs/concepts/olm-architecture/operator-catalog/creating-an-update-graph/#replaces
 [upgrade-path-skips]:/docs/concepts/olm-architecture/operator-catalog/creating-an-update-graph/#skips
 [upgrade-path-skiprange]:/docs/concepts/olm-architecture/operator-catalog/creating-an-update-graph/#skiprange
