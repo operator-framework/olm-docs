@@ -62,10 +62,10 @@ $ opm validate example-operator-index
 Success! There were no errors and we got a `0` error code.
 
 In the general case, adding a bundle involves three discreet steps:
-1. Render the bundle into the index using `opm render <bundleImage>`
-2. Add the bundle into desired channels and update the channels' upgrade edges
-   to stitch the bundle into the correct place.
-3. Validate the resulting index.
+- Render the bundle into the index using `opm render <bundleImage>`
+- Add the bundle into desired channels and update the channels' upgrade edges
+  to stitch the bundle into the correct place.
+- Validate the resulting index.
 
 > NOTE: Index metadata should be stored in a version control system (e.g. `git`) and index images should be rebuilt from source
 whenever updates are made to ensure that all index changes are auditable.
@@ -78,11 +78,11 @@ build semver-based channels and upgrade graphs based solely on the versions of t
 no right or wrong answer for implementing this step as long as `opm validate` is successful.
 
 There are some guidelines to keep in mind though:
-1. Once a bundle is present in an index, you should assume that one of your users has installed it. With that in mind,
-   you should take care to avoid stranding users that have that version installed. Put another way, make sure that
-   all previously published bundles in an index have a path to the current/new channel head.
-2. Keep the semantics of the upgrade edges you use in mind. `opm validate` is not able to tell you if you have a sane
-   upgrade graph. To learn more about the upgrade graph of an operator, checkout the
+- Once a bundle is present in an index, you should assume that one of your users has installed it. With that in mind,
+  you should take care to avoid stranding users that have that version installed. Put another way, make sure that
+  all previously published bundles in an index have a path to the current/new channel head.
+- Keep the semantics of the upgrade edges you use in mind. `opm validate` is not able to tell you if you have a sane
+  upgrade graph. To learn more about the upgrade graph of an operator, checkout the
   [creating an upgrade graph doc][upgrade-graph-doc]
 
 ### Build and push the index image

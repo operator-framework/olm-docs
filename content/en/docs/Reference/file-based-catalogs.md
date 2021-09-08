@@ -528,8 +528,8 @@ However, there are some cases where a change in the index metadata is preferred.
 
 OLM highly recommends storing index metadata in source control and treating the source-controlled metadata as the source
 of truth. Updates to index images should:
-1. Update the source-controlled index directory with a new commit.
-2. Build and push the index image. OLM suggests using a consistent tagging taxonomy (e.g. `:latest` or
+- Update the source-controlled index directory with a new commit. 
+- Build and push the index image. OLM suggests using a consistent tagging taxonomy (e.g. `:latest` or
    `:<targetClusterVersion>` so that users can receive updates to an index as they become available.
 
 <!--
@@ -537,6 +537,7 @@ TODO(joelanford): Add a link to an file-based catalog repository when one exists
 -->
 
 ## Examples
+
 ### Building a composite catalog
 
 With file-based catalogs, catalog maintainers can focus on operator curation and compatibility.
@@ -546,7 +547,7 @@ catalog's root index directory.
 
 There are many possible ways to build a catalog, but an extremely simple approach would be to:
 
-1. Maintain a single configuration file containing image references for each operator in the catalog
+- Maintain a single configuration file containing image references for each operator in the catalog
    ```yaml
    name: community-operators
    repo: quay.io/community-operators/catalog
@@ -558,7 +559,7 @@ There are many possible ways to build a catalog, but an extremely simple approac
      image: quay.io/prometheus-operator/index@sha256:e258d248fda94c63753607f7c4494ee0fcbe92f1a76bfdac795c9d84101eb317
    ```
 
-2. Run a simple script that parses this file and creates a new catalog from its references
+- Run a simple script that parses this file and creates a new catalog from its references
    ```bash
    name=$(yq eval '.name' catalog.yaml)
    mkdir "$name"
@@ -578,9 +579,9 @@ There are many possible ways to build a catalog, but an extremely simple approac
 
 Operator authors and catalog maintainers are encouraged to automate their index maintenance with CI/CD workflows.
 Catalog maintainers could further improve on this by building Git-ops automation that:
-1. Checks that PR authors are permitted to make the requested changes (e.g. updating their package's image reference)
-2. Checks that the index updates pass `opm validate`
-3. Checks that the updated bundle and/or index image reference(s) exist, the index images run successfully in a cluster,
-   and operators from that package can be successfully installed.
-4. Automatically merges PRs that pass these checks.
-5. Automatically rebuilds and republishes the index image.
+- Checks that PR authors are permitted to make the requested changes (e.g. updating their package's image reference)
+- Checks that the index updates pass `opm validate`
+- Checks that the updated bundle and/or index image reference(s) exist, the index images run successfully in a cluster,
+  and operators from that package can be successfully installed.
+- Automatically merges PRs that pass these checks.
+- Automatically rebuilds and republishes the index image.
