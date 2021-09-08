@@ -71,7 +71,7 @@ it finds and fails if any errors occur.
 Non-catalog files can be ignored using `.indexignore` files, which behave identically to `.gitignore` files. That is,
 they have the same rules for [patterns](https://git-scm.com/docs/gitignore#_pattern_format) and precedence.
 
-> #### Example `.gitignore` file
+> **Example `.gitignore` file**
 > ```gitignore
 > # Ignore everything except non-object .json and .yaml files
 > **/*
@@ -89,7 +89,7 @@ necessary for every file in an index to use the same format.
 This layout has the property that each sub-directory in the directory hierarchy is a self-contained index, which makes
 index composition, discovery, and navigation as simple as trivial filesystem operations.
 
-> #### Basic recommended structure
+> **Basic recommended structure**
 > ```
 > index
 > ├── pkgA
