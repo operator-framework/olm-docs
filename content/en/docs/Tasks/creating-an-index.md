@@ -13,7 +13,7 @@ description: >
 
 `OLM`'s `CatalogSource` [CRD][catalogsource-crd] defines a reference to a catalog of operators that are available to
 install onto a cluster. To make your operator bundle available, you can add the bundle to a container image which the
-`CatalogSource` points to. This image contains a record of bundle images that OLM can pull and extract the manifests
+`CatalogSource` references. This image contains a record of bundle images that OLM can pull and extract the manifests
 from in order to install an operator.
 
 OLM uses a plaintext [file-based catalog][file-based-catalog-spec] format (JSON or YAML) to store these records in an index, and `opm` has tooling
@@ -86,7 +86,7 @@ $ echo $?
 Success! There were no errors and we got a `0` error code.
 
 In the general case, adding a bundle involves three discreet steps:
-- Render the bundle into the index using `opm render <bundleImage>`
+- Render the bundle into the index using `opm render <bundleImage>`.
 - Add the bundle into desired channels and update the channels' upgrade edges
   to stitch the bundle into the correct place.
 - Validate the resulting index.
@@ -107,7 +107,7 @@ There are some guidelines to keep in mind though:
   all previously published bundles in an index have a path to the current/new channel head.
 - Keep the semantics of the upgrade edges you use in mind. `opm validate` is not able to tell you if you have a sane
   upgrade graph. To learn more about the upgrade graph of an operator, checkout the
-  [creating an upgrade graph doc][upgrade-graph-doc]
+  [creating an upgrade graph doc][upgrade-graph-doc].
 
 ### Build and push the index image
 
@@ -120,8 +120,7 @@ $ docker build . \
 $ docker push quay.io/example-inc/example-operator-index:latest
 ```
 
-The resulting image is referred to as an `Index`. Now that image is available for clusters to use and reference with
-`CatalogSources` on their cluster.
+Now the index image is available for clusters to use and reference with `CatalogSources` on their cluster.
 
 [catalogsource-crd]: /docs/concepts/crds/catalogsource
 [file-based-catalog-spec]: /docs/reference/file-based-catalogs
