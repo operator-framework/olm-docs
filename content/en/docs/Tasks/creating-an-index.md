@@ -32,7 +32,7 @@ $ opm init example-operator \
     --default-channel=preview \
     --description=./README.md \
     --icon=./example-operator.svg \
-    -output yaml > example-operator-index/index.yaml
+    --output yaml > example-operator-index/index.yaml
 ```
 
 Let's validate our index to see if we're ready to ship!
@@ -51,12 +51,36 @@ that next...
 
 ```sh
 $ opm render quay.io/example-inc/example-operator-bundle:v0.1.0 \
-    --output=yaml > example-operator-index/index.yaml
+    --output=yaml >> example-operator-index/index.yaml
 ```
 
 Let's validate again:
+```
+$ opm validate example-operator-index
+FATA[0000] package "example-operator", bundle "example-operator.v0.1.0" not found in any channel entries
+```
+
+### Add a channel entry for the bundle
+
+We rendered the bundle, but we still haven't yet added it to any channels.
+Let's initialize a channel:
+```sh
+cat << EOF >> example-operator-index/index.yaml
+---
+schema: olm.channel
+package: example-operator
+name: preview
+entries:
+  - name: example-operator.v0.1.0
+EOF
+```
+
+Is the third time the charm for `opm validate`?
+
 ```sh
 $ opm validate example-operator-index
+$ echo $?
+0
 ```
 
 Success! There were no errors and we got a `0` error code.
