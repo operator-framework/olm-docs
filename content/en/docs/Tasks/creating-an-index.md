@@ -11,10 +11,10 @@ description: >
 
 ## Creating an Index
 
-`OLM`'s `CatalogSource` [CRD][catalogsource-crd] defines a reference to a catalog of operators that are available to
-install onto a cluster. To make your operator bundle available, you can add the bundle to a container image which the
-`CatalogSource` references. This image contains a record of bundle images that OLM can pull and extract the manifests
-from in order to install an operator.
+`OLM`'s `CatalogSource` [CRD][catalogsource-crd] accepts a container image reference to a catalog of operators that can
+be made available to install in a cluster. You can make your operator bundle available to install in a cluster by adding
+it to a catalog, packaging the catalog in a container image, and then using that image reference in the `CatalogSource`.
+This image contains all of the metadata required for OLM to manage the lifecycles of all of the operators it contains.
 
 OLM uses a plaintext [file-based catalog][file-based-catalog-spec] format (JSON or YAML) to store these records in an index, and `opm` has tooling
 that helps initialize an index, render new records into it, and then validate that the index is valid. Let's walk

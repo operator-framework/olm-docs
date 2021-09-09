@@ -12,12 +12,12 @@ OLM provides a variety of ways to specify updates between operator versions.
 
 ## Methods for Specifying Updates
 
-All update graphs are defined in file-based catalogs via `olm.channel` blobs. Each `olm.channel` defines the set of
+All update graphs are defined in [file-based catalogs][file-based-catalog-spec] via `olm.channel` blobs. Each `olm.channel` defines the set of
 bundles present in the channel and the update graph edges between each entry in the channel.
 
 ### Replaces
 
-For explicit updates from one CSV to another, you can specify the CSV name to replace in your channel entry as
+For explicit updates from one operator version to another, you can specify the operator name to replace in your channel entry as
 such:
 
 ```yaml
@@ -31,7 +31,7 @@ entries:
 ```
 
 Note that it is not required for there to be an entry for `myoperator.v1.0.0` in the catalog as long as
-other channel invariants (verified by `opm validate`) still hold. Generally, this means that the tail of the channel's
+other channel invariants (verified by [`opm validate`][opm-validate-cli]) still hold. Generally, this means that the tail of the channel's
 `replaces` chain can replace a bundle that is not present in the catalog.
 
 An update sequence of bundles created via `replaces` will have updates step through each version in
@@ -45,13 +45,13 @@ A subscription on `myoperator.v1.0.0` will update to `myoperator.v1.0.2` through
 
 Installing from the UI today will always install the latest of a given channel. However, installing
 specific versions is possible with this update graph by modifying the `startingCSV` field
-of the subscription to point to the desired bundle name. Note that, in this case, the subscription will
+of the subscription to point to the desired operator name. Note that, in this case, the subscription will
 need its `approval` field set to `Manual` to ensure that the subscription does not auto-update and
 instead stays pinned to the specified version.
 
 ### Skips
 
-In order to skip through certain updates you can specify a list of CSV names to be skipped as such:
+In order to skip through certain updates, you can specify a list of operator names to be skipped. For example:
 
 ```yaml
 ---
@@ -74,7 +74,7 @@ that are already on `myoperator.v1.0.1` or `myoperator.v1.0.2` will still be abl
 This is particularly useful if `myoperator.v1.0.1` and `myoperator.v1.0.2` are affected by a CVE
 or contain bugs.
 
-Skipped CSVs do not need to be present in a catalog or set of manifests prior to adding to a catalog.
+Skipped operators do not need to be present in a catalog or set of manifests prior to adding to a catalog.
 
 ### SkipRange
 
@@ -252,3 +252,6 @@ entries:
       - myoperator.v0.2.0
       - myoperator.v0.3.0
 ```
+
+[file-based-catalog-spec]: /docs/reference/file-based-catalogs
+[opm-validate-cli]: /docs/reference/file-based-catalogs/#opm-validate
