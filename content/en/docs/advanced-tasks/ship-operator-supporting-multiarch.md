@@ -1,6 +1,6 @@
 ---
 title: "Shipping an operator that supports Multiple Architectures"
-linkTitle: "Multiarch Operators"
+linkTitle: "Multi-arch Operators"
 weight: 3
 ---
 
