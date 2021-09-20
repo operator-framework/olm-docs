@@ -81,6 +81,10 @@ algolia_docsearch = true
   url = "https://v0-16-z.olm.operatorframework.io/"
 
 [[params.versions]]
+  version = "v0.18.z"
+  url = "https://v0-18-z.olm.operatorframework.io/"
+
+[[params.versions]]
   version = "legacy"
   url = "https://legacy.olm.operatorframework.io/"
 
