@@ -27,7 +27,7 @@ is a diagram that shows the relationship of operator versions to channels:
 
 In the diagram above you can see the following:
   
-  - A catalog index named “vendor:v4.6”, this catalog is built by a cluster administrator typically
+  - A catalog named “vendor:v4.6”, this catalog is built by a cluster administrator typically
   - There are 2 operator packages found in the catalog, myoperator and otheroperator.
   - The myoperator has 3 bundles (1.0.0, 1.0.1, 1.0.2).  Versions 1.0.0 and 1.0.1 are in multiple channels (fast, stable).  Whereas version 1.0.2 is only in the fast channel.
   - The otheroperator has 2 bundles specifying 2 different channels (candidate, stable).  Version 1.4.0 specifies it is within 2 channels, stable and candidate.
@@ -96,7 +96,7 @@ spec:
   sourceNamespace: my-operators
 ```
 
-The Subscription is providing hints to OLM which are used to determine exactly which version of an operator will get deployed onto the cluster, in this example OLM will look for an operator to deploy that belongs to the candidate channel within a specified catalog index source.  
+The Subscription is providing hints to OLM which are used to determine exactly which version of an operator will get deployed onto the cluster, in this example OLM will look for an operator to deploy that belongs to the candidate channel within a specified catalog source.  
 
 Note that exactly which operator version is deployed can depend on more than what you specify in the Subscription.  On initial install, OLM will always attempt to install whatever is the head of the specified channel by default.  Settings within the operator’s CSV also are used by OLM to determine exactly which operator version OLM will deploy or upgrade.
 

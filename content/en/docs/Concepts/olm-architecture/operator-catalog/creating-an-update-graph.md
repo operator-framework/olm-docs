@@ -94,7 +94,7 @@ entries:
 
 The entry specifying the `skipRange` will be presented as a direct (one hop) update to
 any version from that package within that range. The versions in this range do not need to be in
-the index in order for bundle addition to be successful. We recommend avoiding using unbound ranges
+the catalog in order for bundle addition to be successful. We recommend avoiding using unbound ranges
 such as `<1.0.3`.
 
 SkipRange by itself is useful for teams who are not interested in supporting directly installing
@@ -151,7 +151,7 @@ Next, an operator author decides that `myoperator.v0.2.0` is a good candidate to
 `olm.channel` schema and include `myoperator.v0.2.0` as the first entry, taking care to preserve any upgrade edges from
 `alpha` to enable users to switch from the `alpha` to the `beta` channel if they have `myoperator.v0.1.0` installed.
 
-> NOTE: This bundle already exists in the index (the image was already built and pushed, and the index already contains
+> NOTE: This bundle already exists in the catalog (the image was already built and pushed, and the catalog already contains
 > an `olm.bundle` blob and an entry for it in the `alpha`  channel). The channel promotion step for `myoperator.v0.2.0`
 > is to simply create a new `olm.channel` for the `beta` channel and include an entry for `myoperator.v0.2.0`.
 

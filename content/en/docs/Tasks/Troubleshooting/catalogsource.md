@@ -9,7 +9,7 @@ description: >
 
 ## How to debug a failing CatalogSource
 
-The Catalog operator will constantly update the `Status` of `CatalogSources` to reflect its current state. You can check the `Status` of your `CatalogSource` with the following command:
+The [Catalog operator][olm-arch-doc] will constantly update the `Status` of `CatalogSources` to reflect its current state. You can check the `Status` of your `CatalogSource` with the following command:
 
 `$ kubectl -n my-namespace get catsrc my-catalog -o yaml | yq r - status`
 
@@ -54,3 +54,5 @@ If the operator is present, check if the version you want is available:
 ### My CatalogSource cannot pull images from a private registry
 
 If you are attempting to pull images from a private registry, make sure to specify a secret key in the `CatalogSource.Spec.Secrets` field.
+
+[olm-arch-doc]: /docs/concepts/olm-architecture#catalog-operator

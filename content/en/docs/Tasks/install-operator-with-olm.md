@@ -136,6 +136,6 @@ Notice that `approval` has been set to `Manual` as well in order to keep OLM fro
 
 If your intent is to pin an installed Operator to the particular version `1.1.0` you don't need to do anything. After approving the initial `InstallPlan` OLM will install version `1.1.0` of your Operator and keep it at that version. When updates are discovered in the catalog, OLM will wait not proceed unless you manual approve the update.
 
-[create-catsrc-doc]: /docs/tasks/make-index-available-on-cluster
+[create-catsrc-doc]: /docs/tasks/make-catalog-available-on-cluster
 [subscription-doc]: /docs/concepts/crds/subscription
 [channel-def]: /docs/glossary/#channel

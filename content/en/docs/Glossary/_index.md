@@ -30,7 +30,7 @@ description: >
 
 ### Dependency
 
-**Definition**: An Operator may have a dependency on another Operator being present in the cluster. For example, the Vault Operator has a dependency on the Etcd Operator for its data persistence layer. OLM resolves these dependencies by ensuring all specified versions of Operators and CRDs are installed on the cluster during the installation phase. This dependency is resolved by finding and installing an Operator in a Catalog that satisfies the required CRD API, and not related to [packages](#package)/[bundles](#bundle).
+**Definition**: An Operator may have a dependency on another Operator being present in the cluster. For example, the Vault Operator has a dependency on the Etcd Operator for its data persistence layer. OLM resolves these dependencies by ensuring all specified versions of Operators and CRDs are installed on the cluster during the installation phase. This dependency is resolved by finding and installing an Operator in a catalog that satisfies the required CRD API, and not related to [packages](#package)/[bundles](#bundle).
 
 **Aliases**: Operator Dependency, GVK Dependency, API Dependency, Required CRD
 

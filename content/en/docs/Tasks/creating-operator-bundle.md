@@ -15,7 +15,7 @@ description: >
 
 An Operator Bundle is a container image that stores Kubernetes manifests and metadata associated with an operator. A bundle is meant to represent a specific version of an operator on cluster. Once you have the [ClusterServiceVersion(CSV) for your operator](/docs/tasks/creating-operator-manifests), you can create an operator bundle using the CSV and the CRDs for your operator. 
 
-We refer to a directory of files with one ClusterServiceVersion as a `bundle` that includes a CSV and the CRDs in its manifest directory, though additional kubernetes objects may be included. The directory also includes an annotations file in its metadata folder which defines some higher level aggregate data that helps to describe the format and package information about how the bundle should be added into an index of bundles. Finally, a Dockerfile can be built from the information in the directory to build the operator bundle image. 
+We refer to a directory of files with one ClusterServiceVersion as a `bundle` that includes a CSV and the CRDs in its manifest directory, though additional kubernetes objects may be included. The directory also includes an annotations file in its metadata folder which defines some higher level aggregate data that helps to describe the format and package information about how the bundle should be added into a catalog of bundles. Finally, a Dockerfile can be built from the information in the directory to build the operator bundle image. 
 
 ```
  # example bundle
@@ -154,7 +154,7 @@ Some validators are disabled by default and can be optionally enabled via the `-
 - Operatorhub validator - performs operatorhub.io validation which will check your bundle against the common criteria to distributed with OLM. To validate a bundle using custom categories use the `OPERATOR_BUNDLE_CATEGORIES` environmental variable to point to a json-encoded categories file. Enable this option via `--optional-validators=operatorhub`. This validator allows you to validate that your manifests can work with a Kubernetes cluster of a particular version using the `k8s-version` optional key value. (e.g. `--optional-values=k8s-version=1.22`) 
 - Bundle objects validator - performs validation on resources like `PodDisruptionBudgets` and `PriorityClasses`. Enable this option via `--optional-validators=bundle-objects`.
 Multiple optional validators can be enabled at once, for example `--optional-validators=operatorhub,bundle-objects`.
-- Community validator - performs community operator bundle validation which will check your bundle against the criteria to distribute your project on the [Community Catalogs](https://github.com/operator-framework/community-operators). For further information see its [docs](https://operator-framework.github.io/community-operators/). This validator allows you to validate the required labels in the index image by using the `index-path` optional key value. (e.g. `--optional-values=index-path=bundle.Dockerfile`). 
+- Community validator - performs community operator bundle validation which will check your bundle against the criteria to distribute your project on the [Community Catalogs](https://github.com/operator-framework/community-operators). For further information see its [docs](https://operator-framework.github.io/community-operators/). This validator allows you to validate the required labels in the catalog image by using the `index-path` optional key value. (e.g. `--optional-values=index-path=bundle.Dockerfile`). 
 
 #### Custom bundle categories
 

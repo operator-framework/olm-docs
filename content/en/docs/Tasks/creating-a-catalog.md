@@ -1,43 +1,43 @@
 ---
-title: "Creating an Index of operator bundles"
+title: "Creating a Catalog of operators"
 weight: 3
 description: >
-  Add/Remove a collection of bundles to/from an Index
+  Add/Remove a collection of operators to/from a Catalog
 ---
 
 ## Prerequisites
 
 - [opm](https://github.com/operator-framework/operator-registry/releases) `v1.19.0+`
 
-## Creating an Index
+## Creating a Catalog
 
 `OLM`'s `CatalogSource` [CRD][catalogsource-crd] accepts a container image reference to a catalog of operators that can
 be made available to install in a cluster. You can make your operator bundle available to install in a cluster by adding
 it to a catalog, packaging the catalog in a container image, and then using that image reference in the `CatalogSource`.
-This image contains all of the metadata required for OLM to manage the lifecycles of all of the operators it contains.
+This image contains all of the metadata required for OLM to manage the lifecycle of all of the operators it contains.
 
-OLM uses a plaintext [file-based catalog][file-based-catalog-spec] format (JSON or YAML) to store these records in an index, and `opm` has tooling
-that helps initialize an index, render new records into it, and then validate that the index is valid. Let's walk
+OLM uses a plaintext [file-based catalog][file-based-catalog-spec] format (JSON or YAML) to store these records in a Catalog, and `opm` has tooling
+that helps initialize a Catalog, add new operators into it, and then validate that the catalog is valid. Let's walk
 through a simple example.
 
-First, we need to initialize our index, so we'll make a directory for it, generate a Dockerfile that can build an index
-image, and then populate our index with our package definition.
+First, we need to initialize our Catalog, so we'll make a directory for it, generate a Dockerfile that can build a Catalog
+image, and then populate our catalog with our operator.
 
 
-### Initialize the index
+### Initialize the Catalog
 ```sh
-$ mkdir example-operator-index
-$ opm alpha generate dockerfile example-operator-index
+$ mkdir cool-catalog
+$ opm alpha generate dockerfile cool-catalog
 $ opm init example-operator \
     --default-channel=preview \
     --description=./README.md \
     --icon=./example-operator.svg \
-    --output yaml > example-operator-index/index.yaml
+    --output yaml > cool-catalog/operator.yaml
 ```
 
-Let's validate our index to see if we're ready to ship!
+Let's validate our catalog to see if we're ready to ship!
 ```sh
-$ opm validate example-operator-index
+$ opm validate cool-catalog
 FATA[0000] invalid index:
 └── invalid package "example-operator":
     └── invalid channel "preview":
@@ -47,16 +47,16 @@ FATA[0000] invalid index:
 Alright, so it's not valid. It looks like we need to add a bundle, so let's do
 that next...
 
-### Add a bundle to the index
+### Add a bundle to the Catalog
 
 ```sh
 $ opm render quay.io/example-inc/example-operator-bundle:v0.1.0 \
-    --output=yaml >> example-operator-index/index.yaml
+    --output=yaml >> cool-catalog/operator.yaml
 ```
 
 Let's validate again:
 ```
-$ opm validate example-operator-index
+$ opm validate cool-catalog
 FATA[0000] package "example-operator", bundle "example-operator.v0.1.0" not found in any channel entries
 ```
 
@@ -65,7 +65,7 @@ FATA[0000] package "example-operator", bundle "example-operator.v0.1.0" not foun
 We rendered the bundle, but we still haven't yet added it to any channels.
 Let's initialize a channel:
 ```sh
-cat << EOF >> example-operator-index/index.yaml
+cat << EOF >> cool-catalog/operator.yaml
 ---
 schema: olm.channel
 package: example-operator
@@ -78,21 +78,24 @@ EOF
 Is the third time the charm for `opm validate`?
 
 ```sh
-$ opm validate example-operator-index
+$ opm validate cool-catalog
 $ echo $?
 0
 ```
 
 Success! There were no errors and we got a `0` error code.
 
+#### Summary
 In the general case, adding a bundle involves three discreet steps:
-- Render the bundle into the index using `opm render <bundleImage>`.
+- Render the bundle into the catalog using `opm render <bundleImage>`.
 - Add the bundle into desired channels and update the channels' upgrade edges
   to stitch the bundle into the correct place.
-- Validate the resulting index.
+- Validate the resulting catalog.
 
-> NOTE: Index metadata should be stored in a version control system (e.g. `git`) and index images should be rebuilt from source
-whenever updates are made to ensure that all index changes are auditable.
+> NOTE: catalog metadata should be stored in a version control system (e.g. `git`) and catalog images should be rebuilt from source
+whenever updates are made to ensure that all changes to the catalog are auditable. Here is an example of catalog metadata being stored 
+in github: https://github.com/operator-framework/cool-catalog, with the catalog image being rebuilt whenever there is a change: 
+https://github.com/operator-framework/cool-catalog/blob/main/.github/workflows/build-push.yml
 
 **Step 1** is just a simple `opm render` command.
 
@@ -102,25 +105,25 @@ build semver-based channels and upgrade graphs based solely on the versions of t
 no right or wrong answer for implementing this step as long as `opm validate` is successful.
 
 There are some guidelines to keep in mind though:
-- Once a bundle is present in an index, you should assume that one of your users has installed it. With that in mind,
+- Once a bundle is present in a Catalog, you should assume that one of your users has installed it. With that in mind,
   you should take care to avoid stranding users that have that version installed. Put another way, make sure that
-  all previously published bundles in an index have a path to the current/new channel head.
+  all previously published bundles in a catalog have a path to the current/new channel head.
 - Keep the semantics of the upgrade edges you use in mind. `opm validate` is not able to tell you if you have a sane
   upgrade graph. To learn more about the upgrade graph of an operator, checkout the
   [creating an upgrade graph doc][upgrade-graph-doc].
 
-### Build and push the index image
+### Build and push the catalog image
 
-Lastly, we can build and push our index:
+Lastly, we can build and push our catalog image:
 
 ```sh
 $ docker build . \
-    -f example-operator-index.Dockerfile \
-    -t quay.io/example-inc/example-operator-index:latest
-$ docker push quay.io/example-inc/example-operator-index:latest
+    -f cool-catalog.Dockerfile \
+    -t quay.io/example-inc/cool-catalog:latest
+$ docker push quay.io/example-inc/cool-catalog:latest
 ```
 
-Now the index image is available for clusters to use and reference with `CatalogSources` on their cluster.
+Now the catalog image is available for clusters to use and reference with `CatalogSources` on their cluster.
 
 [catalogsource-crd]: /docs/concepts/crds/catalogsource
 [file-based-catalog-spec]: /docs/reference/file-based-catalogs
