@@ -9,6 +9,7 @@ description: >
 
 - [opm](https://github.com/operator-framework/operator-registry/releases) `v1.19.0+`
 
+>Note: This document discusses creating a catalog of operators using plaintext files to store catalog metadata, which is the [latest feature][file-based-catalog-spec] of OLM catalogs. If you are looking to build catalogs using the deprecated sqllite database format to store catalog metadata instead, please read the [v0.18.z version][v0.18.z-version] of this doc instead. 
 ## Creating a Catalog
 
 `OLM`'s `CatalogSource` [CRD][catalogsource-crd] accepts a container image reference to a catalog of operators that can
@@ -94,7 +95,7 @@ In the general case, adding a bundle involves three discreet steps:
 
 > NOTE: catalog metadata should be stored in a version control system (e.g. `git`) and catalog images should be rebuilt from source
 whenever updates are made to ensure that all changes to the catalog are auditable. Here is an example of catalog metadata being stored 
-in github: https://github.com/operator-framework/cool-catalog, with the catalog image being rebuilt whenever there is a change: 
+in github: https://github.com/operator-framework/cool-catalog , with the catalog image being rebuilt whenever there is a change: 
 https://github.com/operator-framework/cool-catalog/blob/main/.github/workflows/build-push.yml
 
 **Step 1** is just a simple `opm render` command.
@@ -128,3 +129,4 @@ Now the catalog image is available for clusters to use and reference with `Catal
 [catalogsource-crd]: /docs/concepts/crds/catalogsource
 [file-based-catalog-spec]: /docs/reference/file-based-catalogs
 [upgrade-graph-doc]: /docs/concepts/olm-architecture/operator-catalog/creating-an-update-graph
+[v0.18.z-version]:  https://v0-18-z.olm.operatorframework.io/docs/tasks/make-index-available-on-cluster/
