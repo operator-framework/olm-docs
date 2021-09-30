@@ -5,18 +5,18 @@ weight: 4
 date: 2021-07-29
 ---
 
-File-based catalogs are the latest iteration of OLM's index format. It is a fully plaintext-based (JSON or YAML)
+File-based catalogs are the latest iteration of OLM's catalog format. It is a fully plaintext-based (JSON or YAML)
 evolution of the previous sqlite database format that is fully backwards compatible.
 
 ## Design
-The primary design goal for this format is to enable index editing, composability, and extensibility. 
+The primary design goal for this format is to enable catalog editing, composability, and extensibility. 
 
 ### Editing
 
-With file-based catalogs, users interacting with the contents of an index are able to make direct changes to the index
+With file-based catalogs, users interacting with the contents of a catalog are able to make direct changes to the catalog
 format and verify that their changes are valid.
 
-Because this format is plaintext JSON or YAML, index maintainers can easily manipulate index metadata by hand or with
+Because this format is plaintext JSON or YAML, catalog maintainers can easily manipulate catalog metadata by hand or with
 widely known and supported JSON or YAML tooling (e.g. `jq`).
 
 This editability enables features and user-defined extensions, such as:
@@ -26,19 +26,19 @@ This editability enables features and user-defined extensions, such as:
 
 ### Composability
 
-File-based catalogs are stored in an arbitrary directory hierarchy, which enables index composition. If I have two
-separate file-based catalog directories, `indexA` and `indexB`, I can make a new combined index by making a new
-directory `indexC` and copying `indexA` and `indexB` into it.
+File-based catalogs are stored in an arbitrary directory hierarchy, which enables catalog composition. If I have two
+separate file-based catalog directories, `CatalogA` and `CatalogB`, I can make a new combined catalog by making a new
+directory `CatalogC` and copying `CatalogA` and `CatalogB` into it.
 
-This composability enables decentralized indexes. The format permits operator authors to maintain operator-specific
-indexes and index maintainers to trivially build an index composed of individual operator indexes.
+This composability enables decentralized catalog. The format permits operator authors to maintain operator-specific
+catalogs and catalog maintainers to trivially build a catalog composed of individual operator-specific catalogs.
 
 > NOTE: Duplicate packages and duplicate bundles within a package are not permitted. The `opm validate` command will
 > return an error if any duplicates are found.
 
 Since operator authors are most familiar with their operator, its dependencies, and its upgrade compatibility, they are
-able to maintain their own operator-specific index and have direct control over its contents. With file-based catalogs,
-operator authors own the task of building and maintaining their packages in an index. Composite index maintainers treat
+able to maintain their own operator-specific catalog and have direct control over its contents. With file-based catalogs,
+operator authors own the task of building and maintaining their packages in a catalog. Composite catalog maintainers treat
 packages as a black box; they own the task of curating the packages in their catalog and publishing the catalog to
 users.
 
@@ -49,15 +49,15 @@ See the [Building a composite catalog](#building-a-composite-catalog) section fo
 
 ### Extensibility
 
-The final design goal is to provide extensibility around indexes. The file-based catalog spec is a low-level
-representation of an index. While it can be maintained directly in its low-level form, we expect many index maintainers
+The final design goal is to provide extensibility around catalogs. The file-based catalog spec is a low-level
+representation of a catalog. While it can be maintained directly in its low-level form, we expect many catalog maintainers
 to build interesting extensions on top that can be used by their own custom tooling to make all sorts of mutations. For
 example, one could imagine a tool that translates a high-level API like (mode=semver) down to the low-level file-based
-catalog format for upgrade edges. Or perhaps an index maintainer needs to customize all of the bundle metadata by adding
+catalog format for upgrade edges. Or perhaps a catalog maintainer needs to customize all of the bundle metadata by adding
 a new property to bundles that meet a certain criteria.
 
 The OLM developer community will be making use of this extensibility to build more official tooling on top of the
-low-level APIs, but the major benefit is that index maintainers have this capability as well.
+low-level APIs, but the major benefit is that catalog maintainers have this capability as well.
 
 ## Specification
 
@@ -82,28 +82,28 @@ they have the same rules for [patterns](https://git-scm.com/docs/gitignore#_patt
 > ```
 
 
-Index maintainers have the flexibility to chose their desired layout, but the OLM team recommends storing each package's
+Catalog maintainers have the flexibility to chose their desired layout, but the OLM team recommends storing each package's
 file-based catalog blobs in separate sub-directories. Each individual file can be either JSON or YAML -- it is not
-necessary for every file in an index to use the same format.
+necessary for every file in a catalog to use the same format.
 
-This layout has the property that each sub-directory in the directory hierarchy is a self-contained index, which makes
-index composition, discovery, and navigation as simple as trivial filesystem operations.
+This layout has the property that each sub-directory in the directory hierarchy is a self-contained catalog, which makes
+catalog composition, discovery, and navigation as simple as trivial filesystem operations.
 
 > **Basic recommended structure**
 > ```
-> index
+> catalog
 > ├── pkgA
-> │   └── index.yaml
+> │   └── operator.yaml
 > ├── pkgB
 > │   ├── .indexignore
-> │   ├── index.yaml
+> │   ├── operator.yaml
 > │   └── objects
 > │       └── pkgB.v0.1.0.clusterserviceversion.yaml
 > └── pkgC
->     └── index.json
+>     └── operator.json
 > ```
 
-This `index` could also be trivially included in a parent index by simply copying it into the parent index's root
+This catalog could also be trivially included in a parent catalog by simply copying it into the parent catalog's root
 directory.
 
 ### Schema
@@ -138,10 +138,10 @@ _Meta: {
 
 ### OLM-defined schemas
 
-An OLM index currently uses three schemas: `olm.package`, `olm.channel`, and `olm.bundle`, which correspond to OLM's
+An OLM catalog currently uses three schemas: `olm.package`, `olm.channel`, and `olm.bundle`, which correspond to OLM's
 existing package and bundle concepts.
 
-Each operator package in an index requires exactly one `olm.package` blob, at least one `olm.channel` blob, and one or
+Each operator package in a catalog requires exactly one `olm.package` blob, at least one `olm.channel` blob, and one or
 more `olm.bundle` blobs.
 
 > **NOTE**: All `olm.*` schemas are reserved for OLM-defined schemas. Custom schemas must use a unique prefix (e.g. a
@@ -181,8 +181,8 @@ of the channel, and the upgrade edges for those bundles.
 
 A bundle can included as an entry in multiple `olm.channel` blobs, but it can have only one entry per channel.
 
-Also, it is valid for an entry's replaces value to reference another bundle name that cannot be found in this index
-(or even another index) as long as other channel invariants still hold (e.g. a channel cannot have multiple heads).
+Also, it is valid for an entry's replaces value to reference another bundle name that cannot be found in this catalog
+(or even another catalog) as long as other channel invariants still hold (e.g. a channel cannot have multiple heads).
 
 The `olm.channel` [cue][cuelang-spec] schema is:
 ```cue
@@ -335,14 +335,14 @@ The `olm.gvk.required` property [cue][cuelang-spec] schema is:
 
 #### `olm.bundle.object` (alpha)
 
-`olm.bundle.object` properties are used to inline (or reference) a bundle's manifests directly in the index.
+`olm.bundle.object` properties are used to inline (or reference) a bundle's manifests directly in the catalog.
 
 > **NOTE**: Core OLM does not require `olm.bundle.object` properties to be included on bundles. However, the OLM Package
 > Server (used by tooling such as the kubectl operator plugin and the OpenShift console) does require these properties
-> to be able to serve metadata about the packages in an index.
+> to be able to serve metadata about the packages in a catalog.
 >
 > This property is in _alpha_ because it will likely be rendered obsolete when updates can be made to the OLM Package
-> Server to no longer require manifests in the index.
+> Server to no longer require manifests in the catalog.
 
 A bundle object property can contain inlined data using the `value.data` field, which must be the base64-encoded string
 of that manifest.
@@ -541,9 +541,9 @@ TODO(joelanford): Add a link to an file-based catalog repository when one exists
 ### Building a composite catalog
 
 With file-based catalogs, catalog maintainers can focus on operator curation and compatibility.
-Since operator authors have already produced operator-specific indexes for their operators, catalog
-maintainers can build their catalog simply by rendering each operator index into a subdirectory of the
-catalog's root index directory.
+Since operator authors have already produced operator-specific catalogs for their operators, catalog
+maintainers can build their catalog simply by rendering each operator catalog into a subdirectory of the
+catalog's root catalog directory.
 
 There are many possible ways to build a catalog, but an extremely simple approach would be to:
 
@@ -554,9 +554,9 @@ There are many possible ways to build a catalog, but an extremely simple approac
    tag: latest
    references:
    - name: etcd-operator
-     image: quay.io/etcd-operator/index@sha256:5891b5b522d5df086d0ff0b110fbd9d21bb4fc7163af34d08286a2e846f6be03
+     image: quay.io/etcd-operator/catalog@sha256:5891b5b522d5df086d0ff0b110fbd9d21bb4fc7163af34d08286a2e846f6be03
    - name: prometheus-operator
-     image: quay.io/prometheus-operator/index@sha256:e258d248fda94c63753607f7c4494ee0fcbe92f1a76bfdac795c9d84101eb317
+     image: quay.io/prometheus-operator/catalog@sha256:e258d248fda94c63753607f7c4494ee0fcbe92f1a76bfdac795c9d84101eb317
    ```
 
 - Run a simple script that parses this file and creates a new catalog from its references
@@ -577,11 +577,14 @@ There are many possible ways to build a catalog, but an extremely simple approac
 
 ## Automation
 
-Operator authors and catalog maintainers are encouraged to automate their index maintenance with CI/CD workflows.
-Catalog maintainers could further improve on this by building Git-ops automation that:
+Operator authors and catalog maintainers are encouraged to automate their catalog maintenance with CI/CD workflows.
+catalog maintainers could further improve on this by building Git-ops automation that:
 - Checks that PR authors are permitted to make the requested changes (e.g. updating their package's image reference)
-- Checks that the index updates pass `opm validate`
-- Checks that the updated bundle and/or index image reference(s) exist, the index images run successfully in a cluster,
+- Checks that the catalog updates pass `opm validate`
+- Checks that the updated bundle and/or catalog image reference(s) exist, the catalog images run successfully in a cluster,
   and operators from that package can be successfully installed.
 - Automatically merges PRs that pass these checks.
-- Automatically rebuilds and republishes the index image.
+- Automatically rebuilds and republishes the catalog image.
+
+An example catalog that automates a lot of these workflows can be found at https://github.com/operator-framework/cool-catalog
+

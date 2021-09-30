@@ -24,3 +24,11 @@
   for = "index.xml"
   [headers.values]
     Content-Type = "application/rss+xml"
+
+[[redirects]]
+  from = "/docs/tasks/creating-an-index"
+  to = "/docs/tasks/creating-a-catalog"
+
+[[redirects]]
+  from = "/docs/tasks/make-index-available-on-cluster"
+  to = "/docs/tasks/make-catalog-available-on-cluster" 

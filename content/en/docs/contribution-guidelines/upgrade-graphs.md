@@ -98,7 +98,7 @@ flowchart TB
    classDef installed fill:#34ebba;
  
    E(v0.0.2 \n fa:fa-tag label=value)
-{{</mermaid>}} | Index image label with its value for an operator bundle version. (eg.`LABEL com.vendor.release.versions:=v4.7`)
+{{</mermaid>}} | catalog image label with its value for an operator bundle version. (eg.`LABEL com.vendor.release.versions:=v4.7`)
 
 ## Creating graphs 
 

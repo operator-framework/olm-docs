@@ -96,7 +96,7 @@ metadata:
   namespace: "operators"
 spec:
   sourceType: grpc
-  image: example.com/my/operator-index:v1
+  image: example.com/my-namespace/cool-catalog:v1
   displayName: "My Operators"
   priority: 100
 ```

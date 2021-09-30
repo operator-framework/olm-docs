@@ -9,7 +9,7 @@ description: >
 
 ### How to enable verbose logging on the OLM and Catalog operators
 
-Both the OLM and Catalog operators have `-debug` flags available that display much more useful information when diagnosing a problem. If necessary, add this flag to their deployments and perform the action that is showing undersired behavior.
+Both the [OLM and Catalog operators][olm-arch-doc] have `-debug` flags available that display much more useful information when diagnosing a problem. If necessary, add this flag to their deployments and perform the action that is showing undersired behavior.
 
 ### How to view the Catalog operator logs
 
@@ -42,3 +42,5 @@ packageserver-5c76df75bb-mq4qd      1/1     Running   0          5m26s
 $ kubectl -n olm logs olm-operator-6999db5767-5r5zs
 ...
 ```
+
+[olm-arch-doc]: /docs/concepts/olm-architecture
