@@ -95,7 +95,7 @@ In the general case, adding a bundle involves three discreet steps:
 
 > NOTE: catalog metadata should be stored in a version control system (e.g. `git`) and catalog images should be rebuilt from source
 whenever updates are made to ensure that all changes to the catalog are auditable. Here is an example of catalog metadata being stored 
-in github: https://github.com/operator-framework/cool-catalog, with the catalog image being rebuilt whenever there is a change: 
+in github: https://github.com/operator-framework/cool-catalog , with the catalog image being rebuilt whenever there is a change: 
 https://github.com/operator-framework/cool-catalog/blob/main/.github/workflows/build-push.yml
 
 **Step 1** is just a simple `opm render` command.

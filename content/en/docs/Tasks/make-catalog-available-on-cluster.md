@@ -47,7 +47,7 @@ cool-catalog-dtqv2     1/1    Running      0       30s
 
 It is possible to configure the `CatalogSource` to poll a source, such as an image registry, to check whether the catalog source pod should be updated. A common use case would be pushing new bundles to the same catalog source tag, and seeing updated operators from those bundles being installed in the cluster. 
 
-For example, say currently you have Operator X v1.0 installed in the cluster from the catalog `quay.io/my-namespace/cool-catalog:main`. This is the latest version of the X operator in the catalog. When a new v2.0 of Operator X is published, the v2.0 version of the X operator can be included in the catalog using the same steps described in the [creating catalog doc](creating-a-catalog-summary), then the catalog image can be rebuilt and pushed to the same `main` tag. With catalog polling enabled, OLM will pull down the newer version of the catalog image and make the new information available. 
+For example, say currently you have Operator X v1.0 installed in the cluster from the catalog `quay.io/my-namespace/cool-catalog:main`. This is the latest version of the X operator in the catalog. When a new v2.0 of Operator X is published, the v2.0 version of the X operator can be included in the catalog using the same steps described in the [creating catalog doc][creating-a-catalog-summary], then the catalog image can be rebuilt and pushed to the same `main` tag. With catalog polling enabled, OLM will pull down the newer version of the catalog image and make the new information available. 
 
 Each type of check for an updated catalog source is called an `updateStrategy`. Only one `updateStrategy` is supported at a time. `registryPoll` is a type of `updateStrategy` that checks an image registry for an updated version of the same tag(via image SHAs). The `interval` defines the amount of time between each successive poll.
 
@@ -85,4 +85,4 @@ spec:
       interval: 10m
 ```
 
-[creating-a-catalog-summary]: /docs/tasks/creating-a-catalog#summary
+[creating-a-catalog-summary]: /docs/tasks/creating-a-catalog/#summary
