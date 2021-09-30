@@ -9,6 +9,7 @@ description: >
 
 - [opm](https://github.com/operator-framework/operator-registry/releases) `v1.19.0+`
 
+>Note: This document discusses creating a catalog of operators using plaintext files to store catalog metadata, which is the [latest feature][file-based-catalog-spec] of OLM catalogs. If you are looking to build catalogs using the deprecated sqllite database format to store catalog metadata instead, please read the [v0.18.z version][v0.18.z-version] of this doc instead. 
 ## Creating a Catalog
 
 `OLM`'s `CatalogSource` [CRD][catalogsource-crd] accepts a container image reference to a catalog of operators that can
@@ -128,3 +129,4 @@ Now the catalog image is available for clusters to use and reference with `Catal
 [catalogsource-crd]: /docs/concepts/crds/catalogsource
 [file-based-catalog-spec]: /docs/reference/file-based-catalogs
 [upgrade-graph-doc]: /docs/concepts/olm-architecture/operator-catalog/creating-an-update-graph
+[v0.18.z-version]:  https://v0-18-z.olm.operatorframework.io/docs/tasks/make-index-available-on-cluster/
