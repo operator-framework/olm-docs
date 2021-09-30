@@ -8,19 +8,6 @@ An `OperatorCondition` is CustomResourceDefinition that creates a communication 
 Here's an example of an `OperatorCondition` CustomResource:
 
 ```yaml
-apiVersion: operators.coreos.com/v1alpha1
-kind: Subscription
-metadata:
-  name: my-operator
-  namespace: operators
-spec:
-  channel: stable
-  name: my-operator
-  source: my-catalog
-  sourceNamespace: operators
-```
-
-```yaml
 apiVersion: operators.coreos.com/v1
 kind: OperatorCondition
 metadata:
