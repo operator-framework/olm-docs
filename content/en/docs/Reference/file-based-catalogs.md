@@ -574,7 +574,7 @@ There are many possible ways to build a catalog, but an extremely simple approac
    docker build -t "$indexImage" -f "$name.Dockerfile" .
    docker push "$indexImage"
    ```
-
+>Note: The `yq` binary used in the script can be found [here](https://github.com/mikefarah/yq)
 ## Automation
 
 Operator authors and catalog maintainers are encouraged to automate their catalog maintenance with CI/CD workflows.
