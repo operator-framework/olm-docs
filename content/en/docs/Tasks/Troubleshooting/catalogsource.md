@@ -7,11 +7,14 @@ description: >
   Tips and tricks related to troubleshooting the configuration of a `CatalogSource`.
 ---
 
+## Prerequisites 
+
+- [yq](https://github.com/mikefarah/yq)
 ## How to debug a failing CatalogSource
 
 The [Catalog operator][olm-arch-doc] will constantly update the `Status` of `CatalogSources` to reflect its current state. You can check the `Status` of your `CatalogSource` with the following command:
 
-`$ kubectl -n my-namespace get catsrc my-catalog -o yaml | yq r - status`
+`$ kubectl get catsrc my-catalog -n <namespace> -o yaml | yq e '.status' -`
 
 >Note: It is possible that the `Status` is missing, which suggests that the Catalog operator is encountering an issue when processing the `CatalogSource` in a very early stage.
 

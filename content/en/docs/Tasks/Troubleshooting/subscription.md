@@ -11,11 +11,15 @@ description: >
 This section assumes that you have a working `CatalogSource`. Please see how to [troubleshoot a CatalogSource](/docs/tasks/troubleshooting/catalogsource/) if you're having trouble configuring a CatalogSource.
 {{% /pageinfo %}}
 
+## Prerequisites 
+
+- [yq](https://github.com/mikefarah/yq)
+
 ### How to debug a failing Subscription
 
 The Catalog operator will constantly update the `Status` of `Subscription` to reflect its current state. You can check the `Status` of your `Subscription` with the following command:
 
-`$ kubectl -n my-namespace get subscriptions my-subscription -o yaml | yq r - status`
+`$ kubectl get subscription <subscription-name> -n <namespace> -o yaml | yq e '.status' -`
 
 >Note: It is possible that the `Status` is missing, which suggests that the Catalog operator is encountering an issue when processing the `Subscription` in a very early stage.
 
