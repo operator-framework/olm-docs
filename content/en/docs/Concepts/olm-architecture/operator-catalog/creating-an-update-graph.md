@@ -6,7 +6,7 @@ description: >
     Creating an update graph with OLM
 ---
 
->Note: This document discusses creating an upgrade graph for your operator using plaintext files to store catalog metadata, which is the [latest feature][[file-based-catalog-spec]] of OLM catalogs. If you are looking to create an upgrade graph for your operator using the deprecated sqllite database format to store catalog metadata instead, please read the [v0.18.z version][v0.18.z-version] of this doc instead.
+>Note: This document discusses creating an upgrade graph for your operator using plaintext files to store catalog metadata, which is the [latest feature][file-based-catalog-spec] of OLM catalogs. If you are looking to create an upgrade graph for your operator using the deprecated sqllite database format to store catalog metadata instead, please read the [v0.18.z version][v0.18.z-version] of this doc instead.
 
 # Creating an Update Graph
 
