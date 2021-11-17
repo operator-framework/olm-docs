@@ -94,9 +94,9 @@ install-nlwcw   my-operator.v0.9.2   Automatic     false
 $ kubectl edit ip install-nlwcw -n foo
 ```
 
-And then change the `spec.approved` from `false` to `true`
+And then change the `spec.approved` from `false` to `true`.
 
-This should spin up the `ClusterServiceVersion` of the operator in the `foo` namespace`, following which the operator pod will spin up.
+This should spin up the `ClusterServiceVersion` of the operator in the `foo` namespace, following which the operator pod will spin up.
 
 To ensure the operator installed successfully, check for the ClusterServiceVersion and the operator deployment in the namespace it was installed in.
 
