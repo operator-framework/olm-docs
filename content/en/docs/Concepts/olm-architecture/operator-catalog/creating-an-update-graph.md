@@ -255,6 +255,308 @@ entries:
       - myoperator.v0.3.0
 ```
 
+## Skip vs. SkipRange vs. Replaces by Example
+
+For these examples we will be considering an operator that is already installed (`Installed`) and how update options are selected for it.
+
+{{<mermaid>}}
+graph LR;
+  subgraph Update<br>Options
+    a
+    b
+    c
+  end
+  I(Installed) 
+  a -->|can update from| I
+  b -->|can update from| I
+  c -->|can update from| I
+{{</mermaid>}}
+
+Invariants to keep in mind:
+
+- Anything in the channel that `replaces` the `Installed` package is an option.
+- Anything in the channel that is `skipped` by anything else in the channel is **not** considered an option.
+- Anything in the channel that has a `skipRange` that includes `Installed` is an option.
+
+Once there's a set of options found, they're "tried" by the resolver in order. This try-order in is defined by their `depth` in the channel **as defined by replaces and skips only**. 
+
+### Incremental update validation
+
+When a new version is released, upgrades are tested from the latest release in the channel.
+
+As QE / automation has time, updates are tested from older releases. Those extra edges will be added over time.
+
+We'll assume a semver, kube-like versioning/update strategy.
+
+#### By only adding Skips
+
+---
+`Installed` is at `v1`:
+
+{{<mermaid>}}
+graph LR;
+  I(Installed - v1) 
+{{</mermaid>}}
+---
+Release `v1.1` that `replaces` `v1`:
+
+{{<mermaid>}}
+graph LR;
+  I(Installed - v1)
+  subgraph Update<br>Options
+    v1.1
+  end
+  v1.1 -->|replaces| I
+{{</mermaid>}}
+---
+Release `v1.2` that `replaces` `v1.1`:
+
+{{<mermaid>}}
+graph LR;
+  I(Installed - v1)
+  subgraph Update<br>Options
+    v1.1
+  end
+  v1.1 -->|replaces| I
+  v1.2 -->|replaces| v1.1
+{{</mermaid>}}
+---
+Test that `v1.2` can also update from `v1`. Add a `skips: v1` to `v1.2`:
+
+{{<mermaid>}}
+graph LR;
+  I(Installed - v1)
+  subgraph Update<br>Options
+    v1.2
+    v1.1
+  end
+  v1.1 -->|replaces| I
+  v1.2 -->|replaces| v1.1
+  v1.2 -->|skips| I
+{{</mermaid>}}
+
+---
+Release `v2` that `replaces` `v1.2`:
+
+{{<mermaid>}}
+graph LR;
+  I(Installed - v1)
+  subgraph Update<br>Options
+    v1.1
+    v1.2
+  end
+  v1.1 -->|replaces| I
+  v1.2 -->|replaces| v1.1
+  v1.2 -->|skips| I
+  v2 --> |replaces| v1.2
+  
+{{</mermaid>}}
+---
+
+Test that `v2` can also update from `v1.1` and `v1`. Add `skips: [v1, v1.1]`:
+
+{{<mermaid>}}
+graph LR;
+  I(Installed - v1)
+  subgraph Update<br>Options
+    v2
+    v1.2
+  end
+  v1.1 -->|replaces| I
+  v1.2 -->|replaces| v1.1
+  v1.2 -->|skips| I
+  v2 --> |replaces| v1.2
+  v2 --> |skips| v1.1
+  v2 --> |skips| I
+{{</mermaid>}}
+
+Note that `v1.1` is no longer an option for `v1` - it has been skipped by something else in the channel.
+
+---
+
+Release `v2.1` that replaces `v2`
+
+{{<mermaid>}}
+graph LR;
+  I(Installed - v1)
+  subgraph Update<br>Options
+    v2
+    v1.2
+  end
+  v1.1 -->|replaces| I
+  v1.2 -->|replaces| v1.1
+  v1.2 -->|skips| I
+  v2 --> |replaces| v1.2
+  v2 --> |skips| v1.1
+  v2 --> |skips| I
+  v2.1 --> |replaces| v2
+{{</mermaid>}}
+
+---
+
+Test that `v2.1` can also update from `v1.2`. Add `skips: [v1.2]`:
+
+{{<mermaid>}}
+graph LR;
+  I(Installed - v1)
+  subgraph Update<br>Options
+    v2
+  end
+  v1.1 -->|replaces| I
+  v1.2 -->|replaces| v1.1
+  v1.2 -->|skips| I
+  v2 --> |replaces| v1.2
+  v2 --> |skips| v1.1
+  v2 --> |skips| I
+  v2.1 --> |replaces| v2
+  v2.1 --> |skips| v1.2
+{{</mermaid>}}
+
+---
+
+Add a `v2.2` that `replaces` `v2.1` and `skips: [v2]`
+
+{{<mermaid>}}
+graph LR;
+  I(Installed - v1)
+  v1.1 -->|replaces| I
+  v1.2 -->|replaces| v1.1
+  v1.2 -->|skips| I
+  v2 --> |replaces| v1.2
+  v2 --> |skips| v1.1
+  v2 --> |skips| I
+  v2.1 --> |replaces| v2
+  v2.1 --> |skips| v1.2
+  v2.2 --> |replaces| v2.1
+  v2.2 --> |skips| v2
+{{</mermaid>}}
+
+Note that `v1` is now completely cut off from updates: there is no version with an edge to `v1` that is not `skipped` by something else.
+
+#### By only adding SkipRange
+
+---
+`Installed` is at `v1`:
+
+{{<mermaid>}}
+graph LR;
+  I(Installed - v1) 
+{{</mermaid>}}
+---
+Release `v1.1` that `replaces` `v1`:
+
+{{<mermaid>}}
+graph LR;
+  I(Installed - v1)
+  subgraph Update<br>Options
+    v1.1
+  end
+  v1.1 -->|replaces| I
+{{</mermaid>}}
+---
+Release `v1.2` that `replaces` `v1.1`:
+
+{{<mermaid>}}
+graph LR;
+  I(Installed - v1)
+  subgraph Update<br>Options
+    v1.1
+  end
+  v1.1 -->|replaces| I
+  v1.2 -->|replaces| v1.1
+{{</mermaid>}}
+---
+Test that `v1.2` can also update from `v1`. Add a `skipRange: v1` to `v1.2`:
+
+{{<mermaid>}}
+graph LR;
+  I(Installed - v1)
+  subgraph Update<br>Options
+    v1.2
+    v1.1
+  end
+  v1.1 -->|replaces| I
+  v1.2 -->|replaces| v1.1
+  v1.2 -->|skipRange| I
+{{</mermaid>}}
+---
+Release `v2` that `replaces` `v1.2`:
+
+{{<mermaid>}}
+graph LR;
+  I(Installed - v1)
+  subgraph Update<br>Options
+    v1.1
+    v1.2
+  end
+  v1.1 -->|replaces| I
+  v1.2 -->|replaces| v1.1
+  v1.2 -->|skipRange| I
+  v2 --> |replaces| v1.2
+{{</mermaid>}}
+---
+
+Test that `v2` can also update from `v1.1` and `v1`. Add `skipRange: v1 v1.1`:
+
+{{<mermaid>}}
+graph LR;
+  I(Installed - v1)
+  subgraph Update<br>Options
+    v2
+    v1.1
+    v1.2
+  end
+  v1.1 -->|replaces| I
+  v1.2 -->|replaces| v1.1
+  v1.2 -->|skipRange| I
+  v2 --> |replaces| v1.2
+  v2 --> |skipRange| v1.1
+  v2 --> |skipRange| I
+{{</mermaid>}}
+
+---
+
+Release `v2.1` that replaces `v2`
+
+{{<mermaid>}}
+graph LR;
+  I(Installed - v1)
+  subgraph Update<br>Options
+    v2
+    v1.2
+    v1.1
+  end
+  v1.1 -->|replaces| I
+  v1.2 -->|replaces| v1.1
+  v1.2 -->|skipRange| I
+  v2 --> |replaces| v1.2
+  v2 --> |skipRange| v1.1
+  v2 --> |skipRange| I
+  v2.1 --> |replaces| v2
+{{</mermaid>}}
+
+---
+
+Test that `v2.1` can also update from `v1.2`. Add `skipRange: v1.2`:
+
+{{<mermaid>}}
+graph LR;
+  I(Installed - v1)
+  subgraph Update<br>Options
+    v2
+    v1.2
+    v1.1
+  end
+  v1.1 -->|replaces| I
+  v1.2 -->|replaces| v1.1
+  v1.2 -->|skipRange| I
+  v2 --> |replaces| v1.2
+  v2 --> |skipRange| v1.1
+  v2 --> |skipRange| I
+  v2.1 --> |replaces| v2
+  v2.1 --> |skipRange| v1.2
+{{</mermaid>}}
+
 [file-based-catalog-spec]: /docs/reference/file-based-catalogs
 [opm-validate-cli]: /docs/reference/file-based-catalogs/#opm-validate
 [v0.18.z-version]:  https://v0-18-z.olm.operatorframework.io/docs/concepts/olm-architecture/operator-catalog/creating-an-update-graph/
