@@ -31,7 +31,7 @@ Installing `BarOperator` with OLM will automatically install `FooOperator` as we
 
 This is made possible with two types of data:
 
-- **Properties** - typed metadata about the operator that constutes the public interface for it in the dependency resolver. Examples include the GVKs of the APIs provided by the operator and the SemVer version of the operator
+- **Properties** - typed metadata about the operator that constitutes the public interface for it in the dependency resolver. Examples include the GVKs of the APIs provided by the operator and the SemVer version of the operator
 - **Constraints** or **Dependencies** - an operator's requirements that should be satisfied by other operators (that may or may not have already been installed) on the target cluster. These act as queries / filters over all available operators and constrain the selection when resolving or installing. Examples include requiring a specific API to be available on the cluster, or expecting a particular operator with a particular version to be installed.
 
 Under the hood, these properties and constraints are converted into a system of boolean formulas and handed to a [SAT-solver](https://en.wikipedia.org/wiki/Boolean_satisfiability_problem), which does the heavy lifting of determining what operators should be installed.
