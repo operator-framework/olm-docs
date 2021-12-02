@@ -87,7 +87,7 @@ $ echo $?
 Success! There were no errors and we got a `0` error code.
 
 #### Summary
-In the general case, adding a bundle involves three discreet steps:
+In the general case, adding a bundle involves three discrete steps:
 - Render the bundle into the catalog using `opm render <bundleImage>`.
 - Add the bundle into desired channels and update the channels' upgrade edges
   to stitch the bundle into the correct place.
