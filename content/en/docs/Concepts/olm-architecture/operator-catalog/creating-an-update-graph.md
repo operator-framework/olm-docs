@@ -88,7 +88,7 @@ Internally, OLM uses the [blang/semver](https://github.com/blang/semver) go libr
 ---
 schema: olm.channel
 package: myoperator
-channel: stable
+name: stable
 entries:
   - name: myoperator.v1.0.3
     skipRange: ">=1.0.0 <1.0.3"
