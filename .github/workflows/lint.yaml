@@ -1,6 +1,12 @@
 name: test
-on: pull_request
-
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+  workflow_dispatch:
+  schedule:
+  - cron: '0 8 * * *'
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -12,3 +18,14 @@ jobs:
 
     - name: Run linting script
       run: ${PWD}/hack/ci/link-check.sh
+
+    # Note: might be worth pivoting to https://github.com/marketplace/actions/create-an-issue
+    # if we're interested in housing a custom template file.
+    - name: Create an issue if the lint job fails
+      uses: nashmaniac/create-issue-action@v1.1
+      if: failure() && github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
+      with:
+        title: Linting check failed for the master branch (${{ github.sha }})
+        token: ${{ secrets.GITHUB_TOKEN }}
+        labels: good first issue
+        body: Linting workflow failed on [master branch trigger](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
