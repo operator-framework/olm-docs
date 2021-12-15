@@ -132,7 +132,7 @@ version `1.1.1` that is considered fast, adding it to th fast channel.  Users
 can experiment with that fast version, but the stable version for example 
 `1.2.0` would be added only to the stable channel.
 
-**NOTE** The above terminology and support statements are very similar to the channels of distribution used by Kubernetes, (e.g [here](https://cloud.google.com/kubernetes-engine/docs/concepts/release-channels)), and popular vendors such as OpenShift (e.g [here](https://docs.openshift.com/container-platform/4.7/updating/updating-cluster-between-minor.html)). In this way, by adopting it you will bring a better and more intuitive understanding for the maintainers, users and community.
+**NOTE** The above terminology and support statements are very similar to the channels of distribution used by Kubernetes, (e.g [here](https://cloud.google.com/kubernetes-engine/docs/concepts/release-channels)), and popular vendors such as OpenShift (e.g [here](https://docs.openshift.com/container-platform/4.9/updating/understanding-upgrade-channels-release.html)). In this way, by adopting it you will bring a better and more intuitive understanding for the maintainers, users and community.
 
 #### Example 2
 
