@@ -38,23 +38,52 @@ Under the hood, these properties and constraints are converted into a system of 
 
 ## Declaring Properties
 
-Properties cannot be directly declared by an operator author. Instead, they are derived from the existing metadata provided in the CSV.
-
 All operators in a catalog will have these properties:
 
 - `olm.package` - includes the name of the package and the version of the operator
 - `olm.gvk` - one property is present for each "provided" API from the ClusterServiceVersion
 
-A future release of OLM will support explicit property creation.
+Additional properties can also be directly declared by an operator author by including a `properties.yaml` file in the `metadata` directory of the operator bundle. See [Arbitrary Properties](#arbitrary-properties) for more information.
+
+```yaml
+properties:
+- type: olm.kubeversion
+  value:
+    version: "1.16.0"
+```
+
+## Arbitrary Properties
+
+Operator authors may declare arbitrary properties in `properties.yaml` file in the bundle metadata. These properties are translated into a map data structure that will be used as an input to the OLM resolver at runtime.
+
+For example:
+```yaml
+properties:
+  - property:
+      type: sushi
+      value: salmon
+  - property:
+      type: soup
+      value: miso
+  - property:
+      type: olm.gvk
+      value:
+        group: olm.coreos.io
+        version: v1alpha1
+        kind: bento
+```
+
+This structure can be used to construct a CEL expression for generic constraint. See [Generic Constraint](#generic-constraint) for more information.
 
 ## Declaring Dependencies
 
 Dependencies are declared by including a `dependencies.yaml` file in the `metadata` directory of the operator bundle. For more information on bundles and the their format, see the [bundle docs](https://github.com/operator-framework/operator-registry/blob/master/docs/design/operator-bundle.md).
 
-Currently, only two types of constraints are supported:
+Currently, these types of constraints are supported:
 
 - `olm.gvk` - declare a requirement on an API
 - `olm.package` - declare a requirement on a specific package / version range
+- `olm.constraint` - declare a generic constraint on arbitrary operator properties (See [Generic Constraint](#generic-constraint) for more information)
 
 Here's an example of a `dependencies.yaml`:
 
@@ -79,6 +108,34 @@ The resolver sees these constraints as (assuming this is for `FooOperator v1.0.0
 - If `FooOperator v1.0.0` is picked, there must also be a an operator picked from `prometheus` package with version `>0.27.0`.
 
 This looks (and is) straightforward, but it's worth looking at how this is handled at runtime in [Understanding Preferences](#understanding-preferences).
+
+### Generic Constraint
+
+A `olm.constraint` constraint declare a dependency constraint on any arbitrary operator properties using [Common Expression Language (CEL)](https://github.com/google/cel-go) as an expression that can be evaluated at runtime by the resolver.
+
+At the top level, type field is the identifier for the new constraint type named `olm.constraint`. The `value` field is a struct that contains all information related to the constraint. Under `value`, the `failureMessage` field is a place to include string-representation of the constraint failure message that will be surfaced to the users if the constraint is not satisfiable at runtime. The `cel` struct is specific to CEL constraint type that supports CEL as the expression language. The `cel` struct has `rule` field which contains the CEL expression string that will be evaluated against operator properties at the runtime to determine if the operator satisfies the constraint.
+
+For example:
+```yaml
+type: olm.constraint
+value:
+    failureMessage: 'require to have "certified"'
+    cel:
+        rule: 'properties.exists(p, p.type == "certified")'
+
+```
+
+The CEL syntax supports a wide range of operators including logic operator such as `AND` and `OR`. As a result, a single CEL expression can have multiple rules for multiple conditions that are linked together by logic operators. These rules are evaluated against a dataset of multiple different properties from a bundle or any given source and the output is solved into a single bundle or operator that satisfies all of those rules within a single constraint.
+
+For example:
+```yaml
+type: olm.constraint
+value:
+    failureMessage: 'require to have "certified" and "stable" properties'
+    cel:
+        rule: 'properties.exists(p, p.type == "certified") && properties.exists(p, p.type == "stable")'
+
+```
 
 ## Understanding Preferences
 
@@ -279,7 +336,7 @@ Within a namespace, no two operators may come from the same package.
 
 ### Either depend on APIs or a specific version range of operators
 
-Operators may add or remove APIs at any time - always specify an `olm.gvk` dependency on any APIs your operator requires. The exception to this is if you are specifying `olm.packageVersion` constraints instead. See [Caveats](#caveats) for more information.
+Operators may add or remove APIs at any time - always specify an `olm.gvk` dependency on any APIs your operator requires. The exception to this is if you are specifying `olm.package` constraints instead. See [Caveats](#caveats) for more information.
 
 ### Set a minimum version
 
@@ -304,34 +361,11 @@ A maximum version should not be set whenever possible, or should be set to a ver
 
 Unlike with conventional package managers, operator authors explicitly encode that updates are safe via OLM's channels. If an update is available for an existing subscription, it comes with the operator provider's promise that it can update from the previous version. Setting a maximum version for a dependency overrides the dependency author's update stream by unnecessarily truncating it at a particular upper bound.
 
-Maximum versions can and should be set, however, if there are known incompatibilties that must be avoided. Note that specific versions can be omitted with the version range syntax, e.g. `> 1.0.0 !1.2.1`.
+Maximum versions can and should be set, however, if there are known incompatibilities that must be avoided. Note that specific versions can be omitted with the version range syntax, e.g. `> 1.0.0 !1.2.1`.
 
 ## Caveats
 
 These are some things to be cautious of when specifying dependencies.
-
-### No compound constraints ("AND")
-
-There is not a way to specify an "AND" relationship between constraints. In other words, there is no way to say: "this operator depends on another operator that both provides `Foo` api and has version `>1.1.0`".
-
-This means that when specifying a dependency like this:
-
-```yaml
-dependencies:
-- type: olm.package
-  value:
-    packageName: etcd
-    version: ">3.1.0"
-- type: olm.gvk
-  value:
-    group: etcd.database.coreos.com
-    kind: EtcdCluster
-    version: v1beta2
-```
-
-It would be possible for OLM to satisfy this with two operators: one that provides `EtcdCluster` and one that has version `>3.1.0`. Whether that happens, or whether an operator is selected that satisfies both constraints, depends on the ordering that potential options are visited. This [order is well-defined](#understanding-preferences) and can be reasoned about, but to be on the safe side, operators should stick to one mechanism or the other.
-
-A future release of OLM will support compound constraints. When that happens, this guidance will change.
 
 ### Cross-Namespace Compatibility
 
