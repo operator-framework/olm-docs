@@ -81,8 +81,8 @@ Dependencies are declared by including a `dependencies.yaml` file in the `metada
 
 Currently, these types of constraints are supported:
 
-- `olm.gvk` - declare a requirement on an API
-- `olm.package` - declare a requirement on a specific package / version range
+- `olm.gvk` - declare a requirement on an API <!-- TODO: add deprecation notice, indicate olm.constraint should be used -->
+- `olm.package` - declare a requirement on a specific package / version range <!-- TODO: add deprecation notice, indicate olm.constraint should be used -->
 - `olm.constraint` - declare a generic constraint on arbitrary operator properties (See [Generic Constraint](#generic-constraint) for more information)
 
 Here's an example of a `dependencies.yaml`:
@@ -98,6 +98,13 @@ dependencies:
     group: etcd.database.coreos.com
     kind: EtcdCluster
     version: v1beta2
+- type: olm.constraint
+  value:
+    message: Needed for ...
+    gvk:
+      group: foos.example.com
+      kind: Foo
+      version: v1
 ```
 
 ***Note***: The `version` field above follows the [SemVer 2.0 Spec](https://semver.org/) for version ranges, and specifically uses [blang/semver](https://github.com/blang/semver) to parse.
@@ -111,9 +118,16 @@ This looks (and is) straightforward, but it's worth looking at how this is handl
 
 ### Generic Constraint
 
-A `olm.constraint` constraint declare a dependency constraint on any arbitrary operator properties using [Common Expression Language (CEL)](https://github.com/google/cel-go) as an expression that can be evaluated at runtime by the resolver.
+An `olm.constraint` property declares a dependency constraint of a particular type, differentiating non-constraint and constraint properties. Its `value` field is an object containing a `message` field holding a string-representation of the constraint message that will be surfaced to the users if the constraint is not satisfiable at runtime, and as an informative comment for readers, and exactly one of the following keys that denotes the constraint type:
 
-At the top level, type field is the identifier for the new constraint type named `olm.constraint`. The `value` field is a struct that contains all information related to the constraint. Under `value`, the `failureMessage` field is a place to include string-representation of the constraint failure message that will be surfaced to the users if the constraint is not satisfiable at runtime. The `cel` struct is specific to CEL constraint type that supports CEL as the expression language. The `cel` struct has `rule` field which contains the CEL expression string that will be evaluated against operator properties at the runtime to determine if the operator satisfies the constraint.
+- `gvk`: type whose `value` and interpretation is identical to `olm.gvk`.
+- `package`: type whose `value` and interpretation is identical to `olm.package`.
+- `cel`: a [Common Expression Language (CEL)](https://github.com/google/cel-go) expression evaluated at runtime by OLM's resolver over arbitrary bundle properties and cluster information ([enhancement][cel-ep]).
+- `all`, `any`, `none`: conjunction, disjunction, and negation constraints, respectively, containing one or more concrete constraints, ex. `gvk`, or a nested compound constraint ([enhancement][compound-ep]).
+
+#### `cel`
+
+The `cel` struct is specific to CEL constraint type that supports CEL as the expression language. The `cel` struct has `rule` field which contains the CEL expression string that will be evaluated against operator properties at the runtime to determine if the operator satisfies the constraint.
 
 For example:
 ```yaml
@@ -136,6 +150,138 @@ value:
         rule: 'properties.exists(p, p.type == "certified") && properties.exists(p, p.type == "stable")'
 
 ```
+
+#### `all`, `any`, `none`
+
+These [compound constraint][compound-ep] types are evaluated following their logical definitions.
+
+This is an example of a conjunctive constraint (`all`) of two packages and one GVK,
+i.e. they must all be satisfied by installed bundles:
+
+```yaml
+schema: olm.bundle
+name: baz.v1.0.0
+properties:
+- type: olm.constraint
+  value:
+    message: All are required for Baz because...
+    all:
+      constraints:
+      - message: Package bar is needed for...
+        package:
+          name: bar
+          versionRange: '>=1.0.0'
+      - message: GVK Buf/v1 is needed for...
+        gvk:
+          group: bufs.example.com
+          version: v1
+          kind: Buf
+```
+
+This is an example of a disjunctive constraint (`any`) of three versions of the same GVK,
+i.e. at least one must be satisfied by installed bundles:
+
+```yaml
+schema: olm.bundle
+name: baz.v1.0.0
+properties:
+- type: olm.constraint
+  value:
+    message: Any are required for Baz because...
+    any:
+      constraints:
+      - gvk:
+          group: foos.example.com
+          version: v1beta1
+          kind: Foo
+      - gvk:
+          group: foos.example.com
+          version: v1beta2
+          kind: Foo
+      - gvk:
+          group: foos.example.com
+          version: v1
+          kind: Foo
+```
+
+This is an example of a negation constraint (`none`) of one version of a GVK,
+i.e. this GVK cannot be provided by any bundle in the result set:
+
+```yaml
+schema: olm.bundle
+name: baz.v1.0.0
+properties:
+- type: olm.constraint
+  value:
+  all:
+    constraints:
+    - message: Package bar is needed for...
+      package:
+        name: bar
+        versionRange: '>=1.0.0'
+    - message: Cannot be required for Baz because...
+      none:
+        constraints:
+        - gvk:
+            group: foos.example.com
+            version: v1alpha1
+            kind: Foo
+```
+
+Negation is worth further explanation, since at first glance its semantics
+are unclear in this context. The negation is really instructing the resolver
+to remove any possible solution that includes a particular GVK, package
+at a version, or satisfies some child compound constraint from the result set.
+As a corollary, the `none` compound constraint should only be used within `all` or `any`,
+since negating without first selecting a possible set of dependencies does not make sense.
+
+
+##### Nested compound constraints
+
+A nested compound constraint, one that contains at least one child compound constraint
+along with zero or more simple constraints, is evaluated from the bottom up following
+the procedures described for each above.
+
+This is an example of a disjunction of conjunctions, where one, the other, or both
+can be satisfy the constraint.
+
+```yaml
+schema: olm.bundle
+name: baz.v1.0.0
+properties:
+- type: olm.constraint
+  value:
+    message: Required for Baz because...
+    any:
+      constraints:
+      - all:
+          constraints:
+          - package:
+              name: foo
+              versionRange: '>=1.0.0'
+          - gvk:
+              group: foos.example.com
+              version: v1
+              kind: Foo
+      - all:
+          constraints:
+          - package:
+              name: foo
+              versionRange: '<1.0.0'
+          - gvk:
+              group: foos.example.com
+              version: v1beta1
+              kind: Foo
+```
+
+The maximum raw size of an `olm.constraint` is 64KB to limit resource exhaustion attacks.
+See [this issue][json-limit-issue] for details on why size is limited and not depth.
+This limit can be changed at a later date if necessary.
+
+[cel-ep]:https://github.com/operator-framework/enhancements/blob/master/enhancements/generic-constraints.md
+[compound-ep]:https://github.com/operator-framework/enhancements/blob/master/enhancements/compound-bundle-constraints.md
+[json-limit-issue]:https://github.com/golang/go/issues/31789#issuecomment-538134396
+
 
 ## Understanding Preferences
 
