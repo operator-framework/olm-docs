@@ -4,6 +4,7 @@ approvers:
   - anik120
   - joelanford
   - kevinrizza
+  - perdasilva
 # review == this code is good /lgtm
 reviewers:
   - ecordell
@@ -19,3 +20,4 @@ reviewers:
   - anik120
   - hasbro17
   - timflannagan
+  - perdasilva
