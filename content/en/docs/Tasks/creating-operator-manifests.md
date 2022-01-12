@@ -288,10 +288,10 @@ TODO: Documentation for advanced operator configuration which includes additiona
 
 ### Operator SDK
 
-You can also generate the manifests for your bundle using the `operator-sdk` binary. Checkout the documentation for generating CSV using `operator-sdk` [here][operator-sdk-csv-generation]. 
+You can also generate the manifests for your bundle using the `operator-sdk` binary. Checkout the documentation for generating CSV using `operator-sdk` [here][operator-sdk-csv-generation].
 
 
 [operator-sdk-csv-generation]: https://sdk.operatorframework.io/docs/olm-integration/generation/
 [api-repo]: https://github.com/operator-framework/api
 [operatorgroups-docs]: /docs/advanced-tasks/operator-scoping-with-operatorgroups
-[dependency-resolution-doc]: /docs/concepts/olm-architecture/dependency-resolution
+[dependency-resolution-doc]: /docs/concepts/olm-architecture/dependency-resolution/

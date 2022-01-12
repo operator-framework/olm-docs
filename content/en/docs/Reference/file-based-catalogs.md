@@ -2,14 +2,14 @@
 title: "File-based Catalogs"
 linkTitle: "File-based Catalogs"
 weight: 4
-date: 2021-07-29
+date: 2022-01-18
 ---
 
 File-based catalogs are the latest iteration of OLM's catalog format. It is a fully plaintext-based (JSON or YAML)
 evolution of the previous sqlite database format that is fully backwards compatible.
 
 ## Design
-The primary design goal for this format is to enable catalog editing, composability, and extensibility. 
+The primary design goal for this format is to enable catalog editing, composability, and extensibility.
 
 ### Editing
 
@@ -298,6 +298,8 @@ The `olm.gvk` property [cue][cuelang-spec] schema is:
 
 #### `olm.package.required`
 
+<!-- TODO: deprecate in favor of '#PropertyOLMConstraint: value: package' -->
+
 An `olm.package.required` property defines the package name and version range of another package that this bundle
 requires. For every required package property a bundle lists, OLM will ensure there is an operator installed on the
 cluster for the listed package and in the required version range. The `versionRange` field must be a valid
@@ -314,8 +316,9 @@ The `olm.package.required` property [cue][cuelang-spec] schema is:
 }
 ```
 
-
 #### `olm.gvk.required`
+
+<!-- TODO: deprecate in favor of '#PropertyOLMConstraint: value: gvk' -->
 
 An `olm.gvk.required` property defines the group, version, and kind (GVK) of a Kubernetes API that this bundle requires.
 For every required GVK property a bundle lists, OLM will ensure there is an operator installed on the cluster that
@@ -332,6 +335,171 @@ The `olm.gvk.required` property [cue][cuelang-spec] schema is:
   }
 }
 ```
+
+#### `olm.constraint`
+
+An [`olm.constraint` property][generic-constraint-ep] defines a dependency constraint of a particular type.
+The `failureMessage` field is recommended but not required to be populated so readers know why a constraint
+was specified, and errors can contain this string. The supported types are detailed in subsections.
+
+The `olm.constraint` property [cue][cuelang-spec] schema is:
+
+```cue
+#ConstraintValue: {
+  failureMessage?: string
+
+  { gvk: #GVK } |
+  { package: #Package } |
+  { cel: #Cel } |
+  { all: null | #CompoundConstraintValue } |
+  { any: null | #CompoundConstraintValue } |
+  { none: null | #CompoundConstraintValue }
+}
+
+#PropertyOLMConstraint: {
+  type: "olm.constraint"
+  value: #ConstraintValue
+}
+```
+
+##### `#GVK`
+
+`#GVK` is identical to the old top-level constraint `olm.gvk.required` value. The [cue][cuelang-spec] schema is:
+
+```cue
+#GVK: {
+  group: string & !=""
+  version: string & !=""
+  kind: string & !=""
+}
+```
+
+Example:
+
+```cue
+#PropertyOLMConstraint & {
+  value: {
+    failureMessage: "required for ..."
+    gvk: #GVK & {
+      group: "example.com"
+      version: "v1"
+      kind: "Foo"
+    }
+  }
+}
+```
+
+##### `#Package`
+
+`#Package` is identical to the old top-level constraint `olm.package.required` value. The [cue][cuelang-spec] schema is:
+
+```cue
+#Package: {
+  packageName: string & !=""
+  versionRange: string & !=""
+}
+```
+
+Example:
+
+```cue
+#PropertyOLMConstraint & {
+  value: {
+    failureMessage: "required for ..."
+    package: #Package & {
+      packageName: "foo"
+      versionRange: ">=1.0.0"
+    }
+  }
+}
+```
+
+##### `#Cel`
+
+The `cel` struct is specific to [Common Expression Language (CEL)](https://github.com/google/cel-go) constraint type that supports CEL as the expression language. The `cel` struct has `rule` field which contains the CEL expression string that will be evaluated against operator properties at the runtime to determine if the operator satisfies the constraint.
+
+The `cel` constraint [cue][cuelang-spec] schema is:
+```cue
+#Cel: {
+  rule: string & !=""
+}
+```
+
+##### `#CompoundConstraintValue`
+
+`#CompoundConstraintValue` is a [compound constraint][compound-constraint-ep] that represents either
+a logical conjunction, disjunction, or negation of a constraint list, some of which are concrete
+(ex. `#GVK` or `#Cel`), others being child compound constraints.
+These logical operations correspond to `#ConstraintValue` fields `all`, `any`, or `none`, respectively.
+The `none` compound constraint should only be used with an `#All` or `#Any` value,
+since negating without first selecting a possible set of dependencies does not make sense.
+
+The [cue][cuelang-spec] schema is:
+
+```cue
+#ConstraintList: [#ConstraintValue, ...#ConstraintValue]
+
+#CompoundConstraintValue: {
+  constraints: #ConstraintList
+}
+```
+
+Example:
+
+```cue
+#PropertyOLMConstraint & {
+  value: #ConstraintValue & {
+    failureMessage: "Required for Baz because..."
+    any: #CompoundConstraintValue & {
+      constraints: #ConstraintList & [
+        {
+          failureMessage: "Pin kind Foo's version for stable versions"
+          all: #CompoundConstraintValue & {
+            constraints: #ConstraintList & [
+              {
+                package: #Package & {
+                  packageName: "foo"
+                  versionRange: ">=1.0.0"
+                }
+              },
+              {
+                gvk: #GVK & {
+                  group: "foos.example.com"
+                  version: "v1"
+                  kind: "Foo"
+                }
+              }
+            ]
+          }
+        },
+        {
+          failureMessage: "Pin kind Foo's version for pre-stable versions"
+          all: #CompoundConstraintValue & {
+            constraints: #ConstraintList & [
+              {
+                package: #Package & {
+                  packageName: "foo"
+                  versionRange: "<1.0.0"
+                }
+              },
+              {
+                gvk: #GVK & {
+                  group: "foos.example.com"
+                  version: "v1beta1"
+                  kind: "Foo"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
+```
+
+[generic-constraint-ep]: https://github.com/operator-framework/enhancements/blob/master/enhancements/generic-constraints.md
+[compound-constraint-ep]: https://github.com/operator-framework/enhancements/blob/master/enhancements/compound-bundle-constraints.md
 
 #### `olm.bundle.object` (alpha)
 
@@ -528,7 +696,7 @@ However, there are some cases where a change in the index metadata is preferred.
 
 OLM highly recommends storing index metadata in source control and treating the source-controlled metadata as the source
 of truth. Updates to index images should:
-- Update the source-controlled index directory with a new commit. 
+- Update the source-controlled index directory with a new commit.
 - Build and push the index image. OLM suggests using a consistent tagging taxonomy (e.g. `:latest` or
    `:<targetClusterVersion>` so that users can receive updates to an index as they become available.
 
@@ -587,4 +755,3 @@ catalog maintainers could further improve on this by building Git-ops automation
 - Automatically rebuilds and republishes the catalog image.
 
 An example catalog that automates a lot of these workflows can be found at https://github.com/operator-framework/cool-catalog
-
