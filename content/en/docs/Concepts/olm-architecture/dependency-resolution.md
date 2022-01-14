@@ -1,8 +1,10 @@
 ---
 title: "Dependency Resolution"
 linkTitle: "Dependency Resolution"
-date: 2020-09-18
-weight: 12
+date: 2022-14-01
+weight: 2
+description: >
+    A discussion on operator dependency resolution with OLM
 ---
 
 Much like system or language package managers, OLM can resolve dependencies to fulfill an operator's runtime requirements.

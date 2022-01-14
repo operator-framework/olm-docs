@@ -58,4 +58,4 @@ If the operator is present, check if the version you want is available:
 
 If you are attempting to pull images from a private registry, make sure to specify a secret key in the `CatalogSource.Spec.Secrets` field.
 
-[olm-arch-doc]: /docs/concepts/olm-architecture#catalog-operator
+[olm-arch-doc]: /docs/concepts/olm-architecture/components-of-olm/#catalog-operator

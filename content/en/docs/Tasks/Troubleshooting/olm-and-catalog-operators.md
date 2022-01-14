@@ -43,4 +43,4 @@ $ kubectl -n olm logs olm-operator-6999db5767-5r5zs
 ...
 ```
 
-[olm-arch-doc]: /docs/concepts/olm-architecture
+[olm-arch-doc]: /docs/concepts/olm-architecture/components-of-olm

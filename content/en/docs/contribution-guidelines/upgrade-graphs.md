@@ -236,6 +236,6 @@ flowchart TB
 {{</mermaid>}} |
 
 [olm-channel]:/docs/reference/file-based-catalogs/#olmchannel
-[upgrade-path-replaces]:/docs/concepts/olm-architecture/operator-catalog/creating-an-update-graph/#replaces
-[upgrade-path-skips]:/docs/concepts/olm-architecture/operator-catalog/creating-an-update-graph/#skips
-[upgrade-path-skiprange]:/docs/concepts/olm-architecture/operator-catalog/creating-an-update-graph/#skiprange
+[upgrade-path-replaces]:/docs/concepts/olm-architecture/creating-an-update-graph/#replaces
+[upgrade-path-skips]:/docs/concepts/olm-architecture/creating-an-update-graph/#skips
+[upgrade-path-skiprange]:/docs/concepts/olm-architecture/creating-an-update-graph/#skiprange

@@ -128,5 +128,5 @@ Now the catalog image is available for clusters to use and reference with `Catal
 
 [catalogsource-crd]: /docs/concepts/crds/catalogsource
 [file-based-catalog-spec]: /docs/reference/file-based-catalogs
-[upgrade-graph-doc]: /docs/concepts/olm-architecture/operator-catalog/creating-an-update-graph
+[upgrade-graph-doc]: /docs/concepts/olm-architecture/creating-an-update-graph
 [v0.18.z-version]:  https://v0-18-z.olm.operatorframework.io/docs/tasks/make-index-available-on-cluster/

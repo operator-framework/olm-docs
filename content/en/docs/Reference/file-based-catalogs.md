@@ -215,7 +215,7 @@ The `olm.channel` [cue][cuelang-spec] schema is:
 
 For more information about defining upgrade edges, see the [upgrade graph reference documentation][upgrade-graph-doc].
 
-[upgrade-graph-doc]: /docs/concepts/olm-architecture/operator-catalog/creating-an-update-graph
+[upgrade-graph-doc]: /docs/concepts/olm-architecture/creating-an-update-graph
 
 #### `olm.bundle`
 
