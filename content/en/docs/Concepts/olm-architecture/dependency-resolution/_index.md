@@ -1,7 +1,7 @@
 ---
 title: "Dependency Resolution"
 linkTitle: "Dependency Resolution"
-date: 2020-09-18
+date: 2022-01-12
 weight: 12
 ---
 
@@ -38,23 +38,54 @@ Under the hood, these properties and constraints are converted into a system of 
 
 ## Declaring Properties
 
-Properties cannot be directly declared by an operator author. Instead, they are derived from the existing metadata provided in the CSV.
-
 All operators in a catalog will have these properties:
 
 - `olm.package` - includes the name of the package and the version of the operator
 - `olm.gvk` - one property is present for each "provided" API from the ClusterServiceVersion
 
-A future release of OLM will support explicit property creation.
+Additional properties can also be directly declared by an operator author by including a `properties.yaml` file in the `metadata` directory of the operator bundle. See [Arbitrary Properties](#arbitrary-properties) for more information.
+
+```yaml
+properties:
+- type: olm.kubeversion
+  value:
+    version: "1.16.0"
+```
+
+## Arbitrary Properties
+
+Operator authors may declare arbitrary properties in `properties.yaml` file in the bundle metadata. These properties are translated into a map data structure that will be used as an input to the OLM resolver at runtime. However, these properties are opaque to the resolver as it doesn't understand the properties but it can evaluate the generic constraints against those properties to determine if the constraints can be satisfied given the properties list.
+
+For example:
+```yaml
+properties:
+  - property:
+      type: sushi
+      value: salmon
+  - property:
+      type: soup
+      value: miso
+  - property:
+      type: olm.gvk
+      value:
+        group: olm.coreos.io
+        version: v1alpha1
+        kind: bento
+```
+
+This structure can be used to construct a CEL expression for generic constraint. See [Generic Constraint](#generic-constraint) for more information.
+
+Note: `properties.yaml` is supported in `0.17.4+` versions of OLM.
 
 ## Declaring Dependencies
 
 Dependencies are declared by including a `dependencies.yaml` file in the `metadata` directory of the operator bundle. For more information on bundles and the their format, see the [bundle docs](https://github.com/operator-framework/operator-registry/blob/master/docs/design/operator-bundle.md).
 
-Currently, only two types of constraints are supported:
+Currently, these types of constraints are supported:
 
-- `olm.gvk` - declare a requirement on an API
-- `olm.package` - declare a requirement on a specific package / version range
+- `olm.gvk` - declare a requirement on an API <!-- TODO: add deprecation notice, indicate olm.constraint should be used -->
+- `olm.package` - declare a requirement on a specific package / version range <!-- TODO: add deprecation notice, indicate olm.constraint should be used -->
+- `olm.constraint` - declare a generic constraint on arbitrary operator properties (See [Generic Constraint](#generic-constraint) for more information)
 
 Here's an example of a `dependencies.yaml`:
 
@@ -79,6 +110,169 @@ The resolver sees these constraints as (assuming this is for `FooOperator v1.0.0
 - If `FooOperator v1.0.0` is picked, there must also be a an operator picked from `prometheus` package with version `>0.27.0`.
 
 This looks (and is) straightforward, but it's worth looking at how this is handled at runtime in [Understanding Preferences](#understanding-preferences).
+
+### Generic Constraint
+
+An `olm.constraint` property declares a dependency constraint of a particular type, differentiating non-constraint and constraint properties. Its `value` field is an object containing a `failureMessage` field holding a string-representation of the constraint message that will be surfaced to the users if the constraint is not satisfiable at runtime, and as an informative comment for readers, and exactly one of the following keys that denotes the constraint type:
+
+- `gvk`: type whose `value` and interpretation is identical to `olm.gvk`.
+- `package`: type whose `value` and interpretation is identical to `olm.package`.
+- `cel`: a [Common Expression Language (CEL)](https://github.com/google/cel-go) expression evaluated at runtime by OLM's resolver over arbitrary bundle properties and cluster information ([enhancement][cel-ep]).
+- `all`, `any`, `none`: conjunction, disjunction, and negation constraints, respectively, containing one or more concrete constraints, ex. `gvk`, or a nested compound constraint ([enhancement][compound-ep]).
+
+#### Common Expression Language (CEL)
+
+The `cel` struct is specific to CEL constraint type that supports CEL as the expression language. The `cel` struct has `rule` field which contains the CEL expression string that will be evaluated against operator properties at the runtime to determine if the operator satisfies the constraint.
+
+For example:
+```yaml
+type: olm.constraint
+value:
+  failureMessage: 'require to have "certified"'
+  cel:
+    rule: 'properties.exists(p, p.type == "certified")'
+```
+
+The CEL syntax supports a wide range of operators including logic operator such as `AND` and `OR`. As a result, a single CEL expression can have multiple rules for multiple conditions that are linked together by logic operators. These rules are evaluated against a dataset of multiple different properties from a bundle or any given source and the output is solved into a single bundle or operator that satisfies all of those rules within a single constraint.
+
+For example:
+```yaml
+type: olm.constraint
+value:
+  failureMessage: 'require to have "certified" and "stable" properties'
+  cel:
+    rule: 'properties.exists(p, p.type == "certified") && properties.exists(p, p.type == "stable")'
+```
+
+#### Compound Constraint (`all`, `any`, `none`)
+
+These [compound constraint][compound-ep] types are evaluated following their logical definitions.
+
+This is an example of a conjunctive constraint (`all`) of two packages and one GVK,
+i.e. they must all be satisfied by installed bundles:
+
+```yaml
+schema: olm.bundle
+name: baz.v1.0.0
+properties:
+- type: olm.constraint
+  value:
+    failureMessage: All are required for Baz because...
+    all:
+      constraints:
+      - failureMessage: Package bar is needed for...
+        package:
+          name: bar
+          versionRange: '>=1.0.0'
+      - failureMessage: GVK Buf/v1 is needed for...
+        gvk:
+          group: bufs.example.com
+          version: v1
+          kind: Buf
+```
+
+This is an example of a disjunctive constraint (`any`) of three versions of the same GVK,
+i.e. at least one must be satisfied by installed bundles:
+
+```yaml
+schema: olm.bundle
+name: baz.v1.0.0
+properties:
+- type: olm.constraint
+  value:
+    failureMessage: Any are required for Baz because...
+    any:
+      constraints:
+      - gvk:
+          group: foos.example.com
+          version: v1beta1
+          kind: Foo
+      - gvk:
+          group: foos.example.com
+          version: v1beta2
+          kind: Foo
+      - gvk:
+          group: foos.example.com
+          version: v1
+          kind: Foo
+```
+
+This is an example of a negation constraint (`none`) of one version of a GVK,
+i.e. this GVK cannot be provided by any bundle in the result set:
+
+```yaml
+schema: olm.bundle
+name: baz.v1.0.0
+properties:
+- type: olm.constraint
+  value:
+  all:
+    constraints:
+    - failureMessage: Package bar is needed for...
+      package:
+        name: bar
+        versionRange: '>=1.0.0'
+    - failureMessage: Cannot be required for Baz because...
+      none:
+        constraints:
+        - gvk:
+            group: foos.example.com
+            version: v1alpha1
+            kind: Foo
+```
+
+Negation is worth further explanation, since at first glance its semantics
+are unclear in this context. The negation is really instructing the resolver
+to remove any possible solution that includes a particular GVK, package
+at a version, or satisfies some child compound constraint from the result set.
+As a corollary, the `none` compound constraint should only be used within `all` or `any`,
+since negating without first selecting a possible set of dependencies does not make sense.
+
+##### Nested compound constraints
+
+A nested compound constraint, one that contains at least one child compound constraint
+along with zero or more simple constraints, is evaluated from the bottom up following
+the procedures described for each above.
+
+This is an example of a disjunction of conjunctions, where one, the other, or both
+can be satisfy the constraint.
+
+```yaml
+schema: olm.bundle
+name: baz.v1.0.0
+properties:
+- type: olm.constraint
+  value:
+    failureMessage: Required for Baz because...
+    any:
+      constraints:
+      - all:
+          constraints:
+          - package:
+              name: foo
+              versionRange: '>=1.0.0'
+          - gvk:
+              group: foos.example.com
+              version: v1
+              kind: Foo
+      - all:
+          constraints:
+          - package:
+              name: foo
+              versionRange: '<1.0.0'
+          - gvk:
+              group: foos.example.com
+              version: v1beta1
+              kind: Foo
+```
+
+The maximum raw size of an `olm.constraint` is 64KB to limit resource exhaustion attacks.
+See [this issue][json-limit-issue] for details on why size is limited and not depth.
+This limit can be changed at a later date if necessary.
+
+[cel-ep]:https://github.com/operator-framework/enhancements/blob/master/enhancements/generic-constraints.md
+[compound-ep]:https://github.com/operator-framework/enhancements/blob/master/enhancements/compound-bundle-constraints.md
+[json-limit-issue]:https://github.com/golang/go/issues/31789#issuecomment-538134396
 
 ## Understanding Preferences
 
@@ -279,7 +473,7 @@ Within a namespace, no two operators may come from the same package.
 
 ### Either depend on APIs or a specific version range of operators
 
-Operators may add or remove APIs at any time - always specify an `olm.gvk` dependency on any APIs your operator requires. The exception to this is if you are specifying `olm.packageVersion` constraints instead. See [Caveats](#caveats) for more information.
+Operators may add or remove APIs at any time - always specify an `olm.gvk` dependency on any APIs your operator requires. The exception to this is if you are specifying `olm.package` constraints instead. See [Caveats](#caveats) for more information.
 
 ### Set a minimum version
 
@@ -304,34 +498,11 @@ A maximum version should not be set whenever possible, or should be set to a ver
 
 Unlike with conventional package managers, operator authors explicitly encode that updates are safe via OLM's channels. If an update is available for an existing subscription, it comes with the operator provider's promise that it can update from the previous version. Setting a maximum version for a dependency overrides the dependency author's update stream by unnecessarily truncating it at a particular upper bound.
 
-Maximum versions can and should be set, however, if there are known incompatibilties that must be avoided. Note that specific versions can be omitted with the version range syntax, e.g. `> 1.0.0 !1.2.1`.
+Maximum versions can and should be set, however, if there are known incompatibilities that must be avoided. Note that specific versions can be omitted with the version range syntax, e.g. `> 1.0.0 !1.2.1`.
 
 ## Caveats
 
 These are some things to be cautious of when specifying dependencies.
-
-### No compound constraints ("AND")
-
-There is not a way to specify an "AND" relationship between constraints. In other words, there is no way to say: "this operator depends on another operator that both provides `Foo` api and has version `>1.1.0`".
-
-This means that when specifying a dependency like this:
-
-```yaml
-dependencies:
-- type: olm.package
-  value:
-    packageName: etcd
-    version: ">3.1.0"
-- type: olm.gvk
-  value:
-    group: etcd.database.coreos.com
-    kind: EtcdCluster
-    version: v1beta2
-```
-
-It would be possible for OLM to satisfy this with two operators: one that provides `EtcdCluster` and one that has version `>3.1.0`. Whether that happens, or whether an operator is selected that satisfies both constraints, depends on the ordering that potential options are visited. This [order is well-defined](#understanding-preferences) and can be reasoned about, but to be on the safe side, operators should stick to one mechanism or the other.
-
-A future release of OLM will support compound constraints. When that happens, this guidance will change.
 
 ### Cross-Namespace Compatibility
 
@@ -342,3 +513,5 @@ OLM performs dependency resolution at the namespace scope. It is possible to get
 `dependencies.yaml` is supported in `0.16.1+` versions of OLM.
 
 In versions of OLM < `0.16.1`, only GVK constraints are supported, and only via the `required` section of the ClusterServiceVersion.
+
+`properties.yaml` is supported in `0.17.4+` versions of OLM.
