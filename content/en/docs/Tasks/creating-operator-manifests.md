@@ -246,18 +246,23 @@ TODO: example status
 
 Operators can include additional objects alongside their `CSV` in the `/manifests` directory. These objects should be YAML files and valid kubernetes objects. The following objects are supported as of OLM 0.16.0:
 
-- ConfigMaps
-- Secrets
-- Services
-- (Cluster)Role
-- (Cluster)RoleBinding
+- Secret
+- ClusterRole
+- ClusterRoleBinding
+- ConfigMap
 - ServiceAccount
+- Service
+- Role
+- RoleBinding
 - PrometheusRule
 - ServiceMonitor
-- ConsoleYamlSample
-- [PodDisruptionBudgets](https://github.com/operator-framework/operator-lifecycle-manager/blob/master/doc/design/adding-pod-disruption-budgets.md)
-- [PriorityClasses](https://github.com/operator-framework/operator-lifecycle-manager/blob/master/doc/design/adding-priority-classes.md)
-- [VerticalPodAutoscalers](https://github.com/operator-framework/operator-lifecycle-manager/blob/master/doc/design/adding-vertical-pod-autoscaler.md)
+- [PodDisruptionBudget](https://github.com/operator-framework/operator-lifecycle-manager/blob/master/doc/design/adding-pod-disruption-budgets.md)
+- [PriorityClasse](https://github.com/operator-framework/operator-lifecycle-manager/blob/master/doc/design/adding-priority-classes.md)
+- [VerticalPodAutoscaler](https://github.com/operator-framework/operator-lifecycle-manager/blob/master/doc/design/adding-vertical-pod-autoscaler.md)
+- ConsoleYAMLSample
+- ConsoleQuickStart
+- ConsoleCLIDownload
+- ConsoleLink
 
 **Note**: some of these objects can affect an upgrade of the cluster and potentially cause problems for workloads unrelated to your operator. Be sure to understand the safe use of these objects before packaging them with your operator. See the docs linked above for more information on these objects as they relate to OLM.*
 
