@@ -1,7 +1,7 @@
 ---
 title: "Dependency Resolution"
 linkTitle: "Dependency Resolution"
-date: 2022-01-12
+date: 2022-01-31
 weight: 12
 ---
 
@@ -75,13 +75,17 @@ properties:
 
 This structure can be used to construct a CEL expression for generic constraint. See [Generic Constraint](#generic-constraint) for more information.
 
-Note: `properties.yaml` is supported in `0.17.4+` versions of OLM.
+Note: `properties.yaml` is supported in `1.17.4+` versions of OPM.
 
 ## Declaring Dependencies
 
-Dependencies are declared by including a `dependencies.yaml` file in the `metadata` directory of the operator bundle. For more information on bundles and the their format, see the [bundle docs](https://github.com/operator-framework/operator-registry/blob/master/docs/design/operator-bundle.md).
+Required dependencies are statically defined in the operator bundle one of two ways: 
+- `dependencies.yaml` file
+- `properties.yaml` file (supported by `1.17.4+ versions of OPM)
+ 
+Each of these files can be included in the `metadata` directory of the operator bundle. For more information on bundles and the their format, see the [bundle docs](https://github.com/operator-framework/operator-registry/blob/master/docs/design/operator-bundle.md).
 
-Currently, these types of constraints are supported:
+Currently, these types of constraints are supported in the `dependencies.yaml` file:
 
 - `olm.gvk` - declare a requirement on an API <!-- TODO: add deprecation notice, indicate olm.constraint should be used -->
 - `olm.package` - declare a requirement on a specific package / version range <!-- TODO: add deprecation notice, indicate olm.constraint should be used -->
@@ -96,6 +100,27 @@ dependencies:
     packageName: prometheus
     version: ">0.27.0"
 - type: olm.gvk
+  value:
+    group: etcd.database.coreos.com
+    kind: EtcdCluster
+    version: v1beta2
+```
+
+Currently, these types of constraints are supported in the `properties.yaml` file:
+
+- `olm.gvk.required` - declare a requirement on an API <!-- TODO: add deprecation notice, indicate olm.constraint should be used -->
+- `olm.package.required` - declare a requirement on a specific package / version range <!-- TODO: add deprecation notice, indicate olm.constraint should be used -->
+- `olm.constraint` - declare a generic constraint on arbitrary operator properties (See [Generic Constraint](#generic-constraint) for more information)
+
+Here's an example of a `properties.yaml`:
+
+```yaml
+properties:
+- type: olm.package.required
+  value:
+    packageName: prometheus
+    versionRange: ">0.27.0"
+- type: olm.gvk.required
   value:
     group: etcd.database.coreos.com
     kind: EtcdCluster
@@ -510,8 +535,8 @@ OLM performs dependency resolution at the namespace scope. It is possible to get
 
 ## Backwards-Compatibility Notes
 
-`dependencies.yaml` is supported in `0.16.1+` versions of OLM.
+`dependencies.yaml` is supported in `0.16.1+` versions of OLM and `0.10.1+ versions of OPM.
 
 In versions of OLM < `0.16.1`, only GVK constraints are supported, and only via the `required` section of the ClusterServiceVersion.
 
-`properties.yaml` is supported in `0.17.4+` versions of OLM.
+`properties.yaml` is supported in `1.17.4+` versions of OPM.
