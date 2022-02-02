@@ -535,7 +535,7 @@ OLM performs dependency resolution at the namespace scope. It is possible to get
 
 ## Backwards-Compatibility Notes
 
-`dependencies.yaml` is supported in `0.16.1+` versions of OLM and `0.10.1+ versions of OPM.
+`dependencies.yaml` is supported in `0.16.1+` versions of OLM and `1.10.0+` versions of OPM.
 
 In versions of OLM < `0.16.1`, only GVK constraints are supported, and only via the `required` section of the ClusterServiceVersion.
 
