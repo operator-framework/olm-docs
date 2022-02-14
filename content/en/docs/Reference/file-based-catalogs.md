@@ -9,6 +9,7 @@ File-based catalogs are the latest iteration of OLM's catalog format. It is a fu
 evolution of the previous sqlite database format that is fully backwards compatible.
 
 ## Design
+
 The primary design goal for this format is to enable catalog editing, composability, and extensibility.
 
 ### Editing
@@ -30,7 +31,7 @@ File-based catalogs are stored in an arbitrary directory hierarchy, which enable
 separate file-based catalog directories, `CatalogA` and `CatalogB`, I can make a new combined catalog by making a new
 directory `CatalogC` and copying `CatalogA` and `CatalogB` into it.
 
-This composability enables decentralized catalog. The format permits operator authors to maintain operator-specific
+This composability enables decentralized catalogs. The format permits operator authors to maintain operator-specific
 catalogs and catalog maintainers to trivially build a catalog composed of individual operator-specific catalogs.
 
 > NOTE: Duplicate packages and duplicate bundles within a package are not permitted. The `opm validate` command will
@@ -80,7 +81,6 @@ they have the same rules for [patterns](https://git-scm.com/docs/gitignore#_patt
 > **/objects/*.json
 > **/objects/*.yaml
 > ```
-
 
 Catalog maintainers have the flexibility to chose their desired layout, but the OLM team recommends storing each package's
 file-based catalog blobs in separate sub-directories. Each individual file can be either JSON or YAML -- it is not
@@ -139,7 +139,7 @@ _Meta: {
 ### OLM-defined schemas
 
 An OLM catalog currently uses three schemas: `olm.package`, `olm.channel`, and `olm.bundle`, which correspond to OLM's
-existing package and bundle concepts.
+existing package, channel, and bundle concepts.
 
 Each operator package in a catalog requires exactly one `olm.package` blob, at least one `olm.channel` blob, and one or
 more `olm.bundle` blobs.
@@ -179,7 +179,7 @@ The `olm.package` [cue][cuelang-spec] schema is:
 An `olm.channel` defines a channel within a package, the bundle entries that are members
 of the channel, and the upgrade edges for those bundles.
 
-A bundle can included as an entry in multiple `olm.channel` blobs, but it can have only one entry per channel.
+A bundle can be included as an entry in multiple `olm.channel` blobs, but it can have only one entry per channel.
 
 Also, it is valid for an entry's replaces value to reference another bundle name that cannot be found in this catalog
 (or even another catalog) as long as other channel invariants still hold (e.g. a channel cannot have multiple heads).
@@ -353,7 +353,7 @@ The `olm.constraint` property [cue][cuelang-spec] schema is:
   { cel: #Cel } |
   { all: null | #CompoundConstraintValue } |
   { any: null | #CompoundConstraintValue } |
-  { none: null | #CompoundConstraintValue }
+  { not: null | #CompoundConstraintValue }
 }
 
 #PropertyOLMConstraint: {
@@ -430,8 +430,8 @@ The `cel` constraint [cue][cuelang-spec] schema is:
 `#CompoundConstraintValue` is a [compound constraint][compound-constraint-ep] that represents either
 a logical conjunction, disjunction, or negation of a constraint list, some of which are concrete
 (ex. `#GVK` or `#Cel`), others being child compound constraints.
-These logical operations correspond to `#ConstraintValue` fields `all`, `any`, or `none`, respectively.
-The `none` compound constraint should only be used with an `#All` or `#Any` value,
+These logical operations correspond to `#ConstraintValue` fields `all`, `any`, or `not`, respectively.
+The `not` compound constraint should only be used with an `#All` or `#Any` value,
 since negating without first selecting a possible set of dependencies does not make sense.
 
 The [cue][cuelang-spec] schema is:
@@ -743,6 +743,7 @@ There are many possible ways to build a catalog, but an extremely simple approac
    docker push "$indexImage"
    ```
 >Note: The `yq` binary used in the script can be found [here](https://github.com/mikefarah/yq)
+
 ## Automation
 
 Operator authors and catalog maintainers are encouraged to automate their catalog maintenance with CI/CD workflows.
