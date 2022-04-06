@@ -102,7 +102,7 @@ Note that exactly which operator version is deployed can depend on more than wha
 
 ## NAMING
 
-Channel names are used to imply what form of upgrade you want to offer for your operator. For example, you might have an operator with a candidate release version that is not supported and a version where support is offered.
+Channel names should imply the nature of official support the user can expect when subscribed to that channel for your operator. For example, the channel name `stable-v2` implies that subscribing to this channel will install an operator with a major version `v2` that you can expect official support for. The channel name `candidate-v2` implies that the user will be installing a candidate release version that does not have official supported.
 		
 
 Our motivation with this convention is to encourage a better user experience for OLM users to have an intuitive 
@@ -114,9 +114,9 @@ The names you choose are notional and up to you to decide, however, picking good
 ### Naming Conventions
 
 * Channel names are chosen by operator authors as they see fit to meet their upgrade strategies.
-* Channel names are related to the release strategy and not to specific features. ( e.g. we can have an Operator bundle release which is supported and ought to be under the stable channel but with a "tech-preview" and not supported feature. ).
+* Channel names should communicate the release strategy, official support level and the level of maturity, but **not** specific features. ( e.g. a channel with Operator versions which has official support ought to be have the word `stable` in the channel name, whereas a channel with Operator versions with a non-supported feature should have the phrase `tech-preview`in it's name. ).
 
-> **Note:** If your new operator bundle release contains an API(CRD), which represents new experimental features and
+> **Note:** If your new operator version release contains an API(CRD), which represents new experimental features and
 > is not supported (like "tech-preview"), then the recommendation is to capture the maturity in the API version 
 > (that is group: my,example.com, kind: Backup, version: v1alpha1) and not in the channel name. 
 > This follows [Kubernetes API versioning](https://kubernetes.io/docs/reference/using-api/#api-versioning) recommendations.
@@ -162,11 +162,11 @@ channel will introduce breaking changes:
 
 #### Example 3 (Recommended Option is the most common scenarios)
 
-An operator wants to be supported at various operator major/minor versions.  
-For example, you might have an operator version at `1.3` and also at `2.4` that 
+An operator should be supported at various operator major/minor versions.  
+For example, you might have a `v1.3` and also a `v2.4` releases of your operator that 
 you need or want to offer support for at the same time.  However, you might 
-not want to have OLM upgrade users to the `2.4` Operator but instead keep them 
-upgrading within the `1.3` versions. In that case, you would end up with channels as 
+not want to have OLM upgrade users to the `v2.4` Operator but instead keep them 
+upgrading within the `v1.3` versions. In that case, you would end up with channels as 
 recommended above but with major/minor version information applied as follows:
 
 | Channels for v1.3 | Channels for v2.4 |
@@ -224,10 +224,10 @@ you can provide direct upgrade support to `3.6.z` latest)
 
 #### Example
 
-Let's imagine that you will publish the Operator bundle `3.6.30` (patch release under the channel `stable-v3.6`) and
+Let's imagine that you will be releasing the Operator bundle `v3.6.30` (patch release under the channel `stable-v3.6`) and
 that you have published so far:
 
-- Operator bundles versions from `3.5.0` to `3.5.25` under the `stable-v3.5` channel
+- Operator bundles versions from `v3.5.0` to `v3.5.25` under the `stable-v3.5` channel
 - Operator bundles versions from `3.6.0` to `3.6.29` under the `stable-v3.6` channel
 
 Then, in this case, your newer patch release `3.6.30` would be configured with `skipRange: >=3.5.25 < 3.6.30` in
@@ -244,11 +244,11 @@ to ensure the older Operator bundle does not get pruned from the index catalog v
 
 #### Attention (Be aware of the following scenario)
 
-If you have the channel `stable-v3.7` where the head of channel is `3.7.10` and then, you provide a new patch release
-with a bug fix using the Operator bundle version `3.7.11` then, imagine that you configure your new publication to skip all
-that was published under the channel `stable-v3.7` (e.g. skipRange: `">= 3.7.0 < 3.7.11"` replaces: `3.6.z <latest release on 3.6 channel>` ).
+If you have the channel `stable-v3.7` where the head of channel is `v3.7.10`, and you have a new patch release
+with a bug fix using the Operator bundle version `v3.7.11` , and you configure `v3.7.11` to skip all
+operator bundles published in the channel `stable-v3.7` (e.g.`v3.7.11` mentions  skipRange: `">= 3.7.0 < 3.7.11"` replaces: `3.6.z <latest release on 3.6 channel>` ).
 
-By doing so you could ensure that your users can more easily upgrade to the latest version since they will 
+, you could ensure that your users can more easily upgrade to the latest version since they will 
 be able to install the new `3.7.11` release directly from `3.6.z <latest release on 3.6 channel>` instead of 
 having to upgrade through Operator version `3.7.0` which may contain bugs that are already fixed in both the `3.6.z` 
 version they had installed, and the `3.7.11` version they are moving to.
