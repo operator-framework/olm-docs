@@ -28,7 +28,7 @@ image, and then populate our catalog with our operator.
 ### Initialize the Catalog
 ```sh
 $ mkdir cool-catalog
-$ opm alpha generate dockerfile cool-catalog
+$ opm generate dockerfile cool-catalog
 $ opm init example-operator \
     --default-channel=preview \
     --description=./README.md \

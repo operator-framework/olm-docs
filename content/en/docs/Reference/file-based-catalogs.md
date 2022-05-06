@@ -633,7 +633,7 @@ Examples:
   opm alpha diff registry.org/my-catalog:abc123 registry.org/my-catalog:def456 -o yaml > ./my-catalog-index/index.yaml
 
   # Build and push this index into an index image.
-  opm alpha generate dockerfile ./my-catalog-index
+  opm generate dockerfile ./my-catalog-index
   docker build -t registry.org/my-catalog:latest-abc123-def456 -f index.Dockerfile .
   docker push registry.org/my-catalog:latest-abc123-def456
 
@@ -652,7 +652,7 @@ Global Flags:
       --skip-tls   skip TLS certificate verification for container image registries while pulling bundles or index
 ```
 
-### `opm alpha generate dockerfile`
+### `opm generate dockerfile`
 
 ```
 Generate a Dockerfile for a declarative config index.
@@ -665,7 +665,7 @@ When specifying extra labels, note that if duplicate keys exist, only the last
 value of each duplicate key will be added to the generated Dockerfile.
 
 Usage:
-  opm alpha generate dockerfile <dcRootDir> [flags]
+  opm generate dockerfile <dcRootDir> [flags]
 
 Flags:
   -i, --binary-image string    Image in which to build catalog. (default "quay.io/operator-framework/upstream-opm-builder")
@@ -737,7 +737,7 @@ There are many possible ways to build a catalog, but an extremely simple approac
      file=$(echo $l | cut -d'|' -f2)
      opm render "$image" > "$file"
    done
-   opm alpha generate dockerfile "$name"
+   opm generate dockerfile "$name"
    indexImage=$(yq eval '.repo + ":" + .tag' catalog.yaml)
    docker build -t "$indexImage" -f "$name.Dockerfile" .
    docker push "$indexImage"
