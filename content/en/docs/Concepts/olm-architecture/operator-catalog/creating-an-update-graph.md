@@ -99,6 +99,13 @@ any version from that package within that range. The versions in this range do n
 the catalog in order for bundle addition to be successful. We recommend avoiding using unbound ranges
 such as `<1.0.3`.
 
+**WARNING:** As a consequence of using `skipRange` the skipped operator versions will be pruned from OLMs
+update graph and therefore will not be installable anymore by users with the `spec.startingCSV` property 
+of `Subscriptions.` Use with caution. If you want to have direct (one hop) updates to this version from 
+multiple previous versions but keep those previous versions available to users for install, always use 
+`skipRange` in conjunction with `replaces` pointing to the immediate previous version of the operator
+version in question.
+
 SkipRange by itself is useful for teams who are not interested in supporting directly installing
 versions within a given range or for whom consumers of the operator are always on the latest
 version.
