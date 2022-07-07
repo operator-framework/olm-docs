@@ -240,7 +240,7 @@ The absence of any required `nativeAPIs` from a cluster will pause the installat
 
 TODO: example status
 
-`nativeAPIs` is an optional field, but the more information you give OLM about the context in which your operator should be run, the more informed decisions OLM can make.
+`nativeAPIs` is an optional field, but the more information you give OLM about the context in which your operator should be running, the more informed decisions OLM can make.
 
 ## Packaging Additional Objects Alongside an Operator
 
@@ -257,7 +257,7 @@ Operators can include additional objects alongside their `CSV` in the `/manifest
 - PrometheusRule
 - ServiceMonitor
 - [PodDisruptionBudget](https://github.com/operator-framework/operator-lifecycle-manager/blob/master/doc/design/adding-pod-disruption-budgets.md)
-- [PriorityClasse](https://github.com/operator-framework/operator-lifecycle-manager/blob/master/doc/design/adding-priority-classes.md)
+- [PriorityClass](https://github.com/operator-framework/operator-lifecycle-manager/blob/master/doc/design/adding-priority-classes.md)
 - [VerticalPodAutoscaler](https://github.com/operator-framework/operator-lifecycle-manager/blob/master/doc/design/adding-vertical-pod-autoscaler.md)
 - ConsoleYAMLSample
 - ConsoleQuickStart

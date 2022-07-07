@@ -73,7 +73,7 @@ etcd
 The `annotations.yaml` contains the following information as labels that are used to annotate the operator bundle container image:
 
 * The label `operators.operatorframework.io.bundle.mediatype.v1` reflects the media type or format of the operator bundle. It could be helm charts, plain Kubernetes manifests etc.
-* The label `operators.operatorframework.io.bundle.manifests.v1 `reflects the path in the image to the directory that contains the operator manifests. This label is reserved for the future use and is set to `manifests/` for the time being.
+* The label `operators.operatorframework.io.bundle.manifests.v1` reflects the path in the image to the directory that contains the operator manifests. This label is reserved for the future use and is set to `manifests/` for the time being.
 * The label `operators.operatorframework.io.bundle.metadata.v1` reflects the path in the image to the directory that contains metadata files about the bundle. This label is reserved for the future use and is set to `metadata/` for the time being.
 * The `manifests.v1` and `metadata.v1` labels imply the bundle type:
     * The value `manifests.v1` implies that this bundle contains operator manifests.
