@@ -165,7 +165,7 @@ schema: olm.bundle
 
 Since a `veneer` is identified as an input schema which is processed to generate a valid FBC, we can define a `semver veneer` as a schema which uses channel conventions to facilitate the auto-generation of channels adhering to [Semantic Versioning](https://semver.org/) (semver) guidelines and consistent with best practices on [channel naming](/docs/best-practices/channel-naming/#naming). This approach may be attractive to operator authors who are defining a new upgrade graph, or are already close enough to the veneer conventions to be able to adopt it (i.e. already use semver, only promote a single channel, etc.).
 
->**DISCLAIMER:** since version build metadata [MUST be ignored when determining version precedence](https://semver.org/#spec-item-10) when using semver, it cannot be used in any bundle included in the `semver veneer` and will result in a fatal error.
+>**DISCLAIMER:** since version build metadata [MUST be ignored when determining version precedence](https://semver.org/#spec-item-10) when using semver, if any bundles differ only by build metadata the render attempt will generate a fatal error.
 
 This alpha version of the `semver veneer` has the following goals:
 - terse grammar to minimize creation/maintenance effort
