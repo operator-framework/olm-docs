@@ -16,7 +16,7 @@ In this context, there are two components to every `veneer`:
 1. An arbitrary API
 2. An executable which processes #1 and produces a valid FBC.
 
-The veneers supported by [`opm`](opm-tool) are:
+The veneers supported by [`opm`](https://github.com/operator-framework/operator-registry/blob/master/docs/design/opm-tooling.md) are:
 - the [`basic veneer`](#basic-veneer), which provides a simplified abstraction of an FBC; and
 - the [`semver veneer`](#semver-veneer), which provides the capability to generate an entire upgrade graph
 
@@ -182,7 +182,7 @@ Like best practices [recommended channel naming](/docs/best-practices/channel-na
 
 Under each channel are a list of bundle image references which contribute to that channel. At least one channel must have bundle images.
 
-The `olm.semver` [cue](cuelang-spec) schema is:
+The `olm.semver` [cue](https://cuelang.org/docs/references/spec/) schema is:
 
 ```cue
 #Package: {
@@ -443,5 +443,4 @@ schema: olm.channel
 ```
 
 Here, a channel is generated for each veneer channel which differs by minor version, and each channel has a `replaces` edge from the predecessor channel to the next-lesser minor bundle version. Please note that at no time do we transgress across major-version boundaries with the channels, to be consistent with [the semver convention](https://semver.org/) for major versions, where the purpose is to make incompatible API changes.
-
 
