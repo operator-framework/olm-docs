@@ -7,9 +7,13 @@ description: >
 
 ## Prerequisites
 
-- [opm](https://github.com/operator-framework/operator-registry/releases) `v1.19.0+`
+- [opm](https://github.com/operator-framework/operator-registry/releases) `v1.19.0+` (for file-based catalogs), **OR** 
+- [opm](https://github.com/operator-framework/operator-registry/releases) `v1.23.1+` (for catalog veneers)
 
->Note: This document discusses creating a catalog of operators using plaintext files to store catalog metadata, which is the [latest feature][file-based-catalog-spec] of OLM catalogs. If you are looking to build catalogs using the deprecated sqllite database format to store catalog metadata instead, please read the [v0.18.z version][v0.18.z-version] of this doc instead. 
+>Note: This document discusses creating a catalog of operators using plaintext files to store catalog metadata, which is the [latest feature][file-based-catalog-spec] of OLM catalogs. If you are looking to build catalogs using the deprecated sqlite database format to store catalog metadata instead, please read the [v0.18.z version][v0.18.z-version] of this doc instead. 
+
+>Note: `veneers` are **ALPHA** functionality and may adopt breaking changes
+
 ## Creating a Catalog
 
 `OLM`'s `CatalogSource` [CRD][catalogsource-crd] accepts a container image reference to a catalog of operators that can
@@ -17,15 +21,63 @@ be made available to install in a cluster. You can make your operator bundle ava
 it to a catalog, packaging the catalog in a container image, and then using that image reference in the `CatalogSource`.
 This image contains all of the metadata required for OLM to manage the lifecycle of all of the operators it contains.
 
-OLM uses a plaintext [file-based catalog][file-based-catalog-spec] format (JSON or YAML) to store these records in a Catalog, and `opm` has tooling
-that helps initialize a Catalog, add new operators into it, and then validate that the catalog is valid. Let's walk
-through a simple example.
+OLM uses a plaintext [file-based catalog][file-based-catalog-spec] format (JSON or YAML) to store these records in a Catalog, and there are two approaches we can take to creating a Catalog, adding operators to it, and validating it. 
+Let's walk through a simple example for both approaches.
 
+### Catalog Creation Using Veneers
+[Veneers][veneers-doc] are a purpose-built simplification of [File-Based Catalogs][file-based-catalog-spec] to ease common catalog operations.  For this example, we'll be using the [semver veneer][semver-veneer-doc].
+>Note: We strongly recommend that authors create and maintain their veneers in a version-controlled environment discrete from their generated catalogs.  Further, we recommend that authors focus on the veneer as the sole artifact connecting the operator to the catalog (even going so far as only generating the file-based catalog during CI/CD tooling so it is only provided for catalog contribution.)
+
+#### Catalog Creation
+First we need to create the Catalog hierarchy and Dockerfile for generating the image
+```sh
+$ mkdir -p cool-catalog/example-operator
+$ opm generate dockerfile cool-catalog
+```
+
+#### Organizing the Bundles into Channels
+
+Let's assume that this isn't the first time that we have released this operator into the catalog, but it's our first foray into veneers.  We need to ensure an upgrade graph edge between the older bundle version and the new one.  We also want to promote this latest version in a "stable" channel.  Lastly, we already use [Semantic Versioning](https://semver.org) for our release numbering, and we really only care about new major (e.g. X.\#.\#) releases. 
+
+>Note: we presume this step and veneer processing are performed in the source-controlled location related to operator bundle release, or at least separate from the catalog
+
+```sh
+$ cat << EOF >> example-operator-veneer.yaml
+Schema: olm.semver
+GenerateMajorChannels: true
+GenerateMinorChannels: false
+Stable:
+  Bundles:
+  - Image: repository-uri/example-operator:v0.8.9
+  - Image: repository-uri/example-operator:v0.9.0
+EOF
+```
+
+#### Generating the Catalog
+
+```sh
+$ opm alpha render-veneer semver -o yaml < example-operator-veneer.yaml > cool-catalog/catalog.yaml
+```
+
+Validate the catalog to ensure that the result is functional
+
+```sh
+$ opm validate cool-catalog
+$ echo $?
+0
+```
+
+
+### Catalog Creation with Raw File-Based Catalogs
+
+
+
+#### Catalog Creation
 First, we need to initialize our Catalog, so we'll make a directory for it, generate a Dockerfile that can build a Catalog
 image, and then populate our catalog with our operator.
 
 
-### Initialize the Catalog
+#### Initializing the Catalog
 ```sh
 $ mkdir cool-catalog
 $ opm generate dockerfile cool-catalog
@@ -48,7 +100,7 @@ FATA[0000] invalid index:
 Alright, so it's not valid. It looks like we need to add a bundle, so let's do
 that next...
 
-### Add a bundle to the Catalog
+#### Add a bundle to the Catalog
 
 ```sh
 $ opm render quay.io/example-inc/example-operator-bundle:v0.1.0 \
@@ -61,7 +113,7 @@ $ opm validate cool-catalog
 FATA[0000] package "example-operator", bundle "example-operator.v0.1.0" not found in any channel entries
 ```
 
-### Add a channel entry for the bundle
+#### Add a channel entry for the bundle
 
 We rendered the bundle, but we still haven't yet added it to any channels.
 Let's initialize a channel:
@@ -86,7 +138,7 @@ $ echo $?
 
 Success! There were no errors and we got a `0` error code.
 
-#### Summary
+#### Raw File-Based Catalogs Summary
 In the general case, adding a bundle involves three discrete steps:
 - Render the bundle into the catalog using `opm render <bundleImage>`.
 - Add the bundle into desired channels and update the channels' upgrade edges
@@ -115,7 +167,7 @@ There are some guidelines to keep in mind though:
 
 ### Build and push the catalog image
 
-Lastly, we can build and push our catalog image:
+The last step is building and pushing the catalog image.  For either approach, this is the same:
 
 ```sh
 $ docker build . \
@@ -128,5 +180,7 @@ Now the catalog image is available for clusters to use and reference with `Catal
 
 [catalogsource-crd]: /docs/concepts/crds/catalogsource
 [file-based-catalog-spec]: /docs/reference/file-based-catalogs
+[veneers-doc]: /docs/reference/veneers
+[semver-veneer-doc]: /docs/reference/veneers#semver-veneer
 [upgrade-graph-doc]: /docs/concepts/olm-architecture/operator-catalog/creating-an-update-graph
 [v0.18.z-version]:  https://v0-18-z.olm.operatorframework.io/docs/tasks/make-index-available-on-cluster/
