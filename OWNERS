@@ -1,6 +1,6 @@
 # approval == this is a good idea /approve
 approvers:
-  - njhale
+  - grokspawn
   - anik120
   - joelanford
   - kevinrizza
@@ -8,7 +8,6 @@ approvers:
 # review == this code is good /lgtm
 reviewers:
   - ecordell
-  - njhale
   - kevinrizza
   - benluddy
   - dinhxuanvu
@@ -21,3 +20,4 @@ reviewers:
   - hasbro17
   - timflannagan
   - perdasilva
+  - grokspawn
