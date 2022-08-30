@@ -66,4 +66,18 @@ kubectl delete csv $CSV -n <namespace>
 
 ## Step 4: Deciding whether or not to delete the CRDs and APIServices
 
-The final step consists of deciding whether or not to delete the CRDs and APIServices that were introduced to the cluster by the operator. Assuming you have already deleted all unwanted resources on cluster as enumerated in Step 1, if no resources remain it is safe to remove the CRD or APISerivces. Otherwise, you should not delete the type as the wanted resources will be deleted automatically when the CRD or APIService is deleted.
+The final step consists of deciding whether or not to delete the CRDs and APIServices that were introduced to the cluster by the operator. Assuming you have already deleted all unwanted resources on cluster as enumerated in Step 1, if no resources remain it is safe to remove the CRD or APISerivces. Otherwise, you should not delete the type as the wanted resources will be deleted automatically when the CRD or APISerivce is deleted.
+
+## Step 5: Deleting the Operator CR
+
+OLM recently introduced the view-only [operator CRD](https://github.com/operator-framework/api/blob/7339a22050af53df7b6f97a652b8e2d73698765a/crds/operators.coreos.com_operators.yaml) which communicates the list of resources associated with an [operator bundle](https://olm.operatorframework.io/docs/tasks/creating-operator-bundle/#operator-bundle) installed by OLM. When installing an `operator bundle`, OLM will create an `operator` CR named:
+- `<packageName>` if the operator is All Namespaced scoped.
+- `<packageName>.<Namespace>` if the operator is not All Namespaced scoped.
+
+OLM will then the update the [operator's status.Components.Refs](https://github.com/operator-framework/api/blob/7339a22050af53df7b6f97a652b8e2d73698765a/crds/operators.coreos.com_operators.yaml#L76-L77) array to include all resources associated with the `operator`. Let's consider OLM's behavior after creating the `operator` CR named `foo`:
+- All resources associated with the `foo operator` CR will have the `operators.coreos.com/foo` label applied to it.
+- OLM will create or recreate the `foo operator` CR if any resources exist with the `operators.coreos.com/foo` label.
+
+This ultimately means that in order to delete the `foo operator` CR, users will need to ensure that no resources are labeled with the `operators.coreos.com/foo` label. Typically, OLM should not attempt to recreate the `foo operator` after a user deletes it if they have completed steps 1 through 4 above. However, if OLM is still recreating the `foo operator`, a user should:
+- Delete each resource found in the `foo operator's status.Components.Refs` array. Alternatively, if you have deleted the `foo operator's CSV` and `Subscription` you may remove the `operators.coreos.com/foo` label from any resources you do not wish to delete.
+- Delete the `foo operator` CR.
