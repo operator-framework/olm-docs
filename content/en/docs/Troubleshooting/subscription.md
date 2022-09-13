@@ -29,6 +29,35 @@ If the `Status` block does not provide enough information, check the [Catalog op
 
 `Subscriptions` cannot install operators provided by `CatalogSources` that are not in the same namespace unless the `CatalogSource` is created in the `olm` namespace.
 
+### A subscription fails because I deleted a similar subscription and left the CSV it installed
+
+By creating a `Subscription`, the user is "subscribing" to updates from a particular package and channel within a `CatalogSource`. When a `ClusterServiceVersion (CSV)` is created to fulfill the `Subscription`, the `Subscription` is updated so it is "associated" with that `CSV`. "Associated" `CSVs` do not need to appear in the solution set allowing the `Subscription`'s' requirements to be met by `CSVs` in the channel that are valid upgrades from the existing `CSV`.
+
+When you delete a `Subscription`, the `CSV` is no longer "associated" with any `Subscriptions`. `CSVs` that are not "associated" with a `Subscription` must appear in the solution set returned by the resolver. Historically, this allowed users to "pin" a specific version of the operator and cancel any upgrades. 
+
+Once a `CSV` is no longer "associated" with a `Subscription`, creating a new `Subscription` that subscribes to the same package and channel within a `CatalogSource` will not "associate" the existing `CSV` with the `Subscription` because there is no guarantee that the package, channel, and `CatalogSource` defined in the `Subscription` are globally unique.
+
+Creating a new `Subscription` for the existing `CSV` causes the resolver to fail because of the following requirements:
+- The `Subscription` requires an `CSV` that fulfills it.
+- The existing `CSV` must appear in the solution set (remember, it cannot fulfill the requirements of `Subscriptions` it is not associated with).
+
+This ultimately surfaces a resolution failure in the `Subscription's status.Conditions` array:
+```bash
+message: 'constraints not satisfiable: @existing/namespace-foo/operator-foo.v1.0.0
+and catalogSource-foo/namespace-foo/4.Y/operator-foo.v1.1.0
+originate from package foo-operator, subscription subscription-foo
+requires catalogSource-foo/namespace-foo/4.Y/operator-foo.v1.1.0,
+subscription subscription-foo exists, clusterserviceversion
+operator-foo.v1.0.0 exists and is not referenced by a subscription'
+reason: ConstraintsNotSatisfiable
+status: "True"
+type: ResolutionFailed
+```
+
+There are two potential workarounds:
+- If you want to upgrade the operator, you will need to delete the existing `CSV`.
+- If you do not want to upgrade the operator, you will need to delete the `Subscription`.
+
 ### Why does a single failing subscription cause all subscriptions in a namespace to fail?
 
 Each Subscription in a namespace acts as a part of a set of operators for the namespace - think of a Subscription as an entry in a python `requirements.txt`. If OLM is unable to resolve part of the set, it knows that resolving the entire set will fail, so it will bail out of the installation of operators for that particular namespace. Subscriptions are separate objects but within a namespace they are all synced and resolved together.
