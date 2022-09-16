@@ -143,7 +143,7 @@ An `olm.constraint` property declares a dependency constraint of a particular ty
 - `gvk`: type whose `value` and interpretation is identical to `olm.gvk`.
 - `package`: type whose `value` and interpretation is identical to `olm.package`.
 - `cel`: a [Common Expression Language (CEL)](https://github.com/google/cel-go) expression evaluated at runtime by OLM's resolver over arbitrary bundle properties and cluster information ([enhancement][cel-ep]).
-- `all`, `any`, `none`: conjunction, disjunction, and negation constraints, respectively, containing one or more concrete constraints, ex. `gvk`, or a nested compound constraint ([enhancement][compound-ep]).
+- `all`, `any`, `not`: conjunction, disjunction, and negation constraints, respectively, containing one or more concrete constraints, ex. `gvk`, or a nested compound constraint ([enhancement][compound-ep]).
 
 #### Common Expression Language (CEL)
 
@@ -169,7 +169,7 @@ value:
     rule: 'properties.exists(p, p.type == "certified") && properties.exists(p, p.type == "stable")'
 ```
 
-#### Compound Constraint (`all`, `any`, `none`)
+#### Compound Constraint (`all`, `any`, `not`)
 
 These [compound constraint][compound-ep] types are evaluated following their logical definitions.
 
@@ -222,7 +222,7 @@ properties:
           kind: Foo
 ```
 
-This is an example of a negation constraint (`none`) of one version of a GVK,
+This is an example of a negation constraint (`not`) of one version of a GVK,
 i.e. this GVK cannot be provided by any bundle in the result set:
 
 ```yaml
@@ -238,7 +238,7 @@ properties:
         name: bar
         versionRange: '>=1.0.0'
     - failureMessage: Cannot be required for Baz because...
-      none:
+      not:
         constraints:
         - gvk:
             group: foos.example.com
@@ -250,7 +250,7 @@ Negation is worth further explanation, since at first glance its semantics
 are unclear in this context. The negation is really instructing the resolver
 to remove any possible solution that includes a particular GVK, package
 at a version, or satisfies some child compound constraint from the result set.
-As a corollary, the `none` compound constraint should only be used within `all` or `any`,
+As a corollary, the `not` compound constraint should only be used within `all` or `any`,
 since negating without first selecting a possible set of dependencies does not make sense.
 
 ##### Nested compound constraints
