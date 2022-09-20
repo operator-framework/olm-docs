@@ -12,7 +12,6 @@ Read more in the [introduction blog post](https://operatorhub.io/what-is-an-oper
 
 ## Features provided by OLM
 
-
 ### Over-the-Air Updates and Catalogs
 
 Kubernetes clusters are being kept up to date using elaborate update mechanisms today, more often automatically and in the background. Operators, being cluster extensions, should follow that. OLM has a concept of catalogs from which Operators are available to install and being kept up to date. In this model OLM allows maintainers granular authoring of the update path and gives commercial vendors a flexible publishing mechanism using channels.
@@ -31,6 +30,6 @@ Operators must claim ownership of their APIs. OLM will prevent conflicting Opera
 
 ### Declarative UI controls
 
-Operators can behave like managed service providers. Their user interface on the command line are APIs. For graphical consoles OLM annotates those APIs with descriptors that drive the creation of rich interfaces and forms for users to interact with the Operator in a natural, cloud-like way. 
+Operators can behave like managed service providers. Their user interface on the command line are APIs. For graphical consoles OLM annotates those APIs with descriptors that drive the creation of rich interfaces and forms for users to interact with the Operator in a natural, cloud-like way.
 
 ## Get started with OLM
