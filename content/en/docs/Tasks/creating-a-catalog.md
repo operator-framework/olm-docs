@@ -7,10 +7,10 @@ description: >
 
 ## Prerequisites
 
-- [opm](https://github.com/operator-framework/operator-registry/releases) `v1.19.0+` (for file-based catalogs), **OR** 
+- [opm](https://github.com/operator-framework/operator-registry/releases) `v1.19.0+` (for file-based catalogs), **OR**
 - [opm](https://github.com/operator-framework/operator-registry/releases) `v1.23.1+` (for catalog veneers)
 
->Note: This document discusses creating a catalog of operators using plaintext files to store catalog metadata, which is the [latest feature][file-based-catalog-spec] of OLM catalogs. If you are looking to build catalogs using the deprecated sqlite database format to store catalog metadata instead, please read the [v0.18.z version][v0.18.z-version] of this doc instead. 
+>Note: This document discusses creating a catalog of operators using plaintext files to store catalog metadata, which is the [latest feature][file-based-catalog-spec] of OLM catalogs. If you are looking to build catalogs using the deprecated sqlite database format to store catalog metadata instead, please read the [v0.18.z version][v0.18.z-version] of this doc instead.
 
 >Note: `veneers` are **ALPHA** functionality and may adopt breaking changes
 
@@ -21,15 +21,18 @@ be made available to install in a cluster. You can make your operator bundle ava
 it to a catalog, packaging the catalog in a container image, and then using that image reference in the `CatalogSource`.
 This image contains all of the metadata required for OLM to manage the lifecycle of all of the operators it contains.
 
-OLM uses a plaintext [file-based catalog][file-based-catalog-spec] format (JSON or YAML) to store these records in a Catalog, and there are two approaches we can take to creating a Catalog, adding operators to it, and validating it. 
+OLM uses a plaintext [file-based catalog][file-based-catalog-spec] format (JSON or YAML) to store these records in a Catalog, and there are two approaches we can take to creating a Catalog, adding operators to it, and validating it.
 Let's walk through a simple example for both approaches.
 
 ### Catalog Creation Using Veneers
+
 [Veneers][veneers-doc] are a purpose-built simplification of [File-Based Catalogs][file-based-catalog-spec] to ease common catalog operations.  For this example, we'll be using the [semver veneer][semver-veneer-doc].
 >Note: We strongly recommend that authors create and maintain their veneers in a version-controlled environment discrete from their generated catalogs.  Further, we recommend that authors focus on the veneer as the sole artifact connecting the operator to the catalog (even going so far as only generating the file-based catalog during CI/CD tooling so it is only provided for catalog contribution.)
 
 #### Catalog Creation
+
 First we need to create the Catalog hierarchy and Dockerfile for generating the image
+
 ```sh
 $ mkdir -p cool-catalog/example-operator
 $ opm generate dockerfile cool-catalog
@@ -37,7 +40,7 @@ $ opm generate dockerfile cool-catalog
 
 #### Organizing the Bundles into Channels
 
-Let's assume that this isn't the first time that we have released this operator into the catalog, but it's our first foray into veneers.  We need to ensure an upgrade graph edge between the older bundle version and the new one.  We also want to promote this latest version in a "stable" channel.  Lastly, we already use [Semantic Versioning](https://semver.org) for our release numbering, and we really only care about new major (e.g. X.\#.\#) releases. 
+Let's assume that this isn't the first time that we have released this operator into the catalog, but it's our first foray into veneers.  We need to ensure an upgrade graph edge between the older bundle version and the new one.  We also want to promote this latest version in a "stable" channel.  Lastly, we already use [Semantic Versioning](https://semver.org) for our release numbering, and we really only care about new major (e.g. X.\#.\#) releases.
 
 >Note: we presume this step and veneer processing are performed in the source-controlled location related to operator bundle release, or at least separate from the catalog
 
@@ -55,8 +58,8 @@ EOF
 
 #### Generating the Catalog
 
-```sh
-$ opm alpha render-veneer semver -o yaml < example-operator-veneer.yaml > cool-catalog/catalog.yaml
+```console
+opm alpha render-veneer semver -o yaml < example-operator-veneer.yaml > cool-catalog/catalog.yaml
 ```
 
 Validate the catalog to ensure that the result is functional
@@ -67,17 +70,15 @@ $ echo $?
 0
 ```
 
-
 ### Catalog Creation with Raw File-Based Catalogs
 
-
-
 #### Catalog Creation
+
 First, we need to initialize our Catalog, so we'll make a directory for it, generate a Dockerfile that can build a Catalog
 image, and then populate our catalog with our operator.
 
-
 #### Initializing the Catalog
+
 ```sh
 $ mkdir cool-catalog
 $ opm generate dockerfile cool-catalog
@@ -89,6 +90,7 @@ $ opm init example-operator \
 ```
 
 Let's validate our catalog to see if we're ready to ship!
+
 ```sh
 $ opm validate cool-catalog
 FATA[0000] invalid index:
@@ -108,6 +110,7 @@ $ opm render quay.io/example-inc/example-operator-bundle:v0.1.0 \
 ```
 
 Let's validate again:
+
 ```
 $ opm validate cool-catalog
 FATA[0000] package "example-operator", bundle "example-operator.v0.1.0" not found in any channel entries
@@ -117,6 +120,7 @@ FATA[0000] package "example-operator", bundle "example-operator.v0.1.0" not foun
 
 We rendered the bundle, but we still haven't yet added it to any channels.
 Let's initialize a channel:
+
 ```sh
 cat << EOF >> cool-catalog/operator.yaml
 ---
@@ -139,16 +143,18 @@ $ echo $?
 Success! There were no errors and we got a `0` error code.
 
 #### Raw File-Based Catalogs Summary
+
 In the general case, adding a bundle involves three discrete steps:
+
 - Render the bundle into the catalog using `opm render <bundleImage>`.
 - Add the bundle into desired channels and update the channels' upgrade edges
   to stitch the bundle into the correct place.
 - Validate the resulting catalog.
 
 > NOTE: catalog metadata should be stored in a version control system (e.g. `git`) and catalog images should be rebuilt from source
-whenever updates are made to ensure that all changes to the catalog are auditable. Here is an example of catalog metadata being stored 
-in github: https://github.com/operator-framework/cool-catalog , with the catalog image being rebuilt whenever there is a change: 
-https://github.com/operator-framework/cool-catalog/blob/main/.github/workflows/build-push.yml
+whenever updates are made to ensure that all changes to the catalog are auditable. Here is an example of catalog metadata being stored
+in github: <https://github.com/operator-framework/cool-catalog>, with the catalog image being rebuilt whenever there is a change:
+<https://github.com/operator-framework/cool-catalog/blob/main/.github/workflows/build-push.yml>.
 
 **Step 1** is just a simple `opm render` command.
 
@@ -158,6 +164,7 @@ build semver-based channels and upgrade graphs based solely on the versions of t
 no right or wrong answer for implementing this step as long as `opm validate` is successful.
 
 There are some guidelines to keep in mind though:
+
 - Once a bundle is present in a Catalog, you should assume that one of your users has installed it. With that in mind,
   you should take care to avoid stranding users that have that version installed. Put another way, make sure that
   all previously published bundles in a catalog have a path to the current/new channel head.

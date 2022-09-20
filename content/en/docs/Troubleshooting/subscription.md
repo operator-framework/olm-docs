@@ -8,10 +8,10 @@ description: >
 ---
 
 {{% pageinfo %}}
-This section assumes that you have a working `CatalogSource`. Please see how to [troubleshoot a CatalogSource](/docs/tasks/troubleshooting/catalogsource/) if you're having trouble configuring a CatalogSource.
+This section assumes that you have a working `CatalogSource`. Please see how to [troubleshoot a CatalogSource](/docs/troubleshooting/catalogsource/) if you're having trouble configuring a CatalogSource.
 {{% /pageinfo %}}
 
-## Prerequisites 
+## Prerequisites
 
 - [yq](https://github.com/mikefarah/yq)
 
@@ -23,7 +23,7 @@ The Catalog operator will constantly update the `Status` of `Subscription` to re
 
 >Note: It is possible that the `Status` is missing, which suggests that the Catalog operator is encountering an issue when processing the `Subscription` in a very early stage.
 
-If the `Status` block does not provide enough information, check the [Catalog operator's logs](/docs/tasks/troubleshooting/olm-and-catalog-operators/#how-to-view-the-catalog-operator-logs).
+If the `Status` block does not provide enough information, check the [Catalog operator's logs](/docs/troubleshooting/olm-and-catalog-operators/#how-to-view-the-catalog-operator-logs).
 
 ### A subscription in namespace X can't install operators from a CatalogSource in namespace Y
 

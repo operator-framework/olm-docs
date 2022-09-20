@@ -7,9 +7,10 @@ description: >
   Tips and tricks related to troubleshooting the configuration of a `CatalogSource`.
 ---
 
-## Prerequisites 
+## Prerequisites
 
 - [yq](https://github.com/mikefarah/yq)
+
 ## How to debug a failing CatalogSource
 
 The [Catalog operator][olm-arch-doc] will constantly update the `Status` of `CatalogSources` to reflect its current state. You can check the `Status` of your `CatalogSource` with the following command:
@@ -18,7 +19,7 @@ The [Catalog operator][olm-arch-doc] will constantly update the `Status` of `Cat
 
 >Note: It is possible that the `Status` is missing, which suggests that the Catalog operator is encountering an issue when processing the `CatalogSource` in a very early stage.
 
-If the `Status` block does not provide enough information, check the [Catalog operator's logs](/docs/tasks/troubleshooting/olm-and-catalog-operators/#how-to-view-the-catalog-operator-logs).
+If the `Status` block does not provide enough information, check the [Catalog operator's logs](/docs/troubleshooting/olm-and-catalog-operators/#how-to-view-the-catalog-operator-logs).
 
 If you are still unable to identify the cause of the failure, check if a pod was created for the `CatalogSource`. If a pod exists, review the pod's yaml and logs:
 

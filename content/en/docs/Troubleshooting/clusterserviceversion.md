@@ -7,8 +7,7 @@ description: >
   Tips and tricks related to troubleshooting a `ClusterServiceVersion`.
 ---
 
-
-## Prerequisites 
+## Prerequisites
 
 - [yq](https://github.com/mikefarah/yq)
 
@@ -22,7 +21,7 @@ If the OLM operator encounters an unrecoverable error when attempting to install
 
 You should typically pay special attention to the information within the `status.reason` and `status.message` fields. Please look in the [failed CSV reasons](#failed-csv-reasons)
 
-If the `Status` block does not provide enough information, check the [OLM operator's logs](/docs/tasks/troubleshooting/olm-and-catalog-operators/#how-to-view-the-olm-operator-logs).
+If the `Status` block does not provide enough information, check the [OLM operator's logs](/docs/troubleshooting/olm-and-catalog-operators/#how-to-view-the-olm-operator-logs).
 
 ### Failed CSV Reasons
 

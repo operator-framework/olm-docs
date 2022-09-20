@@ -111,7 +111,7 @@ NAME                         READY   UP-TO-DATE   AVAILABLE   AGE
 <name-of-your-operator>      1/1     1            1           9m48s
 ```
 
-If the ClusterServiceVersion fails to show up or does not reach the `Succeeded` phase, please check the [troubleshooting documentation](/docs/tasks/troubleshooting/clusterserviceversion/) to debug your installation.
+If the ClusterServiceVersion fails to show up or does not reach the `Succeeded` phase, please check the [troubleshooting documentation](/docs/troubleshooting/clusterserviceversion/) to debug your installation.
 
 ## Example: Install a specific version of an Operator
 

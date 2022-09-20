@@ -3,19 +3,18 @@ title: "Creating an Operator Bundle"
 date: 2021-01-11
 weight: 2
 description: >
-    Create an operator bundle using the operator manifests 
+    Create an operator bundle using the operator manifests
 ---
-## Prerequisites 
+## Prerequisites
 
 - [opm](https://github.com/operator-framework/operator-registry/releases)
 - [docker](https://docs.docker.com/install/) version `17.03`+ or [podman](https://github.com/containers/libpod/blob/master/install.md) `v1.2.0+` or [buildah](https://github.com/containers/buildah/blob/master/install.md) `v1.7+`.
 
-
 # Operator Bundle
 
-An Operator Bundle is a container image that stores Kubernetes manifests and metadata associated with an operator. A bundle is meant to represent a specific version of an operator on cluster. Once you have the [ClusterServiceVersion(CSV) for your operator](/docs/tasks/creating-operator-manifests), you can create an operator bundle using the CSV and the CRDs for your operator. 
+An Operator Bundle is a container image that stores Kubernetes manifests and metadata associated with an operator. A bundle is meant to represent a specific version of an operator on cluster. Once you have the [ClusterServiceVersion(CSV) for your operator](/docs/tasks/creating-operator-manifests), you can create an operator bundle using the CSV and the CRDs for your operator.
 
-We refer to a directory of files with one ClusterServiceVersion as a `bundle` that includes a CSV and the CRDs in its manifest directory, though additional kubernetes objects may be included. The directory also includes an annotations file in its metadata folder which defines some higher level aggregate data that helps to describe the format and package information about how the bundle should be added into a catalog of bundles. Finally, a Dockerfile can be built from the information in the directory to build the operator bundle image. 
+We refer to a directory of files with one ClusterServiceVersion as a `bundle` that includes a CSV and the CRDs in its manifest directory, though additional kubernetes objects may be included. The directory also includes an annotations file in its metadata folder which defines some higher level aggregate data that helps to describe the format and package information about how the bundle should be added into a catalog of bundles. Finally, a Dockerfile can be built from the information in the directory to build the operator bundle image.
 
 ```
  # example bundle
@@ -30,7 +29,7 @@ We refer to a directory of files with one ClusterServiceVersion as a `bundle` th
 
 ### Contents of annotations.yaml and the Dockerfile
 
-The `annotations.yaml` and the `Dockerfile` can be generated using the `opm` tool's `alpha bundle generate` command. 
+The `annotations.yaml` and the `Dockerfile` can be generated using the `opm` tool's `alpha bundle generate` command.
 
 ```sh
 Usage:
@@ -47,7 +46,7 @@ Flags:
   Note:
   * All manifests yaml must be in the same directory.
 ```
-For example, to generate the `annotations.yaml` and `Dockerfile` for the example bundle mentioned above, the command for the `generate` task is: 
+For example, to generate the `annotations.yaml` and `Dockerfile` for the example bundle mentioned above, the command for the `generate` task is:
 
 ```bash
 $ opm alpha bundle generate --directory /etcd --package etcd --channels stable --default stable
@@ -83,7 +82,7 @@ The `annotations.yaml` contains the following information as labels that are use
 * The label `operators.operatorframework.io.bundle.channels.v1` reflects the list of channels the bundle is subscribing to when added into an operator registry
 * The label `operators.operatorframework.io.bundle.channel.default.v1` reflects the default channel an operator should be subscribed to when installed from a registry. This label is optional if the default channel has been set by previous bundles and the default channel is unchanged for this bundle.
 
-The `annotations.yaml` file generated in the example above would look like: 
+The `annotations.yaml` file generated in the example above would look like:
 
 ```yaml
 annotations:
@@ -95,7 +94,7 @@ annotations:
   operators.operatorframework.io.bundle.channel.default.v1: "stable"
 ```
 
-The `Dockerfile` generated in the example above would look like: 
+The `Dockerfile` generated in the example above would look like:
 
 ```Dockerfile
 FROM scratch
@@ -151,10 +150,10 @@ For example:
 
 Some validators are disabled by default and can be optionally enabled via the `--optional-validators` or `-o` flag.
 
-- Operatorhub validator - performs operatorhub.io validation which will check your bundle against the common criteria to distributed with OLM. To validate a bundle using custom categories use the `OPERATOR_BUNDLE_CATEGORIES` environmental variable to point to a json-encoded categories file. Enable this option via `--optional-validators=operatorhub`. This validator allows you to validate that your manifests can work with a Kubernetes cluster of a particular version using the `k8s-version` optional key value. (e.g. `--optional-values=k8s-version=1.22`) 
+- Operatorhub validator - performs operatorhub.io validation which will check your bundle against the common criteria to distributed with OLM. To validate a bundle using custom categories use the `OPERATOR_BUNDLE_CATEGORIES` environmental variable to point to a json-encoded categories file. Enable this option via `--optional-validators=operatorhub`. This validator allows you to validate that your manifests can work with a Kubernetes cluster of a particular version using the `k8s-version` optional key value. (e.g. `--optional-values=k8s-version=1.22`)
 - Bundle objects validator - performs validation on resources like `PodDisruptionBudgets` and `PriorityClasses`. Enable this option via `--optional-validators=bundle-objects`.
 Multiple optional validators can be enabled at once, for example `--optional-validators=operatorhub,bundle-objects`.
-- Community validator - performs community operator bundle validation which will check your bundle against the criteria to distribute your project on the [Community Catalogs](https://github.com/operator-framework/community-operators). For further information see its [docs](https://operator-framework.github.io/community-operators/). This validator allows you to validate the required labels in the catalog image by using the `index-path` optional key value. (e.g. `--optional-values=index-path=bundle.Dockerfile`). 
+- Community validator - performs community operator bundle validation which will check your bundle against the criteria to distribute your project on the [Community Catalogs](https://github.com/operator-framework/community-operators). For further information see its [docs](https://operator-framework.github.io/community-operators/). This validator allows you to validate the required labels in the catalog image by using the `index-path` optional key value. (e.g. `--optional-values=index-path=bundle.Dockerfile`).
 
 #### Custom bundle categories
 
