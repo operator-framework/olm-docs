@@ -162,9 +162,9 @@ schema: olm.bundle
 </details>
 
 #### Converting from FBC to Basic Veneer
-Operator authors should be able to convert a File-Based Catalog (FBC) to a basic veneer using the below commands:
+Operator authors can convert a File-Based Catalog (FBC) to a basic veneer by processing the output of the `opm render` command through either `jq` or `yq`.
 
-Converting from File-Based Catalog to a Basic Veneer using `jq`:
+To convert a File-Based Catalog to a Basic Veneer using `jq`, run the following command:
 
 ```sh
 opm render <catalogRef> -o json | jq 'if (.schema == "olm.bundle") then {schema: .schema, image: .image} else . end'
@@ -195,14 +195,10 @@ Example veneer in JSON format after the conversion:
 }
 ```
 
-Converting from File-Based Catalog to a Basic Veneer using `yq`:
+To convert a File-Based Catalog to a Basic Veneer using `yq`, run the following command:
 
 ```sh
-opm render <catalogRef> -o yaml >> test.yaml
-```
-
-```sh
-yq eval -i 'select(.schema == "olm.bundle") = {"schema": .schema, "image": .image}' test.yaml
+opm render <catalogRef> -o yaml | yq eval -i 'select(.schema == "olm.bundle") = {"schema": .schema, "image": .image}' test.yaml - test.yaml
 ```
 
 Example basic veneer in YAML format after the conversion:
