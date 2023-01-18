@@ -161,6 +161,65 @@ schema: olm.bundle
 ```
 </details>
 
+#### Converting from FBC to Basic Veneer
+Operator authors can convert a File-Based Catalog (FBC) to a basic veneer by processing the output of the `opm render` command through either `jq` or `yq`.
+
+To convert a File-Based Catalog to a Basic Veneer using `jq`, run the following command:
+
+```sh
+opm render <catalogRef> -o json | jq 'if (.schema == "olm.bundle") then {schema: .schema, image: .image} else . end'
+```
+
+Example veneer in JSON format after the conversion:
+
+```json
+{
+  "schema": "olm.package",
+  "name": "hello-kubernetes",
+  "defaultChannel": "alpha",
+  "description": "hello-kubernetes"
+}
+{
+  "schema": "olm.channel",
+  "name": "alpha",
+  "package": "hello-kubernetes",
+  "entries": [
+    {
+      "name": "hello-kubernetes.v0.0.1"
+    }
+  ]
+}
+{
+  "schema": "olm.bundle",
+  "image": "docker.io/test/hello-kubernetes-operator-bundle:v0.0.1"
+}
+```
+
+To convert a File-Based Catalog to a Basic Veneer using `yq`, run the following command:
+
+```sh
+opm render <catalogRef> -o yaml | yq eval -i 'select(.schema == "olm.bundle") = {"schema": .schema, "image": .image}' test.yaml - test.yaml
+```
+
+Example basic veneer in YAML format after the conversion:
+
+```yaml
+  ---
+  schema: olm.package
+  defaultChannel: alpha
+  description: hello-kubernetes
+  name: hello-kubernetes
+  ---
+  schema: olm.channel
+  name: alpha
+  package: hello-kubernetes
+  entries:
+    - name: hello-kubernetes.v0.0.1
+  ---
+  schema: olm.bundle
+  image: docker.io/test/hello-kubernetes-operator-bundle:v0.0.1
+```
+
 ## Semver Veneer
 
 Since a `veneer` is identified as an input schema which is processed to generate a valid FBC, we can define a `semver veneer` as a schema which uses channel conventions to facilitate the auto-generation of channels adhering to [Semantic Versioning](https://semver.org/) (semver) guidelines and consistent with best practices on [channel naming](/docs/best-practices/channel-naming/#naming). This approach may be attractive to operator authors who are defining a new upgrade graph, or are already close enough to the veneer conventions to be able to adopt it (i.e. already use semver, only promote a single channel, etc.).
