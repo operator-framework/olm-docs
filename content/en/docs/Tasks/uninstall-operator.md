@@ -59,7 +59,7 @@ kubectl delete clusterserviceversion <csv-name> -n <namespace>
 Alternatively, you can delete both `Subscription` and its `CSV` using a sequence of commands:
 
 ```bash
-CSV=kubectl get subscription <subscription-name> -n <namespace> -o json | jq '.status.installedCSV'
+CSV=$(kubectl get subscription <subscription-name> -n <namespace> -o json | jq '.status.installedCSV')
 kubectl delete subscription <subscription-name> -n <namespace>
 kubectl delete csv $CSV -n <namespace>
 ```
