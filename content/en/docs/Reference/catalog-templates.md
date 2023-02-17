@@ -1,34 +1,34 @@
 ---
-title: "Veneers"
-linkTitle: "Veneers (alpha)"
+title: "Catalog Templates"
+linkTitle: "Catalog Templates (alpha)"
 weight: 5
 date: 2022-06-30
 ---
 
->Note: `veneers` are **ALPHA** functionality and may adopt breaking changes
+>Note: `catalog templates` are **ALPHA** functionality and may adopt breaking changes
 
 
 ## Concept and Design
 
-File-Based Catalogs (FBC) are a major improvement to the imperative update graph approaches of previous versions. FBCs give operator authors a [declarative and deterministic approach to defining their update graph](https://olm.operatorframework.io/docs/concepts/olm-architecture/operator-catalog/creating-an-update-graph/). However, FBCs can get complex, especially as the number of releases and dependencies scale. We introduce the concept of a `veneer` as an approach to simplifying interacting with FBCs.
+File-Based Catalogs (FBC) are a major improvement to the imperative update graph approaches of previous versions. FBCs give operator authors a [declarative and deterministic approach to defining their update graph](https://olm.operatorframework.io/docs/concepts/olm-architecture/operator-catalog/creating-an-update-graph/). However, FBCs can get complex, especially as the number of releases and dependencies scale. We introduce the concept of a `catalog template` (referred to as `template` going forward) as an approach to simplifying interacting with FBCs.
 
-In this context, there are two components to every `veneer`:
+In this context, there are two components to every `template`:
 1. An arbitrary API
 2. An executable which processes #1 and produces a valid FBC.
 
-The veneers supported by [`opm`](https://github.com/operator-framework/operator-registry/blob/master/docs/design/opm-tooling.md) are:
-- the [`basic veneer`](#basic-veneer), which provides a simplified abstraction of an FBC; and
-- the [`semver veneer`](#semver-veneer), which provides the capability to generate an entire upgrade graph
+The templates supported by [`opm`](https://github.com/operator-framework/operator-registry/blob/master/docs/design/opm-tooling.md) are:
+- the [`basic template`](#basic-template), which provides a simplified abstraction of an FBC; and
+- the [`semver template`](#semver-template), which provides the capability to generate an entire upgrade graph
 
-## Basic Veneer
-The `basic veneer` is an input schema which eliminates FBC information that can be retrieved from existing registries when we process it.
+## Basic Template
+The `basic template` is an input schema which eliminates FBC information that can be retrieved from existing registries when we process it.
 Users provide all components of an [FBC schema](https://olm.operatorframework.io/docs/reference/file-based-catalogs/#olm-defined-schemas), but supply only the bundle image reference for any `olm.bundle` objects. This results in a greatly simplified, smaller document.
 This approach may be attractive to operator authors who maintain existing catalogs and just want to make the job easier, or for operator authors who need to retain a channel graph which is not based on `semver`.
 
 ### Usage
 
 ```sh
-opm alpha render-veneer basic [flags] <filename>
+opm alpha render-template basic [flags] <filename>
 ```
 
 
@@ -66,7 +66,7 @@ image: docker.io/example-operator-bundle:0.2.0
 ```
 
 
-Using the `opm alpha render-veneer basic` command on this input generates the full FBC:<details><summary> (click here to display full output)</summary>
+Using the `opm alpha render-template basic` command on this input generates the full FBC:<details><summary> (click here to display full output)</summary>
 
 (data blobs truncated with '... [snip] ...' for brevity)
 
@@ -161,16 +161,16 @@ schema: olm.bundle
 ```
 </details>
 
-#### Converting from FBC to Basic Veneer
-Operator authors can convert a File-Based Catalog (FBC) to a basic veneer by processing the output of the `opm render` command through either `jq` or `yq`.
+#### Converting from FBC to Basic Template
+Operator authors can convert a File-Based Catalog (FBC) to a basic template by processing the output of the `opm render` command through either `jq` or `yq`.
 
-To convert a File-Based Catalog to a Basic Veneer using `jq`, run the following command:
+To convert a File-Based Catalog to a Basic Template using `jq`, run the following command:
 
 ```sh
 opm render <catalogRef> -o json | jq 'if (.schema == "olm.bundle") then {schema: .schema, image: .image} else . end'
 ```
 
-Example veneer in JSON format after the conversion:
+Example template in JSON format after the conversion:
 
 ```json
 {
@@ -195,13 +195,13 @@ Example veneer in JSON format after the conversion:
 }
 ```
 
-To convert a File-Based Catalog to a Basic Veneer using `yq`, run the following command:
+To convert a File-Based Catalog to a Basic Template using `yq`, run the following command:
 
 ```sh
 opm render <catalogRef> -o yaml | yq eval -i 'select(.schema == "olm.bundle") = {"schema": .schema, "image": .image}' test.yaml - test.yaml
 ```
 
-Example basic veneer in YAML format after the conversion:
+Example basic template in YAML format after the conversion:
 
 ```yaml
   ---
@@ -220,13 +220,13 @@ Example basic veneer in YAML format after the conversion:
   image: docker.io/test/hello-kubernetes-operator-bundle:v0.0.1
 ```
 
-## Semver Veneer
+## Semver Template
 
-Since a `veneer` is identified as an input schema which is processed to generate a valid FBC, we can define a `semver veneer` as a schema which uses channel conventions to facilitate the auto-generation of channels adhering to [Semantic Versioning](https://semver.org/) (semver) guidelines and consistent with best practices on [channel naming](/docs/best-practices/channel-naming/#naming). This approach may be attractive to operator authors who are defining a new upgrade graph, or are already close enough to the veneer conventions to be able to adopt it (i.e. already use semver, only promote a single channel, etc.).
+Since a `catalog template` is identified as an input schema which is processed to generate a valid FBC, we can define a `semver template` as a schema which uses channel conventions to facilitate the auto-generation of channels adhering to [Semantic Versioning](https://semver.org/) (semver) guidelines and consistent with best practices on [channel naming](/docs/best-practices/channel-naming/#naming). This approach may be attractive to operator authors who are defining a new upgrade graph, or are already close enough to this template's conventions to be able to adopt it.
 
 >**DISCLAIMER:** since version build metadata [MUST be ignored when determining version precedence](https://semver.org/#spec-item-10) when using semver, if any bundles differ only by build metadata the render attempt will generate a fatal error.
 
-This alpha version of the `semver veneer` has the following goals:
+This alpha version of the `semver template` has the following goals:
 - terse grammar to minimize creation/maintenance effort
 - idempotent output
 - simple channel promotion
@@ -235,9 +235,9 @@ This alpha version of the `semver veneer` has the following goals:
 - clear mapping between input schema and output FBC attributes
 
 ### Specification
-Like best practices [recommended channel naming](/docs/best-practices/channel-naming/#recommended-channel-naming), this veneer supports channel names `Candidate`, `Fast`, and `Stable`, in order of increasing channel stability. We leverage this relationship when calculating the default channel for the package. 
+Like best practices [recommended channel naming](/docs/best-practices/channel-naming/#recommended-channel-naming), this template supports channel names `Candidate`, `Fast`, and `Stable`, in order of increasing channel stability. We leverage this relationship when calculating the default channel for the package. 
 
-`GenerateMajorChannels` and `GenerateMinorChannels` dictate whether this veneer will generate X-stream or Y-stream channels (attributes can be set independently). If omitted, only minor (Y-stream) channels will be generated. 
+`GenerateMajorChannels` and `GenerateMinorChannels` dictate whether this template will generate X-stream or Y-stream channels (attributes can be set independently). If omitted, only minor (Y-stream) channels will be generated. 
 
 Under each channel are a list of bundle image references which contribute to that channel. At least one channel must have bundle images.
 
@@ -277,7 +277,7 @@ The `olm.semver` [cue](https://cuelang.org/docs/references/spec/) schema is:
 ### Usage
 
 ```sh
-opm alpha render-veneer semver [flags] <filename>
+opm alpha render-template semver [flags] <filename>
 ```
 
 
@@ -325,7 +325,7 @@ Stable:
 
 In this example, `Candidate` has the entire version range of bundles,  `Fast` has a mix of older and more-recent versions, and `Stable` channel only has a single published entry. 
 
-If we set the veneer attributes 
+If we set the template attributes 
 
 ```yaml 
 GenerateMajorChannels: true
@@ -398,10 +398,10 @@ package: testoperator
 schema: olm.channel
 ```
 
-We generated a channel for each veneer channel entity corresponding to each of the 0.\#.\#, 1.\#.\# major version ranges with skips to the head of the highest semver in a channel. We also generated a replaces edge to traverse across minor version transitions within each major channel. Finally, we generated an `olm.package` object, setting as default the most-stable channel head we created. This process will prefer `Stable` channel over `Fast`, over `Candidate` and then a higher bundle version over a lower version.  
+We generated a channel for each template channel entity corresponding to each of the 0.\#.\#, 1.\#.\# major version ranges with skips to the head of the highest semver in a channel. We also generated a replaces edge to traverse across minor version transitions within each major channel. Finally, we generated an `olm.package` object, setting as default the most-stable channel head we created. This process will prefer `Stable` channel over `Fast`, over `Candidate` and then a higher bundle version over a lower version.  
 (Please note that the naming of the generated channels indicates the digits of significance for that channel. For example, `fast-v1` is a decomposed channel of the `fast` type which contains only major versions of contributing bundles matching `v1`.)  
 
-For contrast, if we set the veneer attributes
+For contrast, if we set the template attributes
 
 ```yaml
 GenerateMinorChannels: true
@@ -501,5 +501,5 @@ schema: olm.channel
 
 ```
 
-Here, a channel is generated for each veneer channel which differs by minor version, and each channel has a `replaces` edge from the predecessor channel to the next-lesser minor bundle version. Please note that at no time do we transgress across major-version boundaries with the channels, to be consistent with [the semver convention](https://semver.org/) for major versions, where the purpose is to make incompatible API changes.
+Here, a channel is generated for each template channel which differs by minor version, and each channel has a `replaces` edge from the predecessor channel to the next-lesser minor bundle version. Please note that at no time do we transgress across major-version boundaries with the channels, to be consistent with [the semver convention](https://semver.org/) for major versions, where the purpose is to make incompatible API changes.
 
