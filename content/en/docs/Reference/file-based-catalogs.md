@@ -543,7 +543,7 @@ The `olm.bundle.object` property [cue][cuelang-spec] schema is:
 
 The `olm.deprecated` property is handled on the `olm.bundle` object such that if this property exists on the bundle object, the bundle is to be ignored and not installed. So, bundle deprecation was typically handled based on this property being present on the `olm.bundle` object. However, this was revelant for SQLite based catalogs which also required valid upgrade edges to be present to prevent foreign key violations.
 
-Similarly, the same goal is achieved for file-Based Catalogs simply by not including the bundle in the catalog; which effectively means that the `opm render` command will now exclude bundles that contain this property on the `olm.bundle` object. Although, there will be valid upgrades edges present even though the deprecated bundle and its metadata are excluded from the rendered file-Based Catalog.
+Similarly, the same goal is achieved for File-Based Catalogs simply by not including the bundle in the catalog; which effectively means that the `opm render` command will now exclude bundles that contain this property on the `olm.bundle` object. Although, there will be valid upgrade edges present even though the deprecated bundle and its metadata are excluded from the rendered File-Based Catalog.
 
 ## CLI
 
