@@ -501,6 +501,12 @@ Example:
 [generic-constraint-ep]: https://github.com/operator-framework/enhancements/blob/master/enhancements/generic-constraints.md
 [compound-constraint-ep]: https://github.com/operator-framework/enhancements/blob/master/enhancements/compound-bundle-constraints.md
 
+#### `olm.deprecated`
+
+An `olm.deprecated` property defines an `olm.bundle` object which is not installable. Historically, bundle deprecation mechanisms required this property on the `olm.bundle` object(s). This was necessary for SQLite-based catalogs that required all `olm.bundle` objects contributing to valid upgrade edges be present to avoid foreign key violations.
+
+For file-based catalogs, we can simply omit the `olm.bundle` and maintain a valid upgrade graph. Since this property no longer serves any function in file-based catalogs, `opm render` will exclude `olm.bundle`s that contain this property.
+
 #### `olm.bundle.object` (alpha)
 
 `olm.bundle.object` properties are used to inline (or reference) a bundle's manifests directly in the catalog.
@@ -538,12 +544,6 @@ The `olm.bundle.object` property [cue][cuelang-spec] schema is:
 [cuelang-spec]: https://cuelang.org/docs/references/spec/
 [semver]: https://semver.org/spec/v2.0.0.html
 [semver-range]: https://github.com/blang/semver/blob/master/README.md#ranges
-
-#### `olm.deprecated`
-
-The `olm.deprecated` property is handled on the `olm.bundle` object such that if this property exists on the bundle object, the bundle is to be ignored and not installed. So, bundle deprecation was typically handled based on this property being present on the `olm.bundle` object. However, this was revelant for SQLite based catalogs which also required valid upgrade edges to be present to prevent foreign key violations.
-
-Similarly, the same goal is achieved for File-Based Catalogs simply by not including the bundle in the catalog; which effectively means that the `opm render` command will now exclude bundles that contain this property on the `olm.bundle` object. Although, there will be valid upgrade edges present even though the deprecated bundle and its metadata are excluded from the rendered File-Based Catalog.
 
 ## CLI
 
