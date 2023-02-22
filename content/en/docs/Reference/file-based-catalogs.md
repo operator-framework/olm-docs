@@ -501,6 +501,12 @@ Example:
 [generic-constraint-ep]: https://github.com/operator-framework/enhancements/blob/master/enhancements/generic-constraints.md
 [compound-constraint-ep]: https://github.com/operator-framework/enhancements/blob/master/enhancements/compound-bundle-constraints.md
 
+#### `olm.deprecated`
+
+An `olm.deprecated` property defines an `olm.bundle` object which is not installable. Historically, bundle deprecation mechanisms required this property on the `olm.bundle` object(s). This was necessary for SQLite-based catalogs that required all `olm.bundle` objects contributing to valid upgrade edges be present to avoid foreign key violations.
+
+For file-based catalogs, we can simply omit the `olm.bundle` and maintain a valid upgrade graph. Since this property no longer serves any function in file-based catalogs, `opm render` will exclude `olm.bundle`s that contain this property.
+
 #### `olm.bundle.object` (alpha)
 
 `olm.bundle.object` properties are used to inline (or reference) a bundle's manifests directly in the catalog.
