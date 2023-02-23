@@ -8,11 +8,11 @@ description: >
 ## Prerequisites
 
 - [opm](https://github.com/operator-framework/operator-registry/releases) `v1.19.0+` (for file-based catalogs), **OR**
-- [opm](https://github.com/operator-framework/operator-registry/releases) `v1.23.1+` (for catalog veneers)
+- [opm](https://github.com/operator-framework/operator-registry/releases) `v1.23.1+` (for catalog templates)
 
 >Note: This document discusses creating a catalog of operators using plaintext files to store catalog metadata, which is the [latest feature][file-based-catalog-spec] of OLM catalogs. If you are looking to build catalogs using the deprecated sqlite database format to store catalog metadata instead, please read the [v0.18.z version][v0.18.z-version] of this doc instead.
 
->Note: `veneers` are **ALPHA** functionality and may adopt breaking changes
+>Note: `catalog templates` are **ALPHA** functionality and may adopt breaking changes
 
 ## Creating a Catalog
 
@@ -24,10 +24,10 @@ This image contains all of the metadata required for OLM to manage the lifecycle
 OLM uses a plaintext [file-based catalog][file-based-catalog-spec] format (JSON or YAML) to store these records in a Catalog, and there are two approaches we can take to creating a Catalog, adding operators to it, and validating it.
 Let's walk through a simple example for both approaches.
 
-### Catalog Creation Using Veneers
+### Catalog Creation Using Catalog Templates
 
-[Veneers][veneers-doc] are a purpose-built simplification of [File-Based Catalogs][file-based-catalog-spec] to ease common catalog operations.  For this example, we'll be using the [semver veneer][semver-veneer-doc].
->Note: We strongly recommend that authors create and maintain their veneers in a version-controlled environment discrete from their generated catalogs.  Further, we recommend that authors focus on the veneer as the sole artifact connecting the operator to the catalog (even going so far as only generating the file-based catalog during CI/CD tooling so it is only provided for catalog contribution.)
+[Catalog Templates][templates-doc] are a purpose-built simplification of [File-Based Catalogs][file-based-catalog-spec] to ease common catalog operations.  For this example, we'll be using the [semver template][semver-template-doc].
+>Note: We strongly recommend that authors create and maintain their templates in a version-controlled environment discrete from their generated catalogs.  Further, we recommend that authors focus on the template as the sole artifact connecting the operator to the catalog (even going so far as only generating the file-based catalog during CI/CD tooling so it is only provided for catalog contribution.)
 
 #### Catalog Creation
 
@@ -40,12 +40,12 @@ $ opm generate dockerfile cool-catalog
 
 #### Organizing the Bundles into Channels
 
-Let's assume that this isn't the first time that we have released this operator into the catalog, but it's our first foray into veneers.  We need to ensure an upgrade graph edge between the older bundle version and the new one.  We also want to promote this latest version in a "stable" channel.  Lastly, we already use [Semantic Versioning](https://semver.org) for our release numbering, and we really only care about new major (e.g. X.\#.\#) releases.
+Let's assume that this isn't the first time that we have released this operator into the catalog, but it's our first foray into templates.  We need to ensure an upgrade graph edge between the older bundle version and the new one.  We also want to promote this latest version in a "stable" channel.  Lastly, we already use [Semantic Versioning](https://semver.org) for our release numbering, and we really only care about new major (e.g. X.\#.\#) releases.
 
->Note: we presume this step and veneer processing are performed in the source-controlled location related to operator bundle release, or at least separate from the catalog
+>Note: we presume this step and template processing are performed in the source-controlled location related to operator bundle release, or at least separate from the catalog
 
 ```sh
-$ cat << EOF >> example-operator-veneer.yaml
+$ cat << EOF >> example-operator-template.yaml
 Schema: olm.semver
 GenerateMajorChannels: true
 GenerateMinorChannels: false
@@ -59,7 +59,7 @@ EOF
 #### Generating the Catalog
 
 ```console
-opm alpha render-veneer semver -o yaml < example-operator-veneer.yaml > cool-catalog/catalog.yaml
+opm alpha render-template semver -o yaml < example-operator-template.yaml > cool-catalog/catalog.yaml
 ```
 
 Validate the catalog to ensure that the result is functional
@@ -187,7 +187,7 @@ Now the catalog image is available for clusters to use and reference with `Catal
 
 [catalogsource-crd]: /docs/concepts/crds/catalogsource
 [file-based-catalog-spec]: /docs/reference/file-based-catalogs
-[veneers-doc]: /docs/reference/veneers
-[semver-veneer-doc]: /docs/reference/veneers#semver-veneer
+[templates-doc]: /docs/reference/catalog-templates
+[semver-template-doc]: /docs/reference/catalog-templates#semver-template
 [upgrade-graph-doc]: /docs/concepts/olm-architecture/operator-catalog/creating-an-update-graph
 [v0.18.z-version]:  https://v0-18-z.olm.operatorframework.io/docs/tasks/make-index-available-on-cluster/
