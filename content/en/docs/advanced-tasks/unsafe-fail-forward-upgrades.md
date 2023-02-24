@@ -40,9 +40,8 @@ metadata:
   name: foo
   namespace: bar
 spec:
-  upgradeStrategy:
+  upgradeStrategy: TechPreviewUnsafeFailForward
      # Possible values include "Default" or "TechPreviewUnsafeFailForward".
-    name: TechPreviewUnsafeFailForward
 ```
 
 With the upgradeStrategy type set to `TechPreviewUnsafeFailForward`, OLM will allow operators to "UnsafeFailForward" in adherence with the principles discussed below. If the upgradeStrategy is unset or set to `Default` OLM will exhibit existing behavior.
