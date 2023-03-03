@@ -35,7 +35,7 @@
             text-decoration: none;
         }
     }
-    
+
     h5, h6 {
         font-size: var(--of--FontSize--xs);
     }
@@ -51,7 +51,7 @@
     h1 {
         font-size: var(--of--FontSize--lg);
     }
-    
+
     @media (min-width: $ov--breakpoint--lg) {
         h6 {
             font-size: var(--of--FontSize--xs);
@@ -70,6 +70,14 @@
         }
         h1 {
             font-size: var(--of--FontSize--xl);
+        }
+    }
+}
+
+.td-main {
+    main {
+        @include media-breakpoint-up(md) {
+            padding-top: var(--of--spacer--lg);
         }
     }
 }
