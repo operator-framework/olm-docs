@@ -123,6 +123,9 @@ no = 'Sorry to hear that. Please <a href="https://github.com/operator-framework/
 	url = "https://github.com/operator-framework/operator-lifecycle-manager"
 	icon = "fab fa-github"
 
+[params.mermaid]
+enable = true
+
 [module]
   [module.hugoVersion]
     extended = true
