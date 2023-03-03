@@ -63,6 +63,7 @@ version_menu = "Releases"
 github_repo = "https://github.com/operator-framework/olm-docs"
 # An optional link to a related project repo. For example, the sibling repository where your product code lives.
 github_project_repo = "https://github.com/operator-framework/operator-lifecycle-manager"
+github_branch = "master"
 
 # Enable Algolia DocSearch
 algolia_docsearch = true

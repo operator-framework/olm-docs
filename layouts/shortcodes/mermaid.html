@@ -1,4 +1,5 @@
+{{ .Page.Store.Set "hasmermaid" true -}}
+
 <div class="mermaid">
-    {{.Inner}}
+    {{- .Inner | safeHTML }}
 </div>
-  
