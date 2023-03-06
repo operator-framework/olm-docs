@@ -27,8 +27,8 @@ Each of these Operators are also responsible for creating resources:
 
 **_Table 2. Resources created by OLM and Catalog Operator_**
 
-| Resource                           | Short Name  |
-|------------------------------------|-------------|
+| Resource                           | Owner   |
+|------------------------------------|---------|
 | Deployments                        | OLM     |
 | ServiceAccounts                    | OLM     |
 | (Cluster)Roles                     | OLM     |
