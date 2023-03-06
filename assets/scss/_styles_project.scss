@@ -1,31 +1,3 @@
-@import "../../themes/docsy/assets/scss/support/functions";
-@import "../../themes/docsy/assets/scss/bs-variables";
-@import "../../themes/docsy/assets/scss/support/mixins";
-
-@import "../../themes/docsy/assets/vendor/bootstrap/scss/bootstrap";
-
-@import "../../themes/docsy/assets/vendor/Font-Awesome/scss/fontawesome.scss";
-@import "../../themes/docsy/assets/vendor/Font-Awesome/scss/solid.scss";
-@import "../../themes/docsy/assets/vendor/Font-Awesome/scss/brands.scss";
-
-@import "../../themes/docsy/assets/scss/support/utilities";
-@import "../../themes/docsy/assets/scss/colors";
-@import "../../themes/docsy/assets/scss/boxes";
-@import "../../themes/docsy/assets/scss/blog";
-@import "../../themes/docsy/assets/scss/code";
-@import "../../themes/docsy/assets/scss/nav";
-//@import "../../themes/docsy/assets/scss/sidebar-tree";
-@import "../../themes/docsy/assets/scss/sidebar-toc";
-@import "../../themes/docsy/assets/scss/buttons";
-//@import "../../themes/docsy/assets/scss/breadcrumb";
-@import "../../themes/docsy/assets/scss/alerts";
-@import "../../themes/docsy/assets/scss/content";
-@import "../../themes/docsy/assets/scss/search";
-@import "../../themes/docsy/assets/scss/main-container";
-@import "../../themes/docsy/assets/scss/blocks/blocks";
-@import "../../themes/docsy/assets/scss/section-index";
-@import "../../themes/docsy/assets/scss/pageinfo";
-
 @if $td-enable-google-fonts {
     @import url($web-font-path);
 }
@@ -59,7 +31,7 @@ footer {
 
 
 @import "functions";
-@import "variables";
+@import "of-variables";
 @import "reset";
 @import "type";
 @import "sidebar-tree";
@@ -75,7 +47,3 @@ footer {
 
 //global
 @import "global";
-
-
-
-
