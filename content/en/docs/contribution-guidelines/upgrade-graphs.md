@@ -192,14 +192,14 @@ flowchart TB
    
    A(v0.0.1) --> B(v0.0.4)
 {{</mermaid>}} |
-| skips | `ID(<bundle tag>) x--x | <versions that should be skipped> | ID(<bundle tag>)` | {{<mermaid>}}
+| skips | `ID(<bundle tag>) x--x \| <versions that should be skipped> \| ID(<bundle tag>)` | {{<mermaid>}}
 flowchart TB
    classDef head fill:#ffbfcf;
    classDef installed fill:#34ebba;
    
    A(v0.0.1) x--x |v0.0.2,v0.0.3| B(v0.0.4)
 {{</mermaid>}} |
-| skipRange | `ID<bundle tag>) o--o | <range> | ID(<bundle tag>)` | {{<mermaid>}}
+| skipRange | `ID<bundle tag>) o--o \| <range> \| ID(<bundle tag>)` | {{<mermaid>}}
 flowchart TB
    classDef head fill:#ffbfcf;
    classDef installed fill:#34ebba;
@@ -213,14 +213,14 @@ flowchart TB
    
    A(v0.0.1) -.-> B(v0.0.4)
 {{</mermaid>}} |
-| future skips | `ID(<bundle tag>) x-.-x | <versions that should be skipped> | ID(<bundle tag>)` | {{<mermaid>}}
+| future skips | `ID(<bundle tag>) x-.-x \| <versions that should be skipped> \| ID(<bundle tag>)` | {{<mermaid>}}
 flowchart TB
    classDef head fill:#ffbfcf;
    classDef installed fill:#34ebba;
    
    A(v0.0.1) x-.-x |v0.0.2,v0.0.3| B(v0.0.4)
 {{</mermaid>}} |
-| future skipRange | `ID<bundle tag>) o-.-o | <range> | ID(<bundle tag>)` | {{<mermaid>}}
+| future skipRange | `ID<bundle tag>) o-.-o \| <range> \| ID(<bundle tag>)` | {{<mermaid>}}
 flowchart TB
    classDef head fill:#ffbfcf;
    classDef installed fill:#34ebba;
