@@ -102,7 +102,7 @@ flowchart TB
 
 ## Creating graphs 
 
-The graphs are done programmatically via [mermaid](https://mermaid-js.github.io/mermaid/#/.). You can use its [online editor](https://mermaid-js.github.io/mermaid-live-editor/) to work with them and check the following examples. 
+The graphs are done programmatically via [mermaid](https://mermaid.js.org/). You can use its [online editor](https://mermaid.live) to work with them and check the following examples.
 
 Check the following example: 
 
