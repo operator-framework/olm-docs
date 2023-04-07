@@ -118,7 +118,7 @@ no = 'Sorry to hear that. Please <a href="https://github.com/operator-framework/
 
 [[params.links.social]]
 	name = "Forum"
-	url = "https://groups.google.com/forum/#!forum/operator-framework"
+	url = "https://groups.google.com/g/operator-framework"
 	icon = "fas fa-comment"
 
 [[params.links.social]]

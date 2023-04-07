@@ -8,7 +8,7 @@ An OperatorGroup is an OLM resource that provides rudimentary multitenant config
 ## Overview
 
 * An `OperatorGroup` selects a set of target namespaces in which to generate required RBAC access for its member operators.
-* The set of target namespaces is provided via a comma-delimited string stored in the `olm.targetNamespaces` annotation. This annotation is applied to member operator's `ClusterServiceVersion` (CSV) instances and is projected into their deployments. It is accessible to operator containers using [The Downward API](https://kubernetes.io/docs/tasks/inject-data-application/downward-api-volume-expose-pod-information/#the-downward-api)
+* The set of target namespaces is provided via a comma-delimited string stored in the `olm.targetNamespaces` annotation. This annotation is applied to member operator's `ClusterServiceVersion` (CSV) instances and is projected into their deployments. It is accessible to operator containers using [The Downward API](https://kubernetes.io/docs/tasks/inject-data-application/downward-api-volume-expose-pod-information/)
 * An operator is said to be a [member of an `OperatorGroup`](#membership) if its CSV exists in the same namespace as the `OperatorGroup` and its CSV's [`InstallModes` support the set of namespaces targeted by the `OperatorGroup`](#installmodes-and-supported-operatorgroups)
 * In order to transition, a CSV must be an active member of an `OperatorGroup` that has no [provided API conflicts with intersecting `OperatorGroups`](#operatorgroup-intersection)
 
@@ -93,7 +93,7 @@ Member CSVs of an `OperatorGroup` get the following annotations:
 * `olm.operatorGroupNamespace=<group-namespace>`
   * Contains the namespace of the `OperatorGroup`
 * `olm.targetNamespaces=<target-namespaces>`
-  * Contains a comma-delimited string listing the `OperatorGroup`'s target namespace selection. This annotation is projected onto the pod template of a CSV's deployments and can be consumed by a pod instance via [The Downward API](https://kubernetes.io/docs/tasks/inject-data-application/downward-api-volume-expose-pod-information/#the-downward-api)
+  * Contains a comma-delimited string listing the `OperatorGroup`'s target namespace selection. This annotation is projected onto the pod template of a CSV's deployments and can be consumed by a pod instance via [The Downward API](https://kubernetes.io/docs/tasks/inject-data-application/downward-api-volume-expose-pod-information/)
 
 > Note: All annotations except `olm.targetNamespaces` are included with [copied CSVs](#copied-csvs). Omitting the `olm.targetNamespaces` annotation on copied CSVs prevents the names of target namespaces from being leaked between tenants.
 
