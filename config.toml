@@ -34,6 +34,8 @@ pygmentsStyle = "tango"
   [markup.goldmark]
     [markup.goldmark.renderer]
       unsafe = true
+  [markup.tableOfContents]
+    endLevel = 4
 
 # Image processing configuration.
 [imaging]
