@@ -4,7 +4,6 @@
 
 [build.environment]
   HUGO_VERSION = "0.66.0"
-  HUGO_ENABLEGITINFO = "true"
 
 [context.production.environment]
   HUGO_ENV = "production"
@@ -31,4 +30,4 @@
 
 [[redirects]]
   from = "/docs/tasks/make-index-available-on-cluster"
-  to = "/docs/tasks/make-catalog-available-on-cluster" 
+  to = "/docs/tasks/make-catalog-available-on-cluster"

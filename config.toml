@@ -7,9 +7,6 @@ enableRobotsTXT = true
 # Hugo allows theme composition (and inheritance). The precedence is from left to right.
 theme = "docsy"
 
-# Will give values to .Lastmod etc.
-enableGitInfo = true
-
 # Language settings
 contentDir = "content/en"
 defaultContentLanguage = "en"
@@ -125,5 +122,3 @@ no = 'Sorry to hear that. Please <a href="https://github.com/operator-framework/
 	name = "github"
 	url = "https://github.com/operator-framework/operator-lifecycle-manager"
 	icon = "fab fa-github"
-
-
