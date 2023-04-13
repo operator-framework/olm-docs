@@ -17,8 +17,9 @@ In this context, there are two components to every `template`:
 2. An executable which processes #1 and produces a valid FBC.
 
 The templates supported by [`opm`](https://github.com/operator-framework/operator-registry/blob/master/docs/design/opm-tooling.md) are:
-- the [`basic template`](#basic-template), which provides a simplified abstraction of an FBC; and
+- the [`basic template`](#basic-template), which provides a simplified abstraction of an FBC
 - the [`semver template`](#semver-template), which provides the capability to generate an entire upgrade graph
+- the [`composite template`](#composite-template), which provides the capability to generate an FBC contribution for multiple catalogs
 
 ## Basic Template
 The `basic template` is an input schema which eliminates FBC information that can be retrieved from existing registries when we process it.
@@ -503,3 +504,144 @@ schema: olm.channel
 
 Here, a channel is generated for each template channel which differs by minor version, and each channel has a `replaces` edge from the predecessor channel to the next-lesser minor bundle version. Please note that at no time do we transgress across major-version boundaries with the channels, to be consistent with [the semver convention](https://semver.org/) for major versions, where the purpose is to make incompatible API changes.
 
+## Composite Template
+A `composite template` can help an operator author manage FBC contributions to multiple catalogs. The template functionality is composed of schemas which represent the author's role and the catalog maintainer's role, and rendering the template performs an explicit negotiation between them.
+
+### Usage
+```sh
+opm alpha render-template composite [flags]
+```
+
+| Flag                | Description                                                                            |
+| ------------------- | -------------------------------------------------------------------------------------- |
+| -f, --catalog-config string | File to use as the catalog configuration file (default "catalogs.yaml")        |
+| -c, --composite-config string | File to use as the composite configuration file (default "catalog/config.yaml") |
+| -h, --help          | help for composite                                                                     |
+| -o, --output string | Output format (json|yaml) (default "json")                                             |
+| --validate          | whether or not the created FBC should be validated (i.e 'opm validate') (default true) |
+| --skip-tls-verify   | skip TLS certificate verification for container image registries while pulling bundles |
+| --use-http          | use plain HTTP for container image registries while pulling bundles                    |
+
+
+
+
+### Specifications
+The `composite template` is composed of two schemas that represent the operator author's role and the catalog maintainer's role, fulfilled by `olm.composite` and `olm.composite.catalogs`, respectively.
+
+#### olm.composite
+The `olm.composite` schema represents the operator author role and defines the following:
+- Where each input (`Component`) exists
+- How each `Component` is mapped to a destination catalog (`Component.Name`). All destination catalogs defined in this file **must** also exist in the catalog configuration file created by the catalog maintainers
+- How each `Component` is processed to generate a catalog contribution (`Component.Strategy`)
+- The directory structure the catalog contribution generation should follow (`Component.Destination`)
+
+The cue schema for the `olm.composite` schema is:
+```cue
+#CompositeConfig: {
+	Schema: "olm.composite"
+	Components: [...#Component]
+}
+
+#Component: {
+	Name:        string
+	Destination: #ComponentDestination
+	Strategy:  #BuildStrategy
+}
+
+#ComponentDestination {
+	Path: string
+}
+
+#BuildStrategy: {
+	Name:   string
+	Template: #TemplateDefinition
+}
+
+#TemplateDefinition: {
+	Schema: string
+}
+```
+
+#### olm.composite.catalogs
+The `olm.composite.catalogs` schema represents the catalog maintainer role and defines the following:
+- One or more catalogs (`Catalog`) identified by a string (`Catalog.Name`)
+- Supported input formats (`Builder`) for each `Catalog` (`Catalog.Builders`) which is a list of strings where each item is a `Builder` schema. The currently supported `Builder` schemas are:
+    - `olm.builder.basic` which represents that the use of [basic templates](#basic-template) for catalog contribution generation is allowed
+    - `olm.builder.semver` which represents that the use of [semver templates](#semver-template) for catalog contribution generation is allowed
+- The expected directory structure of any generated contribution (`Catalog.Destination.WorkingDir`)
+
+The cue schema for the `olm.composite.catalogs` schema is:
+```cue
+#CatalogConfig: {
+	Schema: "olm.composite.catalogs"
+	Catalogs: [... #Catalog]
+}
+
+#Catalog: {
+	Name:        string
+	Destination: #CatalogDestination
+	Builders: [...string]
+}
+
+#CatalogDestination: {
+	BaseImage:  string
+	WorkingDir: string
+}
+```
+
+### Example
+**catalogs.yaml**
+
+The following example specifies a catalog configuration that defines a catalog named `v1`. This example limits the input to the [semver template](#semver-template) for contribution generation logic. If you use the `opm alpha render-template composite` subcommand the path to this file can be specified with the `-f` option. This option can be a file path or a URL. If you use a URL, the URL must return the raw file contents.
+
+```yaml
+schema: olm.composite.catalogs
+catalogs:
+- name: v1 {{< code_callout 1 >}}
+  destination:
+    baseImage: quay.io/operator-framework/opm:v1.24
+    workingDir: catalogs/v1 {{< code_callout 2 >}}
+  builders:
+    - olm.builder.semver {{< code_callout 3 >}}
+```
+
+- {{< code_callout 1 >}} Defines the `v1` catalog configuration
+- {{< code_callout 2 >}} Defines the directory path that all output should be placed for this catalog. In this example, when rendering using the composite catalog all output for the `v1` catalog will be put under the `catalogs/v1/` directory
+- {{< code_callout 3 >}} Defines the allowed builders for the `v1` catalog. In this example the semver builder is the only builder allowed. As a result, this catalog renders only [semver templates](#semver-template) as contributions
+
+**contributions.yaml**
+
+The following example specifies a composite template configuration that defines the input, build process, and output of a catalog contribution for the `v1` catalog.
+
+```yaml
+schema: olm.composite
+components:
+- name: v1 {{< code_callout 1 >}}
+  destination:
+    path: my-package {{< code_callout 2 >}}
+  strategy:
+    name: basic
+    template:
+      schema: olm.builder.semver {{< code_callout 3 >}}
+      config:
+        input: components/v1.yaml {{< code_callout 4 >}}
+        output: catalog.yaml {{< code_callout 5 >}}
+```
+
+- {{< code_callout 1 >}} Defines the build process for the `v1` catalog contribution.
+- {{< code_callout 2 >}} Defines the name of the package being contributed and is used to create the package directory
+- {{< code_callout 3 >}} Specifies that the input for the `v1` catalog contribution is a [semver template](#semver-template) so that the contribution can be rendered appropriately
+- {{< code_callout 4 >}} Specifies the input file that is used to generate the catalog contribution
+- {{< code_callout 5 >}} Defines the name of the output file. This is joined as a path with the  `destination.path` value defined in {{< code_callout 2 >}}. In this example the full output path after rendering the template is `my-package/catalog.yaml`
+
+When using the `opm alpha render-template composite -f catalogs.yaml -c contributions.yaml` command, the resulting output should look similar to:
+```tree
+catalogs
+├── v1 {{< code_callout 1 >}}
+│   └── my-package {{< code_callout 2 >}}
+│       └── catalog.yaml {{< code_callout 3 >}}
+```
+
+- {{< code_callout 1 >}} Output directory for the `v1` catalog as specified by the example catalog configuration file
+- {{< code_callout 2 >}} Output directory for our `v1` catalog contribution as specified by the example composite configuration file
+- {{< code_callout 3 >}} Output file containing the rendered FBC for our contribution to the `v1` catalog 
