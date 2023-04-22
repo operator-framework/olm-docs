@@ -109,32 +109,56 @@ directory.
 ### Schema
 
 At its core, file-based catalogs use a simple format that can be extended with arbitrary schemas. The format that all
-file-based catalog blobs must adhere to is the `Meta` schema. The below [cue][cuelang-spec] `_Meta` schema defines all
-file-based catalog blobs.
+file-based catalog blobs must adhere to is the `Meta` schema, which consists of `schema`, `package`, `name`, and
+`properties` fields. The `schema` field is required. The `package`, `name`, and `properties` fields are optional, but if
+they are present, they must adhere to their respective field schemas. Any other field is allowed and is specified by the schema.
 
-> **NOTE**: No cue schemas listed in this specification should be considered exhaustive. The `opm validate` command has
-> additional validations that are difficult/impossible to express concisely in cue.
+The combination of the `schema`, `package`, and `name` fields must be unique within a catalog.
 
-```cue
-_Meta: {
-  // schema is required and must be a non-empty string
-  schema: string & !=""
+See the [Properties](#properties) section for information about the property type.
 
-  // package is optional, but if it's defined, it must be a non-empty string
-  package?: string & !=""
+Here is an example of an object which adheres to the `Meta` schema:
 
-  // properties is optional, but if it's defined, it must be a list of 0 or more properties
-  properties?: [... #Property]
-}
+```yaml
+### Core Meta fields
+# The schema for this object (required)
+schema: "example.com.my.object"
 
-#Property: {
-  // type is required
-  type: string & !=""
+# The package this object belongs to, if applicable (optional)
+package: foo
 
-  // value is required, and it must not be null
-  value: !=null
-}
+# The name of this object, if applicable (optional)
+name: bar
+
+# The properties associated with this object, if applicable (optional)
+properties:
+- type: my.string
+  value: "my value"
+- type: my.map
+  value:
+    key1: value1
+    key2:
+    - hello
+    - world
+    key3:
+      harry: sally
+- type: my.list
+  value:
+    - item1
+    - item2
+
+# (schema: "my.other.object")-defined, non-meta fields
+myCustomMap:
+  whiz: bang
+myCustomList:
+  - alice
+  - bob
 ```
+
+When this blob is parsed as a `Meta` object, the core fields are parsed to their respective types. Non-meta fields
+are not parsed. However, the parsed `Meta` object contains the full JSON representation of the blob, which enables
+callers to parse the object using a more specific type that maps to the "my.other.object" schema.
+
 
 ### OLM-defined schemas
 
@@ -152,26 +176,32 @@ more `olm.bundle` blobs.
 An `olm.package` defines package-level metadata for an operator. This includes its name, description, default channel
 and icon.
 
-The `olm.package` [cue][cuelang-spec] schema is:
-```cue
-#Package: {
-  schema: "olm.package"
+Here is an example of an `olm.package` blob:
 
-  // Package name
-  name: string & !=""
+```yaml
+schema: olm.package
+name: foo
 
-  // A description of the package
-  description?: string
+# Description is markdown-formatted text that describes the operator.
+# It may contain overviews, installation instructions, links, migration
+# guides, etc. It is meant for a human audience.
+description: |-
+  foo-operator is a Kubernetes operator to deploy and manage Foo resources for a Kubernetes cluster.
 
-  // The package's default channel
-  defaultChannel: string & !=""
+  ## Overview
 
-  // An optional icon
-  icon?: {
-    base64data: string
-    mediatype:  string
-  }
-}
+  Foo is a service that orchestrates Bar and Baz to provide a simple integrated experience.
+
+  The goal of the **foo-operator** is to make it easy to orchestrate complex tasks that underpin the Foo
+  service, including Bar and Baz upgrades, migrations, and optimizations.
+
+# DefaultChannel is the name of the default channel for this package.
+defaultChannel: candidate-v0
+
+# Icon defines the image that UIs can use to represent this package.
+icon:
+  base64data: PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmlld0JveD0iMCAwIDMyMCAzMjAiPgogIDxnIGlkPSJsb2dvIiBmaWxsPSIjZmZmIj4KICAgIDxjaXJjbGUgY3g9IjE2MCIgY3k9IjE2MCIgcj0iMTAwIiBzdHJva2U9InBpbmsiIHN0cm9rZS13aWR0aD0iMyIgZmlsbD0icmVkIiAvPgogIDwvZz4KPC9zdmc+Cg==
+  mediatype: image/svg+xml
 ```
 
 #### `olm.channel`
@@ -184,33 +214,35 @@ A bundle can be included as an entry in multiple `olm.channel` blobs, but it can
 Also, it is valid for an entry's replaces value to reference another bundle name that cannot be found in this catalog
 (or even another catalog) as long as other channel invariants still hold (e.g. a channel cannot have multiple heads).
 
-The `olm.channel` [cue][cuelang-spec] schema is:
-```cue
-#Channel: {
-  schema: "olm.channel"
-  package: string & !=""
-  name: string & !=""
-  entries: [...#ChannelEntry]
-}
+Here is an example of an `olm.channel` blob:
+```yaml
+schema: olm.channel
+package: foo
+name: candidate-v0
+entries:
+- # name is required. It is the name of an `olm.bundle` that
+  # is present in the channel.  
+  name: foo.v0.3.1
+  
+  # replaces is optional. It is the name of the bundle that is replaced
+  # by this entry. It must be present in the entry list, unless this
+  # entry is the channel tail. Channel tails are allowed to have replaces
+  # values that are not present in the entry list.
+  replaces: foo.v0.2.1
+  
+  # skips is optional. It is a list of bundle names that are skipped by
+  # this entry. The skipped bundles do not have to be present in the
+  # entry list.
+  skips:
+  - foo.v0.3.0
 
-#ChannelEntry: {
-  // name is required. It is the name of an `olm.bundle` that
-  // is present in the channel.
-  name: string & !=""
-
-  // replaces is optional. It is the name of bundle that is replaced
-  // by this entry. It does not have to be present in the entry list.
-  replaces?: string & !=""
-
-  // skips is optional. It is a list of bundle names that are skipped by
-  // this entry. The skipped bundles do not have to be present in the
-  // entry list.
-  skips?: [...string & !=""]
-
-  // skipRange is optional. It is the semver range of bundle versions
-  // that are skipped by this entry.
-  skipRange?: string & !=""
-}
+  # skipRange is optional. It is the semver range of bundle versions
+  # that are skipped by this entry.
+  skipRange: ">=0.2.0-0 <0.3.1-0"
+  
+- name: foo.v0.3.0
+  replaces: v0.2.1
+- name: foo.v0.2.1
 ```
 
 For more information about defining upgrade edges, see the [upgrade graph reference documentation][upgrade-graph-doc].
@@ -219,37 +251,57 @@ For more information about defining upgrade edges, see the [upgrade graph refere
 
 #### `olm.bundle`
 
-<!--
-TODO(joelanford): Add a description of the `olm.bundle` schema here
--->
+An `olm.bundle` defines an individually installable version of an operator within a package. It contains information
+necessary to locate the bundle's contents, the related images used by the operator at runtime, and properties that
+can be used by clients to orchestrate lifecycling behavior, build user interfaces, provide filtering mechanisms, etc.
+For example, the "olm.gvk" property can be used to specify a Kubernetes group, version, and kind that this operator
+version provides, and the "olm.gvk.required" property can be used to specify a GVK that this operator requires.
+components that understand these properties can implement dependency resolution by matching GVK providers and
+requirers.
 
-The `olm.bundle` cue schema is:
-```cue
-#Bundle: {
-  schema: "olm.bundle"
-  package: string & !=""
-  name: string & !=""
-  image: string & !=""
-  properties: [...#Property]
-  relatedImages?: [...#RelatedImage]
-}
+See the [Properties](#properties) section for information about the properties understood by OLM.
 
-#Property: {
-  // type is required
-  type: string & !=""
+Here is an example of an `olm.bundle` blob:
+```yaml
+schema: olm.bundle
+package: foo
+name: foo.v0.3.0
 
-  // value is required, and it must not be null
-  value: !=null
-}
-
-#RelatedImage: {
-  // image is the image reference
-  image: string & !=""
-
-  // name is an optional descriptive name for an image that
-  // helps identify its purpose in the context of the bundle
-  name?: string & !=""
-}
+# image defined the location of the bundle image. (required)
+image: quay.io/example-com/foo-bundle:v0.3.0
+relatedImages:
+ - # name is a descriptive name for this image that helps
+   # identify its purpose in the context of the operator. (optional)
+   name: bundle
+   
+   # image is the location of the image. (required)
+   image: quay.io/example-com/foo-bundle:v0.3.0
+   
+ - name: operator
+   image: quay.io/example-com/foo-operator:v0.3.0
+ - name: foo-v1
+   image: quay.io/example-com/foo:v1
+ - name: foo-v2
+   image: quay.io/example-com/foo:v2
+properties:
+- type: olm.package
+  value:
+    packageName: foo
+    version: 0.3.0
+- type: olm.package.required
+  value:
+    packageName: bar
+    versionRange: ">=1.0.0 <2.0.0-0"
+- type: olm.gvk
+  value:
+    group: example.com
+    version: v1alpha1
+    kind: Foo
+- type: olm.gvk.required
+  value:
+    group: example.com
+    version: v1
+    kind: Bar
 ```
 
 ### Properties
@@ -257,7 +309,6 @@ The `olm.bundle` cue schema is:
 Properties are arbitrary pieces of metadata that can be attached to file-based catalog schemas. The type field is a
 string that effectively specifies the semantic and syntactic meaning of the value field. The value can be any arbitrary
 JSON/YAML.
-
 
 OLM defines a handful of property types, again using the reserved `olm.*` prefix.
 
@@ -513,7 +564,8 @@ For file-based catalogs, we can simply omit the `olm.bundle` and maintain a vali
 
 > **NOTE**: Core OLM does not require `olm.bundle.object` properties to be included on bundles. However, the OLM Package
 > Server (used by tooling such as the kubectl operator plugin and the OpenShift console) does require these properties
-> to be able to serve metadata about the packages in a catalog.
+> to be able to serve metadata about the packages in a catalog. In order to satisfy the needs of the package server, catalog
+> maintainers should use this property to include the CSV for all bundles that are channel heads.
 >
 > This property is in _alpha_ because it will likely be rendered obsolete when updates can be made to the OLM Package
 > Server to no longer require manifests in the catalog.
