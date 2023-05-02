@@ -187,7 +187,7 @@ properties:
       constraints:
       - failureMessage: Package bar is needed for...
         package:
-          name: bar
+          packageName: bar
           versionRange: '>=1.0.0'
       - failureMessage: GVK Buf/v1 is needed for...
         gvk:
@@ -235,7 +235,7 @@ properties:
     constraints:
     - failureMessage: Package bar is needed for...
       package:
-        name: bar
+        packageName: bar
         versionRange: '>=1.0.0'
     - failureMessage: Cannot be required for Baz because...
       not:
@@ -274,7 +274,7 @@ properties:
       - all:
           constraints:
           - package:
-              name: foo
+              packageName: foo
               versionRange: '>=1.0.0'
           - gvk:
               group: foos.example.com
@@ -283,7 +283,7 @@ properties:
       - all:
           constraints:
           - package:
-              name: foo
+              packageName: foo
               versionRange: '<1.0.0'
           - gvk:
               group: foos.example.com
