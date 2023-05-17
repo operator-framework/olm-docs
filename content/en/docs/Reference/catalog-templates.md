@@ -255,7 +255,7 @@ The `olm.semver` [cue](https://cuelang.org/docs/references/spec/) schema is:
   GenerateMajorChannels?: bool
 
   // optional flag to prefer major- or minor-version channels, when both are generated and identical in stability and version
-  ChannelTypePreference?: bool
+  DefaultChannelTypePreference?: bool
 
   // optional candidate channel
   Candidate?: {
@@ -537,9 +537,9 @@ package: testoperator
 schema: olm.channel
 ```
 
-In this situation, both channels have matching channel archetypes and the channel heads have the same versions.  The `ChannelTypePreference` attribute allows us to deterministically select a single channel in this case.  This attribute defaults to prefer minor-version channels (`ChannelTypePreference: minor`), but can be overridden in the schema if the author wishes to prefer major-version channels instead (`ChannelTypePreference: major`). 
+In this situation, both channels have matching channel archetypes and the channel heads have the same versions.  The `DefaultChannelTypePreference` attribute allows us to deterministically select a single channel in this case.  This attribute defaults to prefer minor-version channels (`DefaultChannelTypePreference: minor`), but can be overridden in the schema if the author wishes to prefer major-version channels instead (`DefaultChannelTypePreference: major`). 
 
-With `ChannelTypePreference` set to `major`, our most-stable channels and package output would looks like
+With `DefaultChannelTypePreference` set to `major`, our most-stable channels and package output would look like
 ```yaml
 ---
 defaultChannel: stable-v1
