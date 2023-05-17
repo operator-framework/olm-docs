@@ -254,6 +254,9 @@ The `olm.semver` [cue](https://cuelang.org/docs/references/spec/) schema is:
   // optional flag to control generating major-version channels, defaults to _false_ if unspecified
   GenerateMajorChannels?: bool
 
+  // optional flag to prefer major- or minor-version channels, when both are generated and identical in stability and version
+  ChannelTypePreference?: bool
+
   // optional candidate channel
   Candidate?: {
     Bundles: [...#ImageEntry]
@@ -291,7 +294,7 @@ opm alpha render-template semver [flags] <filename>
 
 `--skip-tls-verify` and `--use-http` are mutually exclusive flags.
 
-### Example 
+### Examples 
 
 With the following (hypothetical) example we define a mock bundle which has 11 versions, represented across each of the channel types:
 
@@ -325,6 +328,8 @@ Stable:
 ```
 
 In this example, `Candidate` has the entire version range of bundles,  `Fast` has a mix of older and more-recent versions, and `Stable` channel only has a single published entry. 
+
+#### Generating major-version channels
 
 If we set the template attributes 
 
@@ -401,6 +406,8 @@ schema: olm.channel
 
 We generated a channel for each template channel entity corresponding to each of the 0.\#.\#, 1.\#.\# major version ranges with skips to the head of the highest semver in a channel. We also generated a replaces edge to traverse across minor version transitions within each major channel. Finally, we generated an `olm.package` object, setting as default the most-stable channel head we created. This process will prefer `Stable` channel over `Fast`, over `Candidate` and then a higher bundle version over a lower version.  
 (Please note that the naming of the generated channels indicates the digits of significance for that channel. For example, `fast-v1` is a decomposed channel of the `fast` type which contains only major versions of contributing bundles matching `v1`.)  
+
+#### Generating minor-version channels
 
 For contrast, if we set the template attributes
 
@@ -503,6 +510,54 @@ schema: olm.channel
 ```
 
 Here, a channel is generated for each template channel which differs by minor version, and each channel has a `replaces` edge from the predecessor channel to the next-lesser minor bundle version. Please note that at no time do we transgress across major-version boundaries with the channels, to be consistent with [the semver convention](https://semver.org/) for major versions, where the purpose is to make incompatible API changes.
+
+#### Generating both channel types, and disambiguating default channel selection
+
+In the case that we generate both major-version and minor-version channels:
+
+```yaml
+GenerateMinorChannels: true
+GenerateMajorChannels: false
+```
+
+we can easily end up in a situation where our results yield indifferentiable results, for e.g.:
+
+```yaml
+---
+entries:
+- name: testoperator.v1.0.1
+name: stable-v1
+package: testoperator
+schema: olm.channel
+---
+entries:
+- name: testoperator.v1.0.1
+name: stable-v1.0
+package: testoperator
+schema: olm.channel
+```
+
+In this situation, both channels have matching channel archetypes and the channel heads have the same versions.  The `ChannelTypePreference` attribute allows us to deterministically select a single channel in this case.  This attribute defaults to prefer minor-version channels (`ChannelTypePreference: minor`), but can be overridden in the schema if the author wishes to prefer major-version channels instead (`ChannelTypePreference: major`). 
+
+With `ChannelTypePreference` set to `major`, our most-stable channels and package output would looks like
+```yaml
+---
+defaultChannel: stable-v1
+name: testoperator
+schema: olm.package
+---
+entries:
+- name: testoperator.v1.0.1
+name: stable-v1
+package: testoperator
+schema: olm.channel
+---
+entries:
+- name: testoperator.v1.0.1
+name: stable-v1.0
+package: testoperator
+schema: olm.channel
+```
 
 ## Composite Template
 A `composite template` can help an operator author manage FBC contributions to multiple catalogs. The template functionality is composed of schemas which represent the author's role and the catalog maintainer's role, and rendering the template performs an explicit negotiation between them.
