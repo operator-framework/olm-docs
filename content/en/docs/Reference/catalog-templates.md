@@ -254,8 +254,8 @@ The `olm.semver` [cue](https://cuelang.org/docs/references/spec/) schema is:
   // optional flag to control generating major-version channels, defaults to _false_ if unspecified
   GenerateMajorChannels?: bool
 
-  // optional flag to prefer major- or minor-version channels, when both are generated and identical in stability and version
-  DefaultChannelTypePreference?: bool
+  // optional preference for major- or minor-version channels, when both are generated and identical in stability and version
+  DefaultChannelTypePreference?: string
 
   // optional candidate channel
   Candidate?: {
@@ -517,7 +517,7 @@ In the case that we generate both major-version and minor-version channels:
 
 ```yaml
 GenerateMinorChannels: true
-GenerateMajorChannels: false
+GenerateMajorChannels: true
 ```
 
 we can easily end up in a situation where our results yield indifferentiable results, for e.g.:
