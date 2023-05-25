@@ -5,11 +5,11 @@ weight: 5
 ---
 
 ## Background
-[File-based-catalogs](file-based-catalog-spec) (FBC) and [catalog templates](templates-doc) (templates)  empower operator authors with public, standardized schemas to express operator upgrade graphs.  These schemas eliminate the reliance for operator-framework tooling to support common processing paths.  One disadvantage to authors may be that in the absence of explicit tooling, it isn't always clear how to achieve routine goals, especially as the number of available bundle versions increases and increases the complexity of the upgrade graph.  This document is an attempt to establish a formulary of common operations, specificially with the intention of making these pieces automatable.  This is in no way an exhaustive list.
+[File-based-catalogs][file-based-catalog-spec] (FBC) and [catalog templates][templates-doc] (templates)  empower operator authors with public, standardized schemas to express operator upgrade graphs.  These schemas eliminate the reliance for operator-framework tooling to support common processing paths.  One disadvantage to authors may be that in the absence of explicit tooling, it isn't always clear how to achieve routine goals, especially as the number of available bundle versions increases and increases the complexity of the upgrade graph.  This document is an attempt to establish a formulary of common operations, specificially with the intention of making these pieces automatable.  This is in no way an exhaustive list.
 
 ## Conventions
-Formulae will be identified as pertaining to either FBC or [semver catalog template](semver-template-doc) (semver template).  Since FBC and the [basic catalog template](basic-template-doc) (basic template) both represent the upgrade graph in the set of `olm.channel` objects, instructions for FBC will also be applicable to the `basic template`. Manipulations of `olm.bundle` attributes are limited to FBC representation only. 
-Schema manipulations will be modeled using YAML and [yq](yq).  Wherever possible, example input will be limited to the relevant object hierarchies.  Truncation is indicated by elipses (...) before and after the text.
+Formulae will be identified as pertaining to either FBC or [semver catalog template][semver-template-doc] (semver template).  Since FBC and the [basic catalog template][basic-template-doc] (basic template) both represent the upgrade graph in the set of `olm.channel` objects, instructions for FBC will also be applicable to the `basic template`. Manipulations of `olm.bundle` attributes are limited to FBC representation only. 
+Schema manipulations will be modeled using YAML and [yq][yq].  Wherever possible, example input will be limited to the relevant object hierarchies.  Truncation is indicated by elipses (...) before and after the text.
 
 
 ## Examples
@@ -379,4 +379,4 @@ schema: olm.bundle
 [templates-doc]: /docs/reference/catalog-templates
 [basic-template-doc]: /docs/reference/catalog-templates#basic-template
 [semver-template-doc]: /docs/reference/catalog-templates#semver-template
-[yq]:(https://github.com/mikefarah/yq)
+[yq]: https://github.com/mikefarah/yq
