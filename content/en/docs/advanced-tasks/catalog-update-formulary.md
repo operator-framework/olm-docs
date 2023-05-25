@@ -9,7 +9,7 @@ weight: 3
 
 ## Conventions
 Formulae will be identified as pertaining to either FBC or [semver catalog template](semver-template-doc) (semver template).  Since FBC and the [basic catalog template](basic-template-doc) (basic template) both represent the upgrade graph in the set of `olm.channel` objects, instructions for FBC will also be applicable to the `basic template`. Manipulations of `olm.bundle` attributes are limited to FBC representation only. 
-Schema manipulations will be modeled using YAML and [yq](yq).
+Schema manipulations will be modeled using YAML and [yq](yq).  Wherever possible, example input will be limited to the relevant object hierarchies.  Truncation is indicated by elipses (...) before and after the text.
 
 
 ## Examples
@@ -203,6 +203,32 @@ schema: olm.channel
 Please note that removing the only edge for a channel as in this example will yield an explicitly empty array.  This will produce an error in `opm validate`. 
 
 ### Substituting a bundle version in the upgrade graph
+
+#### semver
+For all channels, replace instances of `quay.io/organization/testoperator:v1.1.0` with `quay.io/organization/testoperator:v1.1.0-CVE`
+
+```bash
+yq '(..| select(has("image") and .image == "quay.io/organization/testoperator:v1.1.0")).image = "quay.io/organization/testoperator:v1.1.0-cve"' semver.yaml
+```
+produces updated template:
+
+```yaml
+schema: olm.semver
+generatemajorchannels: false
+generateminorchannels: true
+candidate:
+  bundles:
+    - image: quay.io/organization/testoperator:v1.0.0
+    - image: quay.io/organization/testoperator:v1.0.1
+    - image: quay.io/organization/testoperator:v1.1.0-cve
+fast:
+  bundles:
+    - image: quay.io/organization/testoperator:v1.0.1
+    - image: quay.io/organization/testoperator:v1.1.0-cve
+stable:
+  bundles:
+    - image: quay.io/organization/testoperator:v1.0.1
+```
 
 #### FBC
 For all graph edges, replaces instances of `testoperator.v1.1.0` with a different bundle version `testoperator.v1.1.0-CVE`
