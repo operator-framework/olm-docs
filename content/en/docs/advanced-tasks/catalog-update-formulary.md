@@ -1,7 +1,7 @@
 ---
 title: "Catalog Update Formulary"
 linkTitle: "Catalog Formulary"
-weight: 3
+weight: 5
 ---
 
 ## Background
