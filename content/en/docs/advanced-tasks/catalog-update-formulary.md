@@ -5,7 +5,7 @@ weight: 5
 ---
 
 ## Background
-[File-based-catalogs][file-based-catalog-spec] (FBC) and [catalog templates][templates-doc] (templates)  empower operator authors with public, standardized schemas to express operator upgrade graphs.  These schemas eliminate the reliance for operator-framework tooling to support common processing paths.  One disadvantage to authors may be that in the absence of explicit tooling, it isn't always clear how to achieve routine goals, especially as the number of available bundle versions increases and increases the complexity of the upgrade graph.  This document is an attempt to establish a formulary of common operations, specificially with the intention of making these pieces automatable.  This is in no way an exhaustive list.
+[File-based-catalogs][file-based-catalog-spec] (FBC) and [catalog templates][templates-doc] (templates)  provide operator authors with standardized schemas to express operator upgrade graphs.  However, without explicit tooling users require clear examples of how to achieve routine goals.  This document is an attempt to establish a formulary of common operations, specificially with the intention of making these pieces automatable.  This is in no way an exhaustive list.
 
 ## Conventions
 Formulae will be identified as pertaining to either FBC or [semver catalog template][semver-template-doc] (semver template).  Since FBC and the [basic catalog template][basic-template-doc] (basic template) both represent the upgrade graph in the set of `olm.channel` objects, instructions for FBC will also be applicable to the `basic template`. Manipulations of `olm.bundle` attributes are limited to FBC representation only. 
@@ -19,8 +19,8 @@ For brevity, all formulae will refer to the same example, for semver template an
 Formulae presume the following content is saved to the file `semver.yaml`
 ```yaml
 schema: olm.semver
-generatemajorchannels: false
-generateminorchannels: true
+generateMajorChannels: false
+generateMinorChannels: true
 candidate:
   bundles:
   - image: quay.io/organization/testoperator:v1.0.0
@@ -83,31 +83,6 @@ package: testoperator
 schema: olm.channel
 ```
 
-### rendered `olm.bundle` FBC example
-Formulae presume the following content is saved to the file `bundle.yaml`
-
-```yaml
----
-image: quay.io/organization/testoperator:v1.1.0
-name: testoperator.v1.1.0
-package: testoperator
-properties:
-- type: olm.package
-  value:
-    packageName: testoperator
-    version: 1.1.0
-- type: olm.gvk
-  value:
-    group: api.testoperator.io
-    kind: Instance
-    version: v1alpha1
-relatedImages:
-- image: busybox
-  name: ""
-- image: quay.io/organization/testoperator:v1.1.0
-  name: ""
-schema: olm.bundle
-```
 
 ## Formulae
 
@@ -154,7 +129,17 @@ package: testoperator
 schema: olm.channel
 ...
 ```
+{{% alert title="Warning" color="warning" %}}
+This example illustrates how it is possible to inadvertently create multiple channel heads
+{{% /alert %}}
+`opm validate` result for this output would be:
 
+```bash
+FATA[0000] invalid index:
+└── invalid package "testoperator":
+    └── invalid channel "candidate-v1.1":
+        ├── multiple channel heads found in graph: testoperator.v1.1.0, testoperator.v1.1.1
+```
 
 ### Adding a new 'replaces' link between two existing bundles
 
@@ -180,6 +165,7 @@ package: testoperator
 schema: olm.channel
 ...
 ```
+
 
 ### Removing a specific bundle version
 
@@ -304,70 +290,7 @@ schema: olm.channel
 ...
 ```
 
-### Adding a new property to an `olm.bundle`
-
-#### FBC
-Creating a new property associated with a FBC bundle.  This example marks a bundle as deprecated to prevent installation. 
-
-```bash
-yq eval 'select(.name == "testoperator.v1.1.0" and .schema == "olm.bundle").properties += [{"type" : "olm.deprecated", "value" : "true"}]' bundle.yaml
-```
-
-produces updated `testoperator.v1.1.0` `olm.bundle`:
-
-```yaml
-...
----
-image: quay.io/organization/testoperator:v1.1.0
-name: testoperator.v1.1.0
-package: testoperator
-properties:
-  - type: olm.package
-    value:
-      packageName: testoperator
-      version: 1.1.0
-  - type: olm.deprecated
-    value: "true"
-relatedImages:
-  - image: busybox
-    name: ""
-  - image: quay.io/organization/testoperator:v1.1.0
-    name: ""
-schema: olm.bundle
-...
-```
-
-### Modifying an existing property of an `olm.bundle`
-
-#### FBC
-Update an existing property associated with a FBC bundle.  This example promotes the GVK version of `testoperator.v1.1.0` from `v1alpha1` to `v1`. 
-
-```bash
-yq eval 'select(.name == "testoperator.v1.1.0" and .schema == "olm.bundle").properties |= [{"type" : "olm.gvk", "value" : {"group": "api.testoperator.io", "kind" : "Instance", "version": "v1"}}]' bundle.yaml
-```
-
-produces updated `testoperator.v1.1.0` `olm.bundle`:
-
-```yaml
-...
-image: quay.io/organization/testoperator:v1.1.0
-name: testoperator.v1.1.0
-package: testoperator
-properties:
-  - type: olm.gvk
-    value:
-      group: api.testoperator.io
-      kind: Instance
-      version: v1
-relatedImages:
-  - image: busybox
-    name: ""
-  - image: quay.io/organization/testoperator:v1.1.0
-    name: ""
-schema: olm.bundle
-...
-```
-
+#
 
 
 
