@@ -118,7 +118,7 @@ The names you choose are notional and up to you to decide, however, picking good
 
 > **Note:** If your new operator version release contains an API(CRD), which represents new experimental features and
 > is not supported (like "tech-preview"), then the recommendation is to capture the maturity in the API version 
-> (that is group: my,example.com, kind: Backup, version: v1alpha1) and not in the channel name. 
+> (that is group: my.example.com, kind: Backup, version: v1alpha1) and not in the channel name. 
 > This follows [Kubernetes API versioning](https://kubernetes.io/docs/reference/using-api/#api-versioning) recommendations.
 
 * Channel names are unique to your operator and do not collide with channel names used by other operator providers.
