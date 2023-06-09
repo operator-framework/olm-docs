@@ -5,7 +5,7 @@ weight: 5
 ---
 
 ## Background
-[File-based-catalogs][file-based-catalog-spec] (FBC) and [catalog templates][templates-doc] (templates)  provide operator authors with standardized schemas to express operator upgrade graphs.  However, without explicit tooling users require clear examples of how to achieve routine goals.  This document is an attempt to establish a formulary of common operations, specificially with the intention of making these pieces automatable.  This is in no way an exhaustive list.
+[File-based-catalogs][file-based-catalog-spec] (FBC) and [catalog templates][templates-doc] (templates)  provide operator authors with standardized schemas to express operator upgrade graphs.  However, without explicit tooling users require clear examples of how to achieve routine goals.  This document is an attempt to establish a formulary of common operations, specifically with the intention of making these pieces automatable.  This is in no way an exhaustive list.
 
 ## Conventions
 Formulae will be identified as pertaining to either FBC or [semver catalog template][semver-template-doc] (semver template).  Since FBC and the [basic catalog template][basic-template-doc] (basic template) both represent the upgrade graph in the set of `olm.channel` objects, instructions for FBC will also be applicable to the `basic template`. Manipulations of `olm.bundle` attributes are limited to FBC representation only. 
@@ -186,7 +186,9 @@ package: testoperator
 schema: olm.channel
 ...
 ```
+{{% alert title="Warning" color="warning" %}}
 Please note that removing the only edge for a channel as in this example will yield an explicitly empty array.  This will produce an error in `opm validate`. 
+{{% /alert %}}
 
 ### Substituting a bundle version in the upgrade graph
 
@@ -271,7 +273,7 @@ schema: olm.channel
 
 ### Introducing a new replacement relationship in the upgrade graph
 #### FBC
-Substitute an existing 'replaces' link target for `testoperator.v1.1.0` with a different bundle version `testoperator.v1.0.1`.
+Substitute an existing 'replaces' link target for `testoperator.v1.1.0` with a different bundle version `testoperator.v1.0.0`.
 
 
 ```bash
@@ -289,9 +291,6 @@ package: testoperator
 schema: olm.channel
 ...
 ```
-
-#
-
 
 
 
