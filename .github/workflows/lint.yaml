@@ -14,8 +14,6 @@ jobs:
           && sudo dpkg -i ${{ runner.temp }}/hugo.deb
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Install Node.js dependencies
-        run: npm ci
       - name: Build with Hugo
         run: hugo
       - name: Run linting script
