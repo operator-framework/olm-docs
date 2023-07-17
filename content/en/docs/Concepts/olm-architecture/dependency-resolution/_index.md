@@ -79,10 +79,10 @@ Note: `properties.yaml` is supported in `1.17.4+` versions of OPM.
 
 ## Declaring Dependencies
 
-Required dependencies are statically defined in the operator bundle one of two ways: 
+Required dependencies are statically defined in the operator bundle one of two ways:
 - `dependencies.yaml` file
 - `properties.yaml` file (supported by `1.17.4+ versions of OPM)
- 
+
 Each of these files can be included in the `metadata` directory of the operator bundle. For more information on bundles and the their format, see the [bundle docs](https://github.com/operator-framework/operator-registry/blob/master/docs/design/operator-bundle.md).
 
 Currently, these types of constraints are supported in the `dependencies.yaml` file:
@@ -502,7 +502,7 @@ Operators may add or remove APIs at any time - always specify an `olm.gvk` depen
 
 ### Set a minimum version
 
-The Kubernetes [documentation on API changes](https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api_changes.md#readme) describes what changes are allowed for kube-style operator APIs. These versioning conventions allow an operator to update an API without bumping the `apiVersion`, as long as the API is backwards-compatible.
+The Kubernetes [documentation on API changes](https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api_changes.md) describes what changes are allowed for kube-style operator APIs. These versioning conventions allow an operator to update an API without bumping the `apiVersion`, as long as the API is backwards-compatible.
 
 For operator dependencies, this means that knowing the `apiVersion` of a dependency may not be enough to ensure the dependent operator works as intended.
 
