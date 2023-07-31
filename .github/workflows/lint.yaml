@@ -4,19 +4,14 @@ on: pull_request
 jobs:
   lint:
     runs-on: ubuntu-latest
-    env:
-      HUGO_VERSION: 0.111.1
-      HUGO_ENV: production
     steps:
-      - name: Install Hugo CLI
-        run: |
-          wget -O ${{ runner.temp }}/hugo.deb https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.deb \
-          && sudo dpkg -i ${{ runner.temp }}/hugo.deb
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Install Node.js dependencies
-        run: npm ci
-      - name: Build with Hugo
-        run: hugo
-      - name: Run linting script
-        run: ${PWD}/hack/ci/link-check.sh
+      - uses: actions/setup-go@v4
+        with:
+          go-version-file: go.mod
+          cache-dependency-path: |
+              go.sum
+              .bingo/**.sum
+      - name: Build and lint the site
+        run: make lint
