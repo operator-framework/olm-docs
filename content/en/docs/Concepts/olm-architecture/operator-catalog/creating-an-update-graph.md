@@ -16,6 +16,7 @@ OLM provides a variety of ways to specify updates between operator versions.
 
 All update graphs are defined in [file-based catalogs][file-based-catalog-spec] via `olm.channel` blobs. Each `olm.channel` defines the set of
 bundles present in the channel and the update graph edges between each entry in the channel.
+Note that: In FBC, the upgrade edge metadata in bundles/CSVs is ignored, the source of truth for upgrade edges is the catalog itself.
 
 ### Replaces
 
