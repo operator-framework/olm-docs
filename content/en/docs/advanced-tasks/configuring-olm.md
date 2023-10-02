@@ -42,3 +42,26 @@ LAST SEEN   TYPE      REASON               OBJECT                               
 When the `cluster` olmConfig's `spec.features.disableCopiedCSVs` field is missing or set to `false`, OLM will recreate the Copied CSVs for all operators installed in the AllNamespace mode and deleted the previously mentioned events. 
 
 Additional information about this feature can be found in its original [enhancement proposal](https://github.com/operator-framework/enhancements/blob/master/enhancements/olm-toggle-copied-csvs.md).
+
+### Changing the Package Server Sync Interval
+
+#### Background
+
+After CatalogSources are created, they are synced by the OLM packageservers every 12 hours. This sync interval may be increased to reduce the CPU utilization of the packageserver and CatalogSources, or decreased to improve response times to available updates. This field represents a duration, but is limited to using hours, minutes and seconds.
+
+#### Usage
+
+```bash=
+$ kubectl apply -f - <<EOF
+apiVersion: operators.coreos.com/v1
+kind: OLMConfig
+metadata:
+  name: cluster
+spec:
+  features:
+    packageServerSyncInterval: 1h30m
+EOF
+olmconfig.operators.coreos.com/cluster configured
+```
+
+When the `cluster` olmConfig's `spec.features.packageServerSyncInterval` field is missing, OLM will use the default value of `12h`.
