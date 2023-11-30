@@ -235,6 +235,8 @@ This alpha version of the `semver template` has the following goals:
 - minor-version (Y-stream) and major-version (X-stream) versioning capabilities
 - clear mapping between input schema and output FBC attributes
 
+Note: `csv.spec.version` is optional in the API definition, however the field is required if you want to use the `semver template` for your catalog.
+
 ### Specification
 Like best practices [recommended channel naming](/docs/best-practices/channel-naming/#recommended-channel-naming), this template supports channel names `Candidate`, `Fast`, and `Stable`, in order of increasing channel stability. We leverage this relationship when calculating the default channel for the package. 
 
