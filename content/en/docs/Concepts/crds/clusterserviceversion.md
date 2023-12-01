@@ -96,7 +96,6 @@ spec:
     # name is the metadata.name of the CRD (which is of the form <plural>.<group>)
     - name: memcacheds.cache.example.com
       # version is the spec.versions[].name value defined in the CRD
-      # while version is not required, semver template functionality relies on its presence
       version: v1alpha1
       # kind is the CamelCased singular value defined in spec.names.kind of the CRD.
       kind: Memcached
