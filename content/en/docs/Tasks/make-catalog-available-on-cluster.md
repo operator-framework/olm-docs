@@ -85,4 +85,23 @@ spec:
       interval: 10m
 ```
 
+If the `imagePullSecret` is referenced in the bundle, for instance when the controller-manager image is pulled from a private registry, there is no place in the API to tell OLM to attach the `imagePullSecrets`. As a consequence, permissions to pull the image should be added directly to the controller-manager deployment configurations. This can be achieved by updating `config/manager/manager.yaml` and adding `deployment.spec.template.spec.imagePullSecrets` with the required secret name. 
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: controller-manager
+  namespace: system
+  ...
+spec:
+    ...
+    spec:
+      imagePullSecrets:
+      - name: "registry-auth-secret-name"
+```
+
+> Note: It is required for the `imagePullSecret` to be present in the same namespace where the controller is deployed for the controller pod to start.
+
+
 [creating-a-catalog-steps]: /docs/tasks/creating-a-catalog/#creating-a-catalog
