@@ -85,4 +85,26 @@ spec:
       interval: 10m
 ```
 
+If the `imagePullSecret` is referenced in the bundle, for instance when the controller-manager image is pulled from a private registry, there is no place in the API to tell OLM to attach the `imagePullSecrets`. As a consequence, permissions to pull the image should be added directly to the operator Deployment's manifest by adding the required secret name to the list `deployment.spec.template.spec.imagePullSecrets`. 
+
+For the [operator-sdk](https://sdk.operatorframework.io/) abstraction, the operator Deployment's manifest is found under `config/manager/manager.yaml`. Below is an example of a controller-manager Deployment's manifest configured with an `imagePullSecret` to pull container images from a private registry.
+
+```yaml
+# config/manager/manager.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: controller-manager
+  namespace: system
+  ...
+spec:
+    ...
+    spec:
+      imagePullSecrets:
+      - name: "registry-auth-secret-name"
+```
+
+> Note: It is required for the `imagePullSecret` to be present in the same namespace where the controller is deployed for the controller pod to start.
+
+
 [creating-a-catalog-steps]: /docs/tasks/creating-a-catalog/#creating-a-catalog
