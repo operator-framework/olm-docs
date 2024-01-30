@@ -314,7 +314,8 @@ A valid depreciation schema entry meets the following criteria:
 - There must be only one schema per package
 - The message must be a non-zero length
 - The package name must exist in the bundle
-The deprecation feature does not consider overlapping deprecation (package vs channel vs bundle). 
+The deprecation feature does not consider overlapping deprecation (package vs channel vs bundle).
+
 |              | `olm.package`                   | `olm.channel`        | `olm.bundle`          |
 |--------------|---------------------------------|----------------------|-----------------------|
 | Scope        | Entire Package                  | Single Channel       | Single Bundle Version |
