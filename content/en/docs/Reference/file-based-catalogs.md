@@ -310,10 +310,11 @@ Operator authors can use the file-based catalog (FBC) deprecation schema to prov
 
 Deprecation for packages/bundles/channels is enabled through the olm.deprecations schema. This schema consists of a list of scoped references to catalog content, with a descriptive message string that provides more information to the user. The deprecation schema is an optional feature.
 
-A valid depreciation schema entry meets the following criteria:
+A valid depreciation schema meets the following criteria:
 - There must be only one schema per package
 - The message must be a non-zero length
 - The package name must exist in the bundle
+  
 The deprecation feature does not consider overlapping deprecation (package vs channel vs bundle).
 
 |              | `olm.package`                   | `olm.channel`        | `olm.bundle`          |
@@ -321,7 +322,7 @@ The deprecation feature does not consider overlapping deprecation (package vs ch
 | Scope        | Entire Package                  | Single Channel       | Single Bundle Version |
 | Requirements | Must not be an associate `name` | `name`  is mandatory | `name`  is mandatory  |
 
-> **Warning:** If the deprecation schema is invalid the entire FBC is invalid
+> **Warning:** If the deprecation schema is invalid the entire FBC is deemed invalid by `bundle validate`
 
 Here is an example demonstrating each of the deprecation entry types:  
 ```yaml
