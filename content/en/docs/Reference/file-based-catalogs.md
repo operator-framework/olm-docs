@@ -312,12 +312,17 @@ Deprecation for packages/bundles/channels is enabled through the olm.deprecation
 
 A valid depreciation schema entry meets the following criteria:
 - There must be only one schema per package
-- The message must be a non-zero length 
-The package must be present in the bundle The deprecation feature does not consider overlapping deprecation (package vs channel vs bundle). Reference schemas olm.channel and olm.bundle must include a name, olm.package must not as it will reference the package name defined earlier in the schema.
+- The message must be a non-zero length
+- The package name must exist in the bundle
+The deprecation feature does not consider overlapping deprecation (package vs channel vs bundle). 
+|              | `olm.package`                   | `olm.channel`        | `olm.bundle`          |
+|--------------|---------------------------------|----------------------|-----------------------|
+| Scope        | Entire Package                  | Single Channel       | Single Bundle Version |
+| Requirements | Must not be an associate `name` | `name`  is mandatory | `name`  is mandatory  |
 
 > **Warning:** If the deprecation schema is invalid the entire FBC is invalid
 
-Sample demonstrating each of the deprecation entry types:  
+Here is an example demonstrating each of the deprecation entry types:  
 ```yaml
 schema: olm.deprecations
 package: kiali
