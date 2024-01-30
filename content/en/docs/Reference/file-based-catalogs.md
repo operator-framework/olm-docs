@@ -304,6 +304,41 @@ properties:
     kind: Bar
 ```
 
+#### `olm.deprecations`
+
+Operator authors can use the file-based catalog (FBC) deprecation schema to provide relevant information for support and upgrades for users running operators. The deprecation schema follows the Meta FBC Schema conventions. 
+
+Deprecation for packages/bundles/channels is enabled through the olm.deprecations schema. This schema consists of a list of scoped references to catalog content, with a descriptive message string that provides more information to the user. The deprecation schema is an optional feature.
+
+A valid depreciation schema entry meets the following criteria:
+- There must be only one schema per package
+- The message must be a non-zero length 
+The package must be present in the bundle The deprecation feature does not consider overlapping deprecation (package vs channel vs bundle). Reference schemas olm.channel and olm.bundle must include a name, olm.package must not as it will reference the package name defined earlier in the schema.
+
+> **Warning:** If the deprecation schema is invalid the entire FBC is invalid
+
+Sample demonstrating each of the deprecation entry types:  
+```yaml
+schema: olm.deprecations
+package: kiali
+entries:
+  - reference:
+  	schema: olm.bundle
+  	name: kiali-operator.v1.68.0
+    message: |
+   	kiali-operator.v1.68.0 is deprecated. Uninstall and install kiali-operator.v1.72.0 for support.
+  - reference:
+  	schema: olm.package
+    message: |
+   	package kiali is end of life.  Please use 'kiali-new' package for support.
+  - reference:
+  	schema: olm.channel
+  	name: alpha
+    message: |
+   	channel alpha is no longer supported.  Please switch to channel 'stable'.
+```
+
+
 ### Properties
 
 Properties are arbitrary pieces of metadata that can be attached to file-based catalog schemas. The type field is a
