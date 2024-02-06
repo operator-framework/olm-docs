@@ -306,21 +306,21 @@ properties:
 
 #### `olm.deprecations`
 
-Operator authors can use the file-based catalog (FBC) deprecation schema to provide relevant information for support and upgrades for users running operators. The deprecation schema follows the Meta FBC Schema conventions. 
+Operator authors can provide information for support and upgrades by using the optional `olm.deprecations` schema. 
 
-You can use the `olm.deprecations` schema to deprecate packages, bundles, and channels. This schema consists of a list of scoped references to catalog content, with a descriptive message string that provides more information to the user. The deprecation schema is an optional feature.
+The file-based catalog (FBC) deprecation schema consists of references to packages, bundles, and channels with a custom deprecation message.
 
 A valid deprecation schema meets the following criteria:
 - There must be only one schema per package
 - The message must be a non-zero length
-- The package name must exist in the bundle
+- The package must exist in the catalog
   
 The deprecation feature does not consider overlapping deprecation (package vs channel vs bundle).
 
 |              | `olm.package`                   | `olm.channel`        | `olm.bundle`          |
 |--------------|---------------------------------|----------------------|-----------------------|
 | Scope        | Entire Package                  | Single Channel       | Single Bundle Version |
-| Requirements | `name` must be empty | `name`  is mandatory | `name`  is mandatory  |
+| Requirements | `name` must be empty since it is inferred from the parent `package` field | `name`  is mandatory | `name`  is mandatory  |
 
 For the entry type `olm.package` the `name` will be inherited from the parent `olm.deprecations`
 
