@@ -304,6 +304,45 @@ properties:
     kind: Bar
 ```
 
+#### `olm.deprecations`
+
+Operator authors can provide information for support and upgrades by using the optional `olm.deprecations` schema. 
+
+The file-based catalog (FBC) deprecation schema consists of references to packages, bundles, and channels with a custom deprecation message.
+
+A valid deprecation schema meets the following criteria:
+- There must be only one schema per package
+- The message must be a non-zero length
+- The package must exist in the catalog
+  
+The deprecation feature does not consider overlapping deprecation (package vs channel vs bundle).
+
+|              | `olm.package`                   | `olm.channel`        | `olm.bundle`          |
+|--------------|---------------------------------|----------------------|-----------------------|
+| Scope        | Entire Package                  | Single Channel       | Single Bundle Version |
+| Requirements | `name` must be empty since it is inferred from the parent `package` field | `name`  is mandatory | `name`  is mandatory  |
+
+The following example demonstrates each of the deprecation entry types:
+```yaml
+schema: olm.deprecations
+package: deprecation-example
+entries:
+  - reference:
+  	schema: olm.bundle
+  	name: deprecation-example-operator.v1.68.0
+    message: |
+   	deprecation-example-operator.v1.68.0 is deprecated. Uninstall and install deprecation-example-operator.v1.72.0 for support.
+  - reference:
+  	schema: olm.package
+    message: |
+   	package deprecation-example is end of life.  Please use 'non-deprecated-example' package for support.
+  - reference:
+  	schema: olm.channel
+  	name: alpha
+    message: |
+   	channel alpha is no longer supported.  Please switch to channel 'stable'.
+```
+
 ### Properties
 
 Properties are arbitrary pieces of metadata that can be attached to file-based catalog schemas. The type field is a
