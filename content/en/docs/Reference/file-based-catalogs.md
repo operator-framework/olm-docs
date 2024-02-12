@@ -322,10 +322,6 @@ The deprecation feature does not consider overlapping deprecation (package vs ch
 | Scope        | Entire Package                  | Single Channel       | Single Bundle Version |
 | Requirements | `name` must be empty since it is inferred from the parent `package` field | `name`  is mandatory | `name`  is mandatory  |
 
-For the entry type `olm.package` the `name` will be inherited from the parent `olm.deprecations`
-
-> **Warning:** If the deprecation schema is invalid the entire FBC is deemed invalid by `bundle validate`
-
 The following example demonstrates each of the deprecation entry types:
 ```yaml
 schema: olm.deprecations
