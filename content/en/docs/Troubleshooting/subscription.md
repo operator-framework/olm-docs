@@ -47,3 +47,39 @@ api-server resource not found installing CustomResourceDefinition my-crd-name: G
 This error indicates that the API apiextensions.k8s.io/v1beta1, Kind=CustomResourceDefinition is not available on-cluster. It indicates this particular GVK is not present on the api-server, which will happen on Kubernetes 1.22+ with deprecated built-in types like v1beta1 CRDs or v1beta1 RBAC.
 
 This error can also arise when installing operator bundles with CustomResources that OLM supports, such as `VerticalPodAutoscalers` and `PrometheusRules`, but the relevant CustomResourceDefinition has not yet been installed. In this case, this error should eventually resolve itself provided the required CustomResourceDefinition gets installed on the cluster and is accepted by the api-server.
+
+### Subscriptions failing due to unpacking errors
+
+If a subscription that references an operator bundle fails to unpack successfully, the subscription fails with the following message:
+
+```
+bundle unpacking failed. Reason: DeadlineExceeded, and Message: Job was active longer than the specified deadline
+```
+
+There are many potential causes for bundle unpacking errors. Some of the most common causes include:
+- Unreachable Operator bundle image
+   - Misconfigured network, such as an incorrectly configured proxy/firewall
+   - Missing operator bundle images from the reachable image registries
+   - Invalid or missing image registry credentials/secrets
+   - Image registry rate limits
+- Resource limitations on the cluster
+   - CPU or network limitations preventing operator bundle images from being pulled within the timeout (10 minutes)
+   - Inability to schedule pods for unpacking operator bundle images
+   - etcd performance issues
+
+To resolve the error, address the underlying causes for the unpack failure. Next, delete any failing unpack jobs and their owner configMaps to force the subscription to retry unpacking the operator bundles.
+
+To enable automated cleanup and retry of failed unpack jobs in a namespace, set the `operatorframework.io/bundle-unpack-min-retry-interval` annotation on the operatorGroup in the desired namespace. This annotation indicates the time after the last unpack failure when the unpack may be attempted again. Do not set this annotation to an interval shorter than `5m` to avoid unnecessary load on the cluster.
+
+```
+kubectl annotate operatorgroup <OPERATOR_GROUP> operatorframework.io/bundle-unpack-min-retry-interval=10m
+```
+
+This annotation does not enforce limits on the number of times an operator bundle may be unpacked on failure, preserving only 5 failing unpack attempts for inspection. Unless the underlying cause for the failure is addressed, this may cause OLM to attempt to unsuccessfully unpack the operator bundle indefinitely. Removing the annotation from the operatorGroup disables automated retries for failed unpacking jobs on that namespace.
+
+With older versions of OLM, an installPlan might be generated for the failing subscription. To refresh a failed subscription with an InstallPlan, you must perform the following steps:
+
+  1. Back up the subscription.
+  2. Delete the failing installPlan, CSV, and subscription.
+  3. Delete the failing unpack job and its owner configMap.
+  4. Reapply the subscription.
