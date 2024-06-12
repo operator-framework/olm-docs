@@ -141,15 +141,15 @@ When an `OperatorGroup` is created, 3 ClusterRoles each containing a single Aggr
 When a CSV becomes an active member of an `OperatorGroup` and is not in a failed state with reason InterOperatorGroupOwnerConflict, the following RBAC resources are generated:
 
 * For each provided API resource from a CRD:
-  * A `<kind.group-version-admin>` ClusterRole is generated with the `*` verb on `<group>` `<kind>` with aggregation labels `rbac.authorization.k8s.io/aggregate-to-admin: true` and `olm.opgroup.permissions/aggregate-to-admin: <operatorgroup-name>`
-  * A `<kind.group-version-edit>` ClusterRole is generated with the `create, update, patch, release` verbs on `<group>` `<kind>` with aggregation labels `rbac.authorization.k8s.io/aggregate-to-edit: true` and `olm.opgroup.permissions/aggregate-to-edit: <operatorgroup-name>`
-  * A `<kind.group-version-view>` ClusterRole is generated with the `get, list, watch` verbs on `<group>` `<kind>` with aggregation labels `rbac.authorization.k8s.io/aggregate-to-view: true` and `olm.opgroup.permissions/aggregate-to-view: <operatorgroup-name>`
-  * A `<kind.group-version-view-crd>` ClusterRole is generated with the `get` verb on `apiextensions.k8s.io` `customresourcedefinitions` `<crd-name>` with aggregation labels `rbac.authorization.k8s.io/aggregate-to-view: true` and `olm.opgroup.permissions/aggregate-to-view: <operatorgroup-name>`
+  * A `<kind>.<group>-<version>-admin` ClusterRole is generated with the `*` verb on `<group>` `<kind>` with aggregation labels `rbac.authorization.k8s.io/aggregate-to-admin: true` and `olm.opgroup.permissions/aggregate-to-admin: <operatorgroup-name>`
+  * A `<kind>.<group>-<version>-edit` ClusterRole is generated with the `create, update, patch, delete` verbs on `<group>` `<kind>` with aggregation labels `rbac.authorization.k8s.io/aggregate-to-edit: true` and `olm.opgroup.permissions/aggregate-to-edit: <operatorgroup-name>`
+  * A `<kind>.<group>-<version>-view` ClusterRole is generated with the `get, list, watch` verbs on `<group>` `<kind>` with aggregation labels `rbac.authorization.k8s.io/aggregate-to-view: true` and `olm.opgroup.permissions/aggregate-to-view: <operatorgroup-name>`
+  * A `<kind>.<group>-<version>-view-crdview` ClusterRole is generated with the `get` verb on `apiextensions.k8s.io` `customresourcedefinitions` `<crd-name>` with aggregation labels `rbac.authorization.k8s.io/aggregate-to-view: true` and `olm.opgroup.permissions/aggregate-to-view: <operatorgroup-name>`
 
 * For each provided API resource from an APIService:
-  * A `<kind.group-version-admin>` ClusterRole is generated with the `*` verb on `<group>` `<kind>` with aggregation labels `rbac.authorization.k8s.io/aggregate-to-admin: true` and `olm.opgroup.permissions/aggregate-to-admin: <operatorgroup-name>`
-  * A `<kind.group-version-edit>` ClusterRole is generated with the `create, update, patch, release` verbs on `<group>` `<kind>` with aggregation labels `rbac.authorization.k8s.io/aggregate-to-edit: true` and `olm.opgroup.permissions/aggregate-to-edit: <operatorgroup-name>`
-  * A `<kind.group-version-view>` ClusterRole is generated with the `get, list, watch` verbs on `<group>` `<kind>` with aggregation labels `rbac.authorization.k8s.io/aggregate-to-view: true` and `olm.opgroup.permissions/aggregate-to-view: <operatorgroup-name>`
+  * A `<kind>.<group>-<version>-admin` ClusterRole is generated with the `*` verb on `<group>` `<kind>` with aggregation labels `rbac.authorization.k8s.io/aggregate-to-admin: true` and `olm.opgroup.permissions/aggregate-to-admin: <operatorgroup-name>`
+  * A `<kind>.<group>-<version>-edit` ClusterRole is generated with the `create, update, patch, delete` verbs on `<group>` `<kind>` with aggregation labels `rbac.authorization.k8s.io/aggregate-to-edit: true` and `olm.opgroup.permissions/aggregate-to-edit: <operatorgroup-name>`
+  * A `<kind>.<group>-<version>-view` ClusterRole is generated with the `get, list, watch` verbs on `<group>` `<kind>` with aggregation labels `rbac.authorization.k8s.io/aggregate-to-view: true` and `olm.opgroup.permissions/aggregate-to-view: <operatorgroup-name>`
 
 * If |target namespaces| == 1 and contains `*`:
   * A ClusterRole and corresponding ClusterRoleBinding are generated for each permission defined in the CSV's permissions field. All resources generated are given the `olm.owner: <csv-name>` and `olm.owner.namespace: <csv-namespace>` labels
