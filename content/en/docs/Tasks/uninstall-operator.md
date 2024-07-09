@@ -10,7 +10,7 @@ When uninstalling an operator managed by OLM, a Cluster Admin must decide whethe
 
 ## Step 1: Identifying Resources to Remove
 
-The cluster admin should first understand which types (CRDs and APIServices) are owned by the operator, which is available in the operator's ClusterServiceVersion (CSV) under the `spec.customresourcedefinitions.owned` and `spec.apiservicedefinitions.owned` arrays. It is likely that users have created resources for these types since the operator was installed. The cluster admin should should decide which of these resources to delete on a case-by-case basis. If the resource is not required, delete it. The Cluster Admin should delete all unwanted resources before moving to the next step.
+The cluster admin should first understand which types (CRDs and APIServices) are owned by the operator, which is available in the operator's ClusterServiceVersion (CSV) under the `spec.customresourcedefinitions.owned` and `spec.apiservicedefinitions.owned` arrays. It is likely that users have created resources for these types since the operator was installed. The cluster admin should decide which of these resources to delete on a case-by-case basis. If the resource is not required, delete it. The Cluster Admin should delete all unwanted resources before moving to the next step.
 
 > Note: Although deleting the CRD or APIService removes all resource of the type from the cluster, this action may lead to unintended consequences. Operators often use [finalizers](https://book.kubebuilder.io/reference/using-finalizers.html) to execute application specific cleanup routines before removing the CR. If the API is removed, the operator will be unable to properly remove the resource, and the cluster may appear to be "stuck" as defined in this [Kubernetes issue](https://github.com/kubernetes/kubernetes/issues/60807).
 
@@ -66,4 +66,4 @@ kubectl delete csv $CSV -n <namespace>
 
 ## Step 4: Deciding whether or not to delete the CRDs and APIServices
 
-The final step consists of deciding whether or not to delete the CRDs and APIServices that were introduced to the cluster by the operator. Assuming you have already deleted all unwanted resources on cluster as enumerated in Step 1, if no resources remain it is safe to remove the CRD or APISerivces. Otherwise, you should not delete the type as the wanted resources will be deleted automatically when the CRD or APISerivce is deleted.
+The final step consists of deciding whether or not to delete the CRDs and APIServices that were introduced to the cluster by the operator. Assuming you have already deleted all unwanted resources on cluster as enumerated in Step 1, if no resources remain it is safe to remove the CRD or APISerivces. Otherwise, you should not delete the type as the wanted resources will be deleted automatically when the CRD or APIService is deleted.
