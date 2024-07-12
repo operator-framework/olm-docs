@@ -22,8 +22,8 @@ The templates supported by [`opm`](https://github.com/operator-framework/operato
 
 ## Basic Template
 The `basic template` is an input schema which eliminates FBC information that can be retrieved from existing registries when we process it.
-Users provide all components of an [FBC schema](https://olm.operatorframework.io/docs/reference/file-based-catalogs/#olm-defined-schemas), but supply only the bundle image reference for any `olm.bundle` objects. This results in a greatly simplified, smaller document.
-This approach may be attractive to operator authors who maintain existing catalogs and just want to make the job easier, or for operator authors who need to retain a channel graph which is not based on `semver`.
+Within the schema, users can add entries composed of any valid [FBC schema](https://olm.operatorframework.io/docs/reference/file-based-catalogs/#olm-defined-schemas) components, but supply only the bundle image reference for any `olm.bundle` objects. This results in a greatly simplified, smaller document.
+This approach may be attractive to operator authors who maintain existing catalogs and just want to simplify the format, or for operator authors who need to retain an update graph which cannot be based on `semver`.
 
 ### Usage
 
@@ -45,30 +45,26 @@ opm alpha render-template basic [flags] <filename>
 
 In a very simple example, we define an `olm.package` and an `olm.channel` composed of two `olm.bundle` objects that have an image name attribute but no other attributes/properties.
 ```yaml
----
-schema: olm.package
-name: example-operator
-defaultChannel: stable
----
-schema: olm.channel
-package: example-operator
-name: stable
+schema: olm.template.basic
 entries:
-- name: example-operator.v0.1.0
-- name: example-operator.v0.2.0
-  replaces: example-operator.v0.1.0
----
-schema: olm.bundle
-image: docker.io/example/example-operator-bundle:0.1.0
----
-schema: olm.bundle
-image: docker.io/example-operator-bundle:0.2.0
+  - schema: olm.package
+    name: example-operator
+    defaultChannel: stable
+  - schema: olm.channel
+    package: example-operator
+    name: stable
+    entries:
+      - name: example-operator.v0.1.0
+      - name: example-operator.v0.2.0
+        replaces: example-operator.v0.1.0
+  - schema: olm.bundle
+    image: docker.io/example/example-operator-bundle:0.1.0
+  - schema: olm.bundle
+    image: docker.io/example/example-operator-bundle:0.2.0
 ```
 
 
-Using the `opm alpha render-template basic` command on this input generates the full FBC:<details><summary> (click here to display full output)</summary>
-
-(data blobs truncated with '... [snip] ...' for brevity)
+Using the `opm alpha render-template basic` command on this input generates the full FBC (skipping large bundle metadata objects):
 
 ```yaml
 ---
@@ -97,21 +93,6 @@ properties:
   value:
     packageName: example-operator
     version: 0.1.0
-- type: olm.bundle.object
-  value:
-    data: eyJhcGlWZXJzaW9uIjoidjEiLCJraW5kIjoiU2VydmljZSIsIm1ldGFkYXRhIjp7ImNyZWF0aW9uVGltZXN0YW1wIjpudWxsLCJsYWJlbHMiOnsiY29udHJvbC1wbGFuZSI6ImNvbnRyb2xsZXItbWFuYWdlciJ9LCJuYW1lIjoiZXhhbXBsZS1vcGVyYXRvci1jb250cm9sbGVyLW1hbmFnZXItbWV0cmljcy1zZXJ2aWNlIn0sInNwZWMiOnsicG9ydHMiOlt7Im5hbWUiOiJodHRwcyIsInBvcnQiOjg0NDMsInByb3RvY29sIjoiVENQIiwidGFyZ2V0UG9ydCI6Imh0dHBzIn1dLCJzZWxlY3RvciI6eyJjb250cm9sLXBsYW5lIjoiY29udHJvbGxlci1tYW5hZ2VyIn19LCJzdGF0dXMiOnsibG9hZEJhbGFuY2VyIjp7fX19
-- type: olm.bundle.object
-  value:
-    data: eyJhcGlWZXJzaW9uIjoidjEiLCJkYXRhIjp7ImNvbnRyb2xsZXJfbWFuYWdlcl9jb25maWcueWFtbCI6ImFwaVZlcnNpb246IGNvbnRyb2xsZXItcnVudGltZS5zaWdzLms4cy5pby92MWFscGhhMVxua2luZDogQ29udHJvbGxlck1hbmFnZXJDb25maWdcbmhlYWx0aDpcbiAgaGVhbHRoUHJvYmVCaW5kQWRkcmVzczogOjgwODFcbm1ldHJpY3M6XG4gIGJpbmRBZGRyZXNzOiAxMjcuMC4wLjE6ODA4MFxud2ViaG9vazpcbiAgcG9ydDogOTQ0M1xubGVhZGVyRWxlY3Rpb246XG4gIGxlYWRlckVsZWN0OiB0cnVlXG4gIHJlc291cmNlTmFtZTogY2RmNjA0MTIuY29tXG4ifSwia2luZCI6IkNvbmZpZ01hcCIsIm1ldGFkYXRhIjp7Im5hbWUiOiJleGFtcGxlLW9wZXJhdG9yLW1hbmFnZXItY29uZmlnIn19
-- type: olm.bundle.object
-  value:
-    data: eyJhcGlWZXJzaW9uIjoicmJhYy5hdXRob3JpemF0aW9uLms4cy5pby92MSIsImtpbmQiOiJDbHVzdGVyUm9sZSIsIm1ldGFkYXRhIjp7ImNyZWF0aW9uVGltZXN0YW1wIjpudWxsLCJuYW1lIjoiZXhhbXBsZS1vcGVyYXRvci1tZXRyaWNzLXJlYWRlciJ9LCJydWxlcyI6W3sibm9uUmVzb3VyY2VVUkxzIjpbIi9tZXRyaWNzIl0sInZlcmJzIjpbImdldCJdfV19
-- type: olm.bundle.object
-  value:
-    data: eyJhcGlWZXJzaW ... [snip] ... jEuMCJ9fQ==
-- type: olm.bundle.object
-  value:
-    data: eyJhcGlWZXJzaW ... [snip] ... jEuMCJ9fQ==
 relatedImages:
 - image: gcr.io/kubebuilder/kube-rbac-proxy:v0.8.0
   name: ""
@@ -134,21 +115,6 @@ properties:
   value:
     packageName: example-operator
     version: 0.2.0
-- type: olm.bundle.object
-  value:
-    data: eyJhcGlWZXJzaW9uIjoidjEiLCJraW5kIjoiU2VydmljZSIsIm1ldGFkYXRhIjp7ImNyZWF0aW9uVGltZXN0YW1wIjpudWxsLCJsYWJlbHMiOnsiY29udHJvbC1wbGFuZSI6ImNvbnRyb2xsZXItbWFuYWdlciJ9LCJuYW1lIjoiZXhhbXBsZS1vcGVyYXRvci1jb250cm9sbGVyLW1hbmFnZXItbWV0cmljcy1zZXJ2aWNlIn0sInNwZWMiOnsicG9ydHMiOlt7Im5hbWUiOiJodHRwcyIsInBvcnQiOjg0NDMsInByb3RvY29sIjoiVENQIiwidGFyZ2V0UG9ydCI6Imh0dHBzIn1dLCJzZWxlY3RvciI6eyJjb250cm9sLXBsYW5lIjoiY29udHJvbGxlci1tYW5hZ2VyIn19LCJzdGF0dXMiOnsibG9hZEJhbGFuY2VyIjp7fX19
-- type: olm.bundle.object
-  value:
-    data: eyJhcGlWZXJzaW9uIjoidjEiLCJkYXRhIjp7ImNvbnRyb2xsZXJfbWFuYWdlcl9jb25maWcueWFtbCI6ImFwaVZlcnNpb246IGNvbnRyb2xsZXItcnVudGltZS5zaWdzLms4cy5pby92MWFscGhhMVxua2luZDogQ29udHJvbGxlck1hbmFnZXJDb25maWdcbmhlYWx0aDpcbiAgaGVhbHRoUHJvYmVCaW5kQWRkcmVzczogOjgwODFcbm1ldHJpY3M6XG4gIGJpbmRBZGRyZXNzOiAxMjcuMC4wLjE6ODA4MFxud2ViaG9vazpcbiAgcG9ydDogOTQ0M1xubGVhZGVyRWxlY3Rpb246XG4gIGxlYWRlckVsZWN0OiB0cnVlXG4gIHJlc291cmNlTmFtZTogY2RmNjA0MTIuY29tXG4ifSwia2luZCI6IkNvbmZpZ01hcCIsIm1ldGFkYXRhIjp7Im5hbWUiOiJleGFtcGxlLW9wZXJhdG9yLW1hbmFnZXItY29uZmlnIn19
-- type: olm.bundle.object
-  value:
-    data: eyJhcGlWZXJzaW9uIjoicmJhYy5hdXRob3JpemF0aW9uLms4cy5pby92MSIsImtpbmQiOiJDbHVzdGVyUm9sZSIsIm1ldGFkYXRhIjp7ImNyZWF0aW9uVGltZXN0YW1wIjpudWxsLCJuYW1lIjoiZXhhbXBsZS1vcGVyYXRvci1tZXRyaWNzLXJlYWRlciJ9LCJydWxlcyI6W3sibm9uUmVzb3VyY2VVUkxzIjpbIi9tZXRyaWNzIl0sInZlcmJzIjpbImdldCJdfV19
-- type: olm.bundle.object
-  value:
-    data: eyJhcGlWZXJzaW ... [snip] ... jEuMCJ9fQ==
-- type: olm.bundle.object
-  value:
-    data: eyJhcGlWZXJzaW ... [snip] ... jEuMCJ9fQ==
 relatedImages:
 - image: gcr.io/kubebuilder/kube-rbac-proxy:v0.8.0
   name: ""
@@ -157,67 +123,56 @@ relatedImages:
 - image: docker.io/example/example-operator:0.2.0
   name: ""
 schema: olm.bundle
-
 ```
-</details>
 
-#### Converting from FBC to Basic Template
-Operator authors can convert a File-Based Catalog (FBC) to a basic template by processing the output of the `opm render` command through either `jq` or `yq`.
+## Converting from FBC to Basic Template
+The `opm` tool provides the capability to render existing File-Based Catalogs to basic catalog templates in JSON or YAML formats.
 
-To convert a File-Based Catalog to a Basic Template using `jq`, run the following command:
+### Usage
 
 ```sh
-opm render <catalogRef> -o json | jq 'if (.schema == "olm.bundle") then {schema: .schema, image: .image} else . end'
+opm alpha convert-template basic [flags] <filename>
 ```
+
+| Flag                | Description                                                                            |
+| ------------------- | -------------------------------------------------------------------------------------- |
+| -h, --help          | prints help/usage information                                                          |
+| -o, --output <type> | the output format, can be `yaml` or `json`                                             |
+| --skip-tls-verify   | skip TLS certificate verification for container image registries while pulling bundles |
+| --use-http          | use plain HTTP for container image registries while pulling bundles                    |
+
+`--skip-tls-verify` and `--use-http` are mutually exclusive flags.
+
+
 
 Example template in JSON format after the conversion:
 
 ```json
 {
-  "schema": "olm.package",
-  "name": "hello-kubernetes",
-  "defaultChannel": "alpha",
-  "description": "hello-kubernetes"
-}
-{
-  "schema": "olm.channel",
-  "name": "alpha",
-  "package": "hello-kubernetes",
+  "schema": "olm.template.basic",
   "entries": [
     {
-      "name": "hello-kubernetes.v0.0.1"
+      "schema": "olm.package",
+      "name": "hello-kubernetes",
+      "defaultChannel": "alpha",
+      "description": "hello-kubernetes"
+    },
+    {
+      "schema": "olm.channel",
+      "name": "alpha",
+      "package": "hello-kubernetes",
+      "entries": [
+        {
+          "name": "hello-kubernetes.v0.0.1"
+        }
+      ]
+    },
+    {
+      "schema": "olm.bundle",
+      "image": "docker.io/test/hello-kubernetes-operator-bundle:v0.0.1"
     }
   ]
 }
-{
-  "schema": "olm.bundle",
-  "image": "docker.io/test/hello-kubernetes-operator-bundle:v0.0.1"
-}
-```
-
-To convert a File-Based Catalog to a Basic Template using `yq`, run the following command:
-
-```sh
-opm render <catalogRef> -o yaml | yq eval -i 'select(.schema == "olm.bundle") = {"schema": .schema, "image": .image}' test.yaml - test.yaml
-```
-
-Example basic template in YAML format after the conversion:
-
-```yaml
-  ---
-  schema: olm.package
-  defaultChannel: alpha
-  description: hello-kubernetes
-  name: hello-kubernetes
-  ---
-  schema: olm.channel
-  name: alpha
-  package: hello-kubernetes
-  entries:
-    - name: hello-kubernetes.v0.0.1
-  ---
-  schema: olm.bundle
-  image: docker.io/test/hello-kubernetes-operator-bundle:v0.0.1
 ```
 
 ## Semver Template
@@ -339,7 +294,7 @@ GenerateMajorChannels: true
 GenerateMinorChannels: false
 ```
 
-we generate the following major channels (filtering out `olm.bundle` objects):
+we generate the following major channels (filtering out large bundle metadata):
 ```yaml
 ---
 defaultChannel: stable-v1
@@ -417,7 +372,7 @@ GenerateMinorChannels: true
 GenerateMajorChannels: false
 ```
 
- we generate the following minor channels (again filtering out `olm.bundle` objects):
+ we generate the following minor channels (again filtering out large bundle metadata):
 
 ```yaml
 ---
