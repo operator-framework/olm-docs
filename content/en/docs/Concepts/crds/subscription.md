@@ -39,6 +39,10 @@ spec:
   source: my-catalog
   sourceNamespace: operators
   installPlanApproval: Manual
+  config:
+    env:
+    - name: ARGS
+      value: "-v=10"
 ```
 
 Setting the `installPlanApproval` field to manual will prevent OLM from automatically installing the operator. As such, you will need to approve the installPlan which can be done with the following commands:
