@@ -58,7 +58,7 @@ $ cat og.yaml
     name: my-group
     namespace: foo
 
-$ kubectl apply og.yaml
+$ kubectl apply -f og.yaml
   operatorgroup.operators.coreos.com/my-group created
 ```
 
