@@ -115,7 +115,7 @@ they are present, they must adhere to their respective field schemas. Any other 
 
 The combination of the `schema`, `package`, and `name` fields must be unique within a catalog.
 
-See the [Properties](#properties) section for information about the `property` field.
+See the [Properties](#properties) section for information about the `properties` field.
 
 Here is an example of an object which adheres to the `Meta` schema:
 
