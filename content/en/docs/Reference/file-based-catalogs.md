@@ -115,7 +115,7 @@ they are present, they must adhere to their respective field schemas. Any other 
 
 The combination of the `schema`, `package`, and `name` fields must be unique within a catalog.
 
-See the [Properties](#properties) section for information about the property type.
+See the [Properties](#properties) section for information about the `properties` field.
 
 Here is an example of an object which adheres to the `Meta` schema:
 
@@ -162,8 +162,9 @@ callers to parse the object using a more specific type that maps to the "my.othe
 
 ### OLM-defined schemas
 
-An OLM catalog currently uses three schemas: `olm.package`, `olm.channel`, and `olm.bundle`, which correspond to OLM's
-existing package, channel, and bundle concepts.
+An OLM catalog currently uses the following schemas:
+- `olm.package`, `olm.channel`, and `olm.bundle`, which correspond to OLM's existing package, channel, and bundle concepts,
+- `olm.deprecations`, which provides information for support and upgrades.
 
 Each operator package in a catalog requires exactly one `olm.package` blob, at least one `olm.channel` blob, and one or
 more `olm.bundle` blobs.
@@ -173,7 +174,7 @@ more `olm.bundle` blobs.
 
 #### `olm.package`
 
-An `olm.package` defines package-level metadata for an operator. This includes its name, description, default channel
+An `olm.package` defines package-level (i.e. top level) metadata for an operator. This includes its name, description, default channel
 and icon.
 
 Here is an example of an `olm.package` blob:
@@ -226,7 +227,7 @@ entries:
   
   # replaces is optional. It is the name of the bundle that is replaced
   # by this entry. It must be present in the entry list, unless this
-  # entry is the channel tail. Channel tails are allowed to have replaces
+  # entry is a channel tail. Channel tails are allowed to have replaces
   # values that are not present in the entry list.
   replaces: foo.v0.2.1
   
@@ -256,7 +257,7 @@ necessary to locate the bundle's contents, the related images used by the operat
 can be used by clients to orchestrate lifecycling behavior, build user interfaces, provide filtering mechanisms, etc.
 For example, the "olm.gvk" property can be used to specify a Kubernetes group, version, and kind that this operator
 version provides, and the "olm.gvk.required" property can be used to specify a GVK that this operator requires.
-components that understand these properties can implement dependency resolution by matching GVK providers and
+Components that understand these properties can implement dependency resolution by matching GVK providers and
 requirers.
 
 See the [Properties](#properties) section for information about the properties understood by OLM.
@@ -846,7 +847,7 @@ There are many possible ways to build a catalog, but an extremely simple approac
 ## Automation
 
 Operator authors and catalog maintainers are encouraged to automate their catalog maintenance with CI/CD workflows.
-catalog maintainers could further improve on this by building Git-ops automation that:
+Catalog maintainers could further improve on this by building Git-ops automation that:
 - Checks that PR authors are permitted to make the requested changes (e.g. updating their package's image reference)
 - Checks that the catalog updates pass `opm validate`
 - Checks that the updated bundle and/or catalog image reference(s) exist, the catalog images run successfully in a cluster,
