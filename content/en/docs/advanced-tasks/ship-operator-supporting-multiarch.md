@@ -16,7 +16,7 @@ labels:
     operatorframework.io/os.<GOOS>: supported
 ```
 
-Where `<GOARCH>` and `<GOOS>` are one of the values [listed here](https://github.com/golang/go/blob/master/src/go/build/syslist.go).
+Where `<GOARCH>` and `<GOOS>` are one of the values [listed here](https://github.com/golang/go/blob/master/src/internal/syslist/syslist.go).
 
 ## Multiple Architectures
 
