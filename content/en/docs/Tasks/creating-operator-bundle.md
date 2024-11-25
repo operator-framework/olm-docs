@@ -49,7 +49,7 @@ Flags:
 For example, to generate the `annotations.yaml` and `Dockerfile` for the example bundle mentioned above, the command for the `generate` task is:
 
 ```bash
-$ opm alpha bundle generate --directory /etcd --package etcd --channels stable --default stable
+$ opm alpha bundle generate --directory ./etcd --package etcd --channels stable --default stable
 ```
 After the generate command is executed, the `Dockerfile` is generated in the directory where command is run. By default, the `annotations.yaml` file is located in a folder named `metadata` in the same root directory as the input directory containing manifests.
 
