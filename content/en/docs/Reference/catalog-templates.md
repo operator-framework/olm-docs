@@ -114,8 +114,6 @@ properties:
     packageName: example-operator
     version: 0.2.0
 relatedImages:
-- image: gcr.io/kubebuilder/kube-rbac-proxy:v0.8.0
-  name: ""
 - image: docker.io/example/example-operator-bundle:0.2.0
   name: ""
 - image: docker.io/example/example-operator:0.2.0
