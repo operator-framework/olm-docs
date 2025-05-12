@@ -39,6 +39,8 @@ kubectl delete subscription <subscription-name> -n <namespace>
 
 The `CSV` contains all the information that OLM needs to manage an operator, and it effectively represents an operator that is installed on cluster. By deleting a `CSV`, OLM will delete the resources it created for the operator such as the `deployment`, `RBAC`, and any corresponding `CSVs` that OLM "Copied" into other namespaces watched by the operator.
 
+Note that deleting a CSV only deletes objects derived from the CSV and does not delete objects from the bundle. For example, while RBAC resources derived from the CSV's `permissions` and `clusterPermissions` fields will be deleted, any RBAC resources included directly in the bundle itself will remain on the cluster.
+
 If you wish to look up a list of `ClusterServiceVersion` in a specific namespace to see which `ClusterServiceVersion` you need to delete, you can use the example `kubectl` command:
 
 ```bash
