@@ -329,19 +329,19 @@ schema: olm.deprecations
 package: deprecation-example
 entries:
   - reference:
-  	schema: olm.bundle
-  	name: deprecation-example-operator.v1.68.0
+      schema: olm.bundle
+      name: deprecation-example-operator.v1.68.0
     message: |
-   	deprecation-example-operator.v1.68.0 is deprecated. Uninstall and install deprecation-example-operator.v1.72.0 for support.
+      deprecation-example-operator.v1.68.0 is deprecated. Uninstall and install deprecation-example-operator.v1.72.0 for support.
   - reference:
-  	schema: olm.package
+      schema: olm.package
     message: |
-   	package deprecation-example is end of life.  Please use 'non-deprecated-example' package for support.
+      package deprecation-example is end of life.  Please use 'non-deprecated-example' package for support.
   - reference:
-  	schema: olm.channel
-  	name: alpha
+      schema: olm.channel
+      name: alpha
     message: |
-   	channel alpha is no longer supported.  Please switch to channel 'stable'.
+      channel alpha is no longer supported.  Please switch to channel 'stable'.
 ```
 
 ### Properties
