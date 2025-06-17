@@ -95,12 +95,13 @@ catalog composition, discovery, and navigation as simple as trivial filesystem o
 > ├── pkgA
 > │   └── operator.yaml
 > ├── pkgB
-> │   ├── .indexignore
+> │   ├── .indexignore # to ignore README.md
 > │   ├── operator.yaml
-> │   └── objects
-> │       └── pkgB.v0.1.0.clusterserviceversion.yaml
+> │   └── README.md
 > └── pkgC
->     └── operator.json
+> │   ├── package.json
+> │   ├── channels.yaml
+>     └── bundles.json
 > ```
 
 This catalog could also be trivially included in a parent catalog by simply copying it into the parent catalog's root
