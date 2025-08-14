@@ -1,0 +1,142 @@
+---
+title: "Upgrade Graph Visualization"
+linkTitle: "Upgrade Graph Visualization (alpha)"
+weight: 5
+date: 2024-11-18
+---
+
+>Note: `upgrade graph visualization` is **ALPHA** functionality and may adopt breaking changes
+
+
+## Concept
+
+File-Based Catalogs (FBC) are a major improvement to the imperative update graph approaches of previous versions. FBCs give operator authors a [declarative and deterministic approach to defining their update graph](https://olm.operatorframework.io/docs/concepts/olm-architecture/operator-catalog/creating-an-update-graph/). However, FBCs can get complex, especially as the number of releases and dependencies scale. The upgrade graphs, in particular, for an operator can be difficult to reason about abstractly. Having an easy way to understand and quickly troubleshoot issues such as orphaned or stranded versions where there is no upgrade path forward from the orphaned or stranded version. To support understanding the upgrade graphs of operators in an index, we introduce a tool to generate a mermaid-formatted visualization through the `render-graph` command.
+
+## Visualizing Upgrade Graphs
+
+The `render-graph` command generates the upgrade graphs of operators for a given index in mermaid-format. The resulting output can then be viewed in online services such as [mermaid.live](https://mermaid.live) or converted to an image using a tool such as [mermaid-cli](https://github.com/mermaid-js/mermaid-cli).
+
+### Usage
+
+```sh
+opm alpha render-graph [index-image | fbc-dir] [flags]
+```
+
+| Flag                      | Description                                                                               |
+| ------------------------- | ----------------------------------------------------------------------------------------- |
+| -h, --help                | prints help/usage information                                                             |
+| --minimum-edge string     | the channel edge to use as the lower bound of the set of edges composing the upgrade graph; default is to include all edges |
+| -p, --package-name string | a specific package name to filter output; default is to include all packages in reference |
+| --skip-tls-verify         | skip TLS certificate verification for container image registries while pulling bundles    |
+| --use-http                | use plain HTTP for container image registries while pulling bundles                       |
+
+`--skip-tls-verify` and `--use-http` are mutually exclusive flags.
+
+### Examples 
+For the following examples, we define a catalog with the following FBC directory structure:
+```
+example_catalog/
+└── testoperator
+    └── index.yaml
+```
+
+The index.yaml file contains the following:
+```yaml
+---
+defaultChannel: stable-v1
+name: testoperator
+schema: olm.package
+---
+entries:
+- name: testoperator.v0.1.0
+- name: testoperator.v0.1.1
+- name: testoperator.v0.1.2
+- name: testoperator.v0.1.3
+  skips:
+  - testoperator.v0.1.0
+  - testoperator.v0.1.1
+  - testoperator.v0.1.2
+- name: testoperator.v0.2.0
+- name: testoperator.v0.2.1
+- name: testoperator.v0.2.2
+  replaces: testoperator.v0.1.3
+  skips:
+  - testoperator.v0.2.0
+  - testoperator.v0.2.1
+- name: testoperator.v0.2.3
+  skips:
+  - testoperator.v0.2.2
+- name: testoperator.v0.3.0
+  replaces: testoperator.v0.2.2
+name: candidate-v0
+package: testoperator
+schema: olm.channel
+---
+entries:
+- name: testoperator.v0.2.1
+- name: testoperator.v0.2.2
+  skips:
+  - testoperator.v0.2.1
+- name: testoperator.v0.3.0
+  replaces: testoperator.v0.2.2
+name: fast-v0
+package: testoperator
+schema: olm.channel
+---
+entries:
+- name: testoperator.v0.2.2
+name: stable-v0
+package: testoperator
+schema: olm.channel
+```
+
+#### Generating a channel graph
+To generate the upgrade graphs of each channel, run the following:
+
+`opm alpha render-graph example_catalog/`
+
+This will output a mermaid graph that looks like this when rendered into an image:
+
+![Full Upgrade Graph](/content/en/docs/Reference/images/full-upgrade-graph.png)
+
+#### Generating a scaled vector graphic (SVG)
+To generate a scaled vector graphic (SVG) directly from the output results of the `render-graph` command, use the following:
+
+```
+opm alpha render-graph example_catalog | \
+    docker run --rm -i -v "$PWD":/data ghcr.io/mermaid-js/mermaid-cli/mermaid-cli -o /data/example_catalog.svg
+```
+
+#### Generating a channel graph for a single operator in a catalog
+Say we now have multiple operators in our example_catalog:
+```
+example_catalog/
+└── testoperator
+    └── index.yaml
+└── anotheroperator
+    └── index.yaml
+└── yetanotheroperator
+    └── index.yaml
+```
+Running the `render-graph` command on the `example_catalog/` directory would now generate upgrade graphs for all of these operators. To limit the generated graph to only the testoperator, we would use the following:
+`opm alpha render-graph -p testoperator example_catalog/`
+
+### Advanced Examples
+The following examples expand on advanced topics related to upgrade graphs that can be understood more easily via visualizations generated by the `render-graph` command.
+
+#### Visualizing skipRanges
+Consistently using skipRanges allows for a given version to be upgraded to any other newer versions. A real-world example of this can be seen in the security-profiles-operator upgrade graph:
+
+#TODO Show full graph of security-profiles-operator
+
+#### Limiting the upgrade graph to a particular version context
+Say we are only interested in the upgrade graph after version v0.8.0. We can limit the upgrade graph to the v0.8.0+ context using the following:
+`opm alpha render-graph -p security-profiles-operator --minimum-edge security-profiles-operator.v0.8.0 quay.io/operatorhubio/catalog:latest`
+
+#TODO Show limited graph of security-profiles-operator
+
+#### Visualizing orphaned or stranded versions
+Orphaned or stranded versions are versions that are not the latest version and do not have an update path available.
+This can happen, for example, by not providing an upgrade version for a version and also via graph truncation.
+
+A real-world scenario that can necessitate graph truncation would be to restrict installable operator version ranges.
