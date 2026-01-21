@@ -141,7 +141,7 @@ opm alpha convert-template basic [flags] <filename>
 
 
 
-Example template in JSON format after the conversion:
+### Example template in JSON format after the conversion
 
 ```json
 {
@@ -166,6 +166,61 @@ Example template in JSON format after the conversion:
     {
       "schema": "olm.bundle",
       "image": "docker.io/test/hello-kubernetes-operator-bundle:v0.0.1"
+    }
+  ]
+}
+```
+
+## Using existing FBC to bootstrap a Substitutes Template
+The `opm` tool provides the capability to generate a substitutes template from existing FBC in JSON or YAML formats.
+
+### Usage
+
+```sh
+./bin/opm alpha convert-template substitutes [flags] <fbc-location>
+```
+
+| Flag                | Description                                                                            |
+| ------------------- | -------------------------------------------------------------------------------------- |
+| -h, --help          | prints help/usage information                                                          |
+| -o, --output <type> | the output format, can be `yaml` or `json`                                             |
+| --skip-tls-verify   | skip TLS certificate verification for container image registries while pulling bundles |
+| --use-http          | use plain HTTP for container image registries while pulling bundles                    |
+
+`--skip-tls-verify` and `--use-http` are mutually exclusive flags.
+
+### Example template in JSON format after the conversion
+>Note: empty substitutions are provided, but must be filled in to be valid
+
+```json
+{
+  "schema": "olm.template.substitutes",
+  "entries": [
+    {
+      "schema": "olm.package",
+      "name": "hello-kubernetes",
+      "defaultChannel": "alpha",
+      "description": "hello-kubernetes"
+    },
+    {
+      "schema": "olm.channel",
+      "name": "alpha",
+      "package": "hello-kubernetes",
+      "entries": [
+        {
+          "name": "hello-kubernetes.v0.0.1"
+        }
+      ]
+    },
+    {
+      "schema": "olm.bundle",
+      "image": "docker.io/test/hello-kubernetes-operator-bundle:v0.0.1"
+    }
+  ],
+  "substitutions": [
+    {
+      "name":,
+      "base":
     }
   ]
 }
@@ -511,3 +566,301 @@ package: testoperator
 schema: olm.channel
 ```
 
+## Substitutes Template
+
+The substitutes template provides a safe and structured way to replace bundles in an upgrade graph with newer packaging versions. This is particularly useful when you need to republish a bundle with non-functional changes (documentation fixes, label updates, etc.) and want to ensure users upgrade to the new bundle.
+
+#### Problem Statement
+
+Before the substitutes template, when you needed to replace a bundle in a catalog (for example, `foo.v1.0.0` with a documentation fix), you had two options:
+
+1. **Manually edit all channel entries** - Error-prone and requires updating multiple references
+2. **Use the deprecated `substitutesFor` CSV field** - Not available in file-based catalogs
+
+The `olm.template.substitutes` template solves this by automatically handling the complex graph mutations required to safely replace bundles.
+
+### Schema
+
+```yaml
+schema: olm.template.substitutes
+entries:
+  - # Existing FBC catalog content (packages, channels, bundles)
+substitutions:
+  - name: <new-bundle-image>  # Bundle image to substitute
+    base: <old-bundle-name>   # Bundle name to replace
+```
+
+### How It Works
+
+When you define a substitution:
+
+1. The template validates that the substitute bundle has a higher composite version than the base bundle
+2. For each channel containing the base bundle, the template:
+   - Adds the new bundle to the channel
+   - Move upgrade edges (replaces, skips, skipRange) from the base to the substitute
+   - Adds a skip edge from substitute to base
+   - Updates all other entries that reference the base to reference the substitute instead
+
+Before Substitution
+```mermaid
+graph LR
+  A1[foo.v0.9.0] -->|replace| B1[foo.v1.0.0]
+  B1 -->|replace| C1[foo.v1.1.0]
+```
+
+After Substitution
+```mermaid
+graph LR
+  A2[foo.v0.9.0] -->|replace| B2[foo-v1.0.0-1<br/>NEW]
+  B2 -->|replace| C2[foo.v1.1.0]
+  B2 -.->|skip| D2[foo.v1.0.0<br/>OLD]
+
+  style B2 fill:#c3e6cb,stroke:#28a745,stroke-width:3px
+  style D2 fill:#f8d7da,stroke:#dc3545,stroke-width:2px,stroke-dasharray: 5 5
+```
+
+### Step-by-Step Example
+
+#### Step 1: Initial Catalog State
+
+You have a catalog with three bundles in the `stable` channel:
+
+```yaml
+---
+schema: olm.channel
+package: foo
+name: stable
+entries:
+  - name: foo.v0.9.0
+  - name: foo.v1.0.0
+    replaces: foo.v0.9.0
+  - name: foo.v1.1.0
+    replaces: foo.v1.0.0
+---
+schema: olm.bundle
+package: foo
+name: foo.v1.0.0
+image: quay.io/example/foo-bundle:v1.0.0
+properties:
+  - type: olm.package
+    value:
+      packageName: foo
+      version: 1.0.0
+```
+
+#### Step 2: Create New Bundle with Release
+
+You discover `foo.v1.0.0` is missing a critical annotation. 
+You 
+1. update the bundle's annotation in `metadata/annotations.yaml`
+2. update the bundle's CSV with `spec.release` set (here set to 1)
+3. ensure that the bundle's `metadata-name` follows the format required for using release versions
+4. publish the bundle
+
+The `opm render`-ed bundle image would look something like this in FBC:
+
+```yaml
+---
+schema: olm.bundle
+package: foo
+name: foo-v1.0.0-1  # New name with release
+image: quay.io/example/foo-bundle:v1.0.0-1
+properties:
+  - type: olm.package
+    value:
+      packageName: foo
+      version: 1.0.0
+      release: "1"  # Added release
+```
+
+#### Step 3: Create Substitutes Template
+Instead of manually updating the catalog, create a substitutes template:
+> Note: see [Using existing FBC to bootstrap a Substitutes Template](#using-existing-fbc-to-bootstrap-a-substitutes-template) to get `opm` to generate this for you.
+
+```yaml
+schema: olm.template.substitutes
+entries:
+  # Include all your existing catalog content here
+  # (packages, channels, bundles - except the new foo-v1.0.0-1)
+substitutions:
+  - name: quay.io/example/foo-bundle:v1.0.0-1  # New bundle image
+    base: foo.v1.0.0  # Old bundle name to replace
+```
+
+#### Step 4: Render the Template
+
+Use `opm` to render the template:
+
+```bash
+opm alpha render-template substitutes-template.yaml -o yaml > catalog/foo/index.yaml
+```
+
+The rendered catalog will have:
+
+```yaml
+---
+schema: olm.channel
+package: foo
+name: stable
+entries:
+  - name: foo.v0.9.0
+  - name: foo-v1.0.0-1  # NEW substitute bundle
+    replaces: foo.v0.9.0
+    skips:
+      - foo.v1.0.0  # Skips the old bundle
+  - name: foo.v1.1.0
+    replaces: foo-v1.0.0-1  # Updated to point to new bundle
+  - name: foo.v1.0.0  # OLD bundle remains in catalog
+    # No upgrade edges (orphaned)
+```
+
+### Substitution Rules and Validation
+
+The template enforces several validation rules:
+
+1. **Composite version check**: The substitute bundle must have a higher composite version than the base bundle
+   ```yaml
+   # ✅ VALID - release "1" > no release
+   base: foo.v1.0.0 (version 1.0.0, no release)
+   name: foo-v1.0.0-1 (version 1.0.0, release "1")
+
+   # ❌ INVALID - same version and release
+   base: foo-v1.0.0-1
+   name: foo-v1.0.0-1
+
+   # ❌ INVALID - lower composite version
+   base: foo-v1.0.0-2
+   name: foo-v1.0.0-1
+   ```
+
+2. **Base bundle must exist**: The base bundle name must be present in the catalog
+
+3. **Required fields**: Both `name` (bundle image) and `base` (bundle name) are required
+
+4. **Name vs Base validation**: The `name` and `base` cannot be the same
+
+#### Multiple Substitutions
+
+You can define multiple substitutions in a single template:
+
+```yaml
+schema: olm.template.substitutes
+entries:
+  # ... catalog content ...
+substitutions:
+  - name: quay.io/example/foo-bundle:v1.0.0-1
+    base: foo.v1.0.0
+  - name: quay.io/example/foo-bundle:v1.1.0-1
+    base: foo.v1.1.0
+  - name: quay.io/example/bar-bundle:v2.0.0-alpha.2
+    base: bar-v2.0.0-alpha.1
+```
+
+The substitutions are processed in order, and each substitution validates against the current state of the catalog.
+
+#### Upgrade Path Diagram
+
+```mermaid
+stateDiagram-v2
+    [*] --> InstalledOld: User has foo.v1.0.0
+    [*] --> InstalledNew: New user installs
+
+    InstalledOld --> UpgradeToSubstitute: Catalog updated with<br/>substitution
+    InstalledNew --> UseSubstitute: Directly installs<br/>foo-v1.0.0-1
+
+    UpgradeToSubstitute --> foo_v1_0_0_1: OLM sees substitute<br/>skips old bundle
+    UseSubstitute --> foo_v1_0_0_1: Gets latest bundle
+
+    foo_v1_0_0_1 --> [*]: Up to date
+
+    note right of UpgradeToSubstitute
+        Skip relationship ensures
+        users upgrade to the new
+        packaging version
+    end note
+```
+
+### Best Practices
+
+1. **Use for packaging changes only**: The substitute bundle should be functionally equivalent to the base bundle
+
+2. **Validate composite versions**: Ensure your substitute bundle has a higher composite version (typically by adding a release field)
+
+3. **Test before deploying**: Use `opm validate` to verify the rendered catalog:
+   ```bash
+   opm alpha render-template template.yaml | opm validate -
+   ```
+
+4. **Keep base bundles**: The old bundle remains in the catalog but becomes unreachable through normal upgrade paths (it's still accessible for historical reference)
+
+5. **Document substitutions**: Add comments in your template explaining why each substitution was made
+
+   ```yaml
+   substitutions:
+     # Fixed typo in operator description
+     - name: quay.io/example/foo-bundle:v1.0.0-1
+       base: foo.v1.0.0
+   ```
+
+### Complete Working Example
+
+```yaml
+---
+schema: olm.template.substitutes
+
+# Your existing catalog content
+entries:
+  - schema: olm.package
+    name: foo
+    defaultChannel: stable
+
+  - schema: olm.channel
+    package: foo
+    name: stable
+    entries:
+      - name: foo.v0.9.0
+      - name: foo.v1.0.0
+        replaces: foo.v0.9.0
+      - name: foo.v1.1.0
+        replaces: foo.v1.0.0
+
+  - schema: olm.bundle
+    package: foo
+    name: foo.v0.9.0
+    image: quay.io/example/foo-bundle:v0.9.0
+    properties:
+      - type: olm.package
+        value:
+          packageName: foo
+          version: 0.9.0
+
+  - schema: olm.bundle
+    package: foo
+    name: foo.v1.0.0
+    image: quay.io/example/foo-bundle:v1.0.0
+    properties:
+      - type: olm.package
+        value:
+          packageName: foo
+          version: 1.0.0
+
+  - schema: olm.bundle
+    package: foo
+    name: foo.v1.1.0
+    image: quay.io/example/foo-bundle:v1.1.0
+    properties:
+      - type: olm.package
+        value:
+          packageName: foo
+          version: 1.1.0
+
+# Define the substitution
+substitutions:
+  - name: quay.io/example/foo-bundle:v1.0.0-1  # New bundle with fixed docs
+    base: foo.v1.0.0  # Old bundle to replace
+```
+
+Render with:
+```bash
+opm alpha render-template substitutes-template.yaml -o yaml > catalog/foo/index.yaml
+```

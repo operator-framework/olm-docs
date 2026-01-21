@@ -106,3 +106,101 @@ spec:
       version: v1alpha1
       kind: Other
 ```
+## Release Field
+
+The `release` field is an optional field in the CSV spec that specifies the packaging version of an operator. It allows operator authors to distinguish between different builds of the same operator version.
+
+### When to Use the Release Field
+
+Use the `release` field when you need to make changes to the CSV that don't affect the operator's functionality:
+
+- Fixing typos in descriptions
+- Adding or amending annotations or labels
+- Amending examples or documentation
+- Producing different builds for different environments
+
+### Format and Validation
+
+The `release` field must conform to the [semver prerelease format](https://semver.org/spec/v2.0.0.html#spec-item-9):
+- Dot-separated identifiers containing only alphanumerics and hyphens
+- Maximum length of 20 characters
+- **Cannot contain build metadata** (the `+` character and everything after it)
+- Examples: `1`, `alpha`, `alpha.1`, `beta-1`, `rc.2.0`
+
+### Example
+
+```yaml
+apiVersion: operators.coreos.com/v1alpha1
+kind: ClusterServiceVersion
+metadata:
+  name: memcached-operator-v0.10.0-1
+spec:
+  version: 0.10.0
+  release: "1"  # Optional packaging version
+  displayName: Memcached Operator
+  description: This is an operator for memcached.
+  # ... rest of CSV spec
+```
+
+### Bundle Naming Convention with Release
+
+When a `release` field is specified, the bundle name must follow the convention:
+
+```
+<package-name>-v<version>-<release>
+```
+
+**Examples:**
+- `memcached-operator-v0.10.0-1`
+- `memcached-operator-v0.10.0-alpha.1`
+- `memcached-operator-v0.10.0-rc.2`
+
+### Version Ordering
+
+Bundles are ordered using a composite version that considers both `version` and `release`:
+
+1. Bundles are first ordered by semantic version
+2. For bundles with the same version, those **with** a release are ordered **before** those **without** a release
+3. Bundles with the same version and both having releases are ordered by their release version
+
+```mermaid
+graph TD
+    A[Bundle Comparison] --> B{Same Version?}
+    B -->|No| C[Order by Version]
+    B -->|Yes| D{Both have Release?}
+    D -->|No| E{Has Release?}
+    D -->|Yes| F[Order by decreasing Release]
+    E -->|Bundle A| G[A before B]
+    E -->|Bundle B| H[B before A]
+
+    style A fill:#e1f5ff
+    style C fill:#c3e6cb
+    style F fill:#c3e6cb
+    style G fill:#c3e6cb
+    style H fill:#c3e6cb
+```
+
+**Example ordering:**
+```
+memcached-operator.v0.9.0          # version 0.9.0, no release
+memcached-operator-v0.10.0-alpha   # version 0.10.0, release "alpha"
+memcached-operator-v0.10.0-2       # version 0.10.0, release "2"
+memcached-operator-v0.10.0-1       # version 0.10.0, release "1"
+memcached-operator.v0.10.0         # version 0.10.0, no release
+```
+
+### Build Metadata Restriction
+
+The `release` field **cannot contain build metadata**. The following is **invalid**:
+
+```yaml
+# ❌ INVALID - release cannot contain build metadata (the + character)
+version: 0.10.0
+release: "1+fffdb0e"
+```
+
+```yaml
+# ✅ VALID - build metadata can be in version when no release is present
+version: 0.10.0+fffdb0e
+# no release field
+```
