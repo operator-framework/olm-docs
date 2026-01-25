@@ -357,7 +357,7 @@ OLM defines a handful of property types, again using the reserved `olm.*` prefix
 
 An `olm.package` property defines the package name and version. This is a required property on bundles, and there must
 be exactly one of these properties. The `packageName` must match the bundle's first-class `package` field, the
-`version` must be a valid [semantic version][semver], and it may include an optional `release` bundle packaging identifier. See the [Bundle Release Property](#bundle_release_property) section for additional format requirements and examples.
+`version` must be a valid [semantic version][semver], and the package may include an optional `release` bundle packaging field. See the [Bundle Release Property](#bundle-release-property) section for additional format requirements and examples.
 
 The `olm.package` property [cue][cuelang-spec] schema is:
 ```cue
@@ -646,7 +646,7 @@ The `olm.bundle.object` property [cue][cuelang-spec] schema is:
 #### `olm.package` with Release Version
 
 The `olm.package` property has been extended to support an optional `release` field that specifies the packaging version of a bundle. This allows catalog maintainers to distinguish between different builds of the same operator version.
-###### Use Cases for Bundle Release
+##### Use Cases for Bundle Release
 
 Use the `release` field when you need to:
 
@@ -788,8 +788,8 @@ flowchart LR
     D -->|Yes| F[Order by release]
     D -->|No| G{Which has<br/>release?}
 
-    G -->|A| H[B before A]
-    G -->|B| I[A before B]
+    G -->|A| H[B &lt; A]
+    G -->|B| I[A &lt; B]
 
     F --> J[Bundle A &lt; Bundle B<br/>1 &lt; 2]
 
@@ -806,20 +806,25 @@ flowchart LR
 **Ordering rules:**
 1. Compare by version first (using semver comparison)
 2. If versions are equal:
-   - Bundles **with** a release come **before** bundles **without** a release
+   - Bundles **with** a release are **greater than** bundles **without** a release
    - Bundles both having releases are ordered by their release version (using semver prerelease comparison)
 
-**Example ordering sequence:**
+**Example ascending order sequence:**
 ```
 foo.v0.2.0              # v0.2.0, no release
-foo-v0.3.0-2            # v0.3.0, release "2"
-foo-v0.3.0-1            # v0.3.0, release "1"
-foo-v0.3.0-beta.1       # v0.3.0, release "beta.1"
-foo-v0.3.0-alpha        # v0.3.0, release "alpha" (beta > alpha lexicographically)
 foo.v0.3.0              # v0.3.0, no release
+foo-v0.3.0-1            # v0.3.0, release "1" is greater than no release
+foo-v0.3.0-2            # v0.3.0, release "2" is greater than release "1"
+foo-v0.3.0-alpha        # v0.3.0, release "alpha" is greater than release "2"
+foo-v0.3.0-beta.1       # v0.3.0, release "beta.1" is greater than release "alpha"
 foo.v0.4.0              # v0.4.0, no release
 ```
 
+#### Compatibility
+
+Catalogs produced with tooling that comprehends the release version can be consumed by tooling that does not support release versioning without impact, and vice-versa.
+Due to the Meta [schema](#schema) FBC composition combined with a general practice of allowing unknown fields when unmarshalling, FBC processing is relatively forgiving on receipt and strict on construction.
+The release field is not perceived by older tooling, and the absence of this field in content created by older tooling is interpreted as intentional by newer tooling.
 
 ## CLI
 

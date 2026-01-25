@@ -112,7 +112,7 @@ The `release` field is an optional field in the CSV spec that specifies the pack
 
 ### When to Use the Release Field
 
-Use the `release` field when you need to make changes to the CSV that don't affect the operator's functionality:
+Use the `release` field when you need to make changes to the CSV that don't affect the operator's functionality, such as:
 
 - Fixing typos in descriptions
 - Adding or amending annotations or labels
@@ -121,11 +121,12 @@ Use the `release` field when you need to make changes to the CSV that don't affe
 
 ### Format and Validation
 
-The `release` field must conform to the [semver prerelease format](https://semver.org/spec/v2.0.0.html#spec-item-9):
-- Dot-separated identifiers containing only alphanumerics and hyphens
+The `release` field must satisfy the following criteria:
+- Composed of dot-separated identifiers containing only alphanumerics and hyphens
 - Maximum length of 20 characters
 - **Cannot contain build metadata** (the `+` character and everything after it)
-- Examples: `1`, `alpha`, `alpha.1`, `beta-1`, `rc.2.0`
+
+Examples: `1`, `alpha`, `alpha.1`, `beta-1`, `rc.2.0`
 
 ### Example
 
@@ -161,7 +162,7 @@ Bundles are ordered using a composite version that considers both `version` and 
 
 1. Bundles are first ordered by semantic version
 2. For bundles with the same version, those **with** a release are ordered **before** those **without** a release
-3. Bundles with the same version and both having releases are ordered by their release version
+3. Bundles with the same version and both having releases are ordered from highest to lowest release version
 
 ```mermaid
 graph TD
@@ -169,7 +170,7 @@ graph TD
     B -->|No| C[Order by Version]
     B -->|Yes| D{Both have Release?}
     D -->|No| E{Has Release?}
-    D -->|Yes| F[Order by decreasing Release]
+    D -->|Yes| F[Order by Release]
     E -->|Bundle A| G[A before B]
     E -->|Bundle B| H[B before A]
 
@@ -180,13 +181,13 @@ graph TD
     style H fill:#c3e6cb
 ```
 
-**Example ordering:**
+**Example versions in ascending order:**
 ```
 memcached-operator.v0.9.0          # version 0.9.0, no release
-memcached-operator-v0.10.0-alpha   # version 0.10.0, release "alpha"
-memcached-operator-v0.10.0-2       # version 0.10.0, release "2"
-memcached-operator-v0.10.0-1       # version 0.10.0, release "1"
 memcached-operator.v0.10.0         # version 0.10.0, no release
+memcached-operator-v0.10.0-1       # version 0.10.0, release "1"
+memcached-operator-v0.10.0-2       # version 0.10.0, release "2"
+memcached-operator-v0.10.0-alpha   # version 0.10.0, release "alpha"
 ```
 
 ### Build Metadata Restriction

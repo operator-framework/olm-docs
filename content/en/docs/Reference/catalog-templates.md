@@ -219,8 +219,8 @@ The `opm` tool provides the capability to generate a substitutes template from e
   ],
   "substitutions": [
     {
-      "name":,
-      "base":
+      "name": "",
+      "base": ""
     }
   ]
 }
@@ -568,9 +568,7 @@ schema: olm.channel
 
 ## Substitutes Template
 
-The substitutes template provides a safe and structured way to replace bundles in an upgrade graph with newer packaging versions. This is particularly useful when you need to republish a bundle with non-functional changes (documentation fixes, label updates, etc.) and want to ensure users upgrade to the new bundle.
-
-#### Problem Statement
+The substitutes template provides a safe and structured way to replace bundles in an upgrade graph with newer packaging versions. This is particularly useful when you need to republish a bundle with non-functional changes (documentation fixes, label updates, etc.) and want to ensure users can upgrade to the new bundle.
 
 Before the substitutes template, when you needed to replace a bundle in a catalog (for example, `foo.v1.0.0` with a documentation fix), you had two options:
 
@@ -597,7 +595,7 @@ When you define a substitution:
 1. The template validates that the substitute bundle has a higher composite version than the base bundle
 2. For each channel containing the base bundle, the template:
    - Adds the new bundle to the channel
-   - Move upgrade edges (replaces, skips, skipRange) from the base to the substitute
+   - Moves upgrade edges (replaces, skips, skipRange) from the base to the substitute
    - Adds a skip edge from substitute to base
    - Updates all other entries that reference the base to reference the substitute instead
 
@@ -651,13 +649,13 @@ properties:
 #### Step 2: Create New Bundle with Release
 
 You discover `foo.v1.0.0` is missing a critical annotation. 
-You 
+You: 
 1. update the bundle's annotation in `metadata/annotations.yaml`
 2. update the bundle's CSV with `spec.release` set (here set to 1)
 3. ensure that the bundle's `metadata-name` follows the format required for using release versions
 4. publish the bundle
 
-The `opm render`-ed bundle image would look something like this in FBC:
+The rendered bundle image (via `opm render`) would look something like this in FBC:
 
 ```yaml
 ---
