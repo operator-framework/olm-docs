@@ -1,0 +1,16 @@
+# NB: this converts a GH-driven single-approver process based on a team into an enumerated equivalent flow
+approvers:
+    - anik120
+    - ankitathomas
+    - camilamacedo86
+    - dtfranz
+    - grokspawn
+    - jianzhangbjz
+    - joelanford
+    - kevinrizza
+    - oceanc80
+    - pedjak
+    - perdasilva
+    - rashmigottipati
+    - tmshort
+    - trgeiger
