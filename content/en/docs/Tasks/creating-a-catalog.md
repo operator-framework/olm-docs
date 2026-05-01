@@ -142,6 +142,38 @@ $ echo $?
 
 Success! There were no errors and we got a `0` error code.
 
+#### Structured Validation Output for Automation
+
+For CI/CD pipelines and automation tools, `opm validate` supports structured JSON and YAML output via the `-o/--output` flag:
+
+```sh
+$ opm validate cool-catalog -o json
+{
+  "passed": true
+}
+```
+
+When validation fails, the structured output includes error details:
+
+```sh
+$ opm validate cool-catalog -o yaml
+error:
+  message: 'invalid package "example-operator": invalid channel "preview": channel must contain at least one bundle'
+passed: false
+```
+
+The exit code remains 0 for success and 1 for failure, regardless of output format. This makes it easy to integrate with tools like `jq` for processing:
+
+```sh
+# Extract validation status in CI pipeline
+$ if opm validate cool-catalog -o json | jq -e '.passed'; then
+  echo "Catalog is valid, proceeding with build"
+else
+  echo "Catalog validation failed"
+  exit 1
+fi
+```
+
 #### Raw File-Based Catalogs Summary
 
 In the general case, adding a bundle involves three discrete steps:
