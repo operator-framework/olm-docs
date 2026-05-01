@@ -876,11 +876,47 @@ Usage:
   opm validate <directory> [flags]
 
 Flags:
-  -h, --help   help for validate
+  -h, --help            help for validate
+  -o, --output string   Output format for validation results (json|yaml)
 
 Global Flags:
       --skip-tls   skip TLS certificate verification for container image registries while pulling bundles or index
 ```
+
+By default, `opm validate` prints human-readable errors to stderr and returns exit code 0 for valid catalogs or 1 for invalid catalogs.
+
+When the `-o/--output` flag is specified with `json` or `yaml`, the command ALSO outputs structured validation results to stdout:
+
+**Structured output format:**
+- `passed` (boolean): `true` if validation succeeds, `false` otherwise
+- `error` (object, optional): Contains validation error details when `passed` is `false`
+  - `message` (string): The validation error message
+
+**Example - Valid catalog:**
+```console
+$ opm validate my-catalog -o json
+{
+  "passed": true
+}
+$ echo $?
+0
+```
+
+**Example - Invalid catalog:**
+```console
+$ opm validate my-catalog -o yaml
+error:
+  message: 'invalid package "example-operator": invalid channel "preview": channel must contain at least one bundle'
+passed: false
+$ echo $?
+1
+```
+
+The structured output format is useful for:
+- CI/CD pipelines that need to parse validation results programmatically
+- Automation tools that track validation status over time
+- IDE integrations that display inline validation errors
+- Monitoring systems that aggregate catalog health metrics
 
 ### `opm serve`
 
@@ -1041,5 +1077,36 @@ Catalog maintainers could further improve on this by building Git-ops automation
   and operators from that package can be successfully installed.
 - Automatically merges PRs that pass these checks.
 - Automatically rebuilds and republishes the catalog image.
+
+### Validation in CI/CD Pipelines
+
+The `-o/--output` flag enables programmatic validation checking in automated workflows. Here's an example GitHub Actions workflow snippet:
+
+```yaml
+- name: Validate catalog
+  id: validate
+  run: |
+    opm validate ./catalog -o json > validation-result.json
+    echo "passed=$(jq -r '.passed' validation-result.json)" >> $GITHUB_OUTPUT
+
+- name: Comment on PR
+  if: steps.validate.outputs.passed == 'false'
+  uses: actions/github-script@v6
+  with:
+    script: |
+      const result = require('./validation-result.json');
+      github.rest.issues.createComment({
+        issue_number: context.issue.number,
+        owner: context.repo.owner,
+        repo: context.repo.repo,
+        body: `❌ Catalog validation failed:\n\`\`\`\n${result.error.message}\n\`\`\``
+      });
+```
+
+This approach allows automation to:
+- Parse validation results programmatically
+- Generate detailed reports from error messages
+- Track validation metrics over time
+- Integrate with issue trackers and notification systems
 
 An example catalog that automates a lot of these workflows can be found at https://github.com/operator-framework/cool-catalog
