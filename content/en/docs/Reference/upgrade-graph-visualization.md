@@ -98,7 +98,7 @@ To generate the upgrade graphs of each channel, run the following:
 
 This will output a mermaid graph that looks like this when rendered into an image:
 
-![Full Upgrade Graph](/content/en/docs/Reference/images/full-upgrade-graph.png)
+![Full Upgrade Graph](/docs/Reference/images/full-upgrade-graph.png)
 
 #### Generating a scaled vector graphic (SVG)
 To generate a scaled vector graphic (SVG) directly from the output results of the `render-graph` command, use the following:
@@ -128,13 +128,13 @@ The following examples expand on advanced topics related to upgrade graphs that 
 #### Visualizing skipRanges
 Consistently using skipRanges allows for a given version to be upgraded to any other newer versions. A real-world example of this can be seen in the security-profiles-operator upgrade graph:
 
-![Security Profiles Operator Full Upgrade Graph](/content/en/docs/Reference/images/spo-full-graph.png)
+![Security Profiles Operator Full Upgrade Graph](/docs/Reference/images/spo-full-graph.png)
 
 #### Limiting the upgrade graph to a particular version context
 Say we are only interested in the upgrade graph after version v0.8.0. We can limit the upgrade graph to the v0.8.0+ context using the following:
 `opm alpha render-graph -p security-profiles-operator --minimum-edge security-profiles-operator.v0.8.0 quay.io/operatorhubio/catalog:latest`
 
-![Security Profiles Operator Limited Upgrade Graph](/content/en/docs/Reference/images/spo-limited-graph.png)
+![Security Profiles Operator Limited Upgrade Graph](/docs/Reference/images/spo-limited-graph.png)
 
 #### Visualizing orphaned or stranded versions
 
@@ -219,7 +219,7 @@ opm alpha render-graph example_catalog/
 
 The full graph shows both channels with their complete upgrade paths:
 
-![Orphaned Example Full Graph](/content/en/docs/Reference/images/orphaned-full-graph.png)
+![Orphaned Example Full Graph](/docs/Reference/images/orphaned-full-graph.png)
 
 **Truncated upgrade graph showing orphaned versions:**
 
@@ -229,7 +229,7 @@ Now suppose we want to restrict installations to v2.2.0 and newer (for example, 
 opm alpha render-graph --minimum-edge myoperator.v2.2.0 example_catalog/
 ```
 
-![Orphaned Example Truncated Graph](/content/en/docs/Reference/images/orphaned-truncated-graph.png)
+![Orphaned Example Truncated Graph](/docs/Reference/images/orphaned-truncated-graph.png)
 
 **Critical observation**: After truncation at v2.2.0, the entire `candidate` channel disappears from the graph because its channel head (v2.1.0) is below the minimum edge. This means:
 
@@ -305,7 +305,7 @@ schema: olm.channel
 
 **Resulting graph:**
 
-![Orphaned Missing Edge Graph](/content/en/docs/Reference/images/orphaned-missing-edge-graph.png)
+![Orphaned Missing Edge Graph](/docs/Reference/images/orphaned-missing-edge-graph.png)
 
 **Critical problem**: The graph shows two disconnected upgrade chains:
 - Chain 1: v1.0.0 → v1.1.0 → v1.2.0 (ORPHANED - no path forward)
